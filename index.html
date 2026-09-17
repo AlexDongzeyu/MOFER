@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MOFER | 远东记忆博物馆</title>
+    <meta
+      name="description"
+      content="MOFER, the Museum of Far East Remembrance, is a Canadian museum initiative dedicated to collecting, digitizing, researching, and exhibiting modern historical archives of the Far East."
+    >
+    <link rel="preload" href="assets/video/hero-poster.jpg" as="image">
+    <link rel="preload" href="assets/video/hero.mp4" as="video" type="video/mp4">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="index.html#top" aria-label="MOFER home">
+        <span class="brand__mark">MOFER</span>
+        <span class="brand__name">Museum of Far East Remembrance</span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a href="index.html#about" data-i18n="nav.about">关于</a>
+        <a href="collections.html" data-i18n="nav.collections">馆藏</a>
+        <a href="exhibitions.html" data-i18n="nav.exhibitions">展览</a>
+        <a href="index.html#research" data-i18n="nav.research">研究教育</a>
+        <a href="index.html#contact" data-i18n="nav.contact">联系</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="motion-button" type="button" data-motion-toggle aria-pressed="false">
+          <span data-i18n="nav.pause">暂停影像</span>
+        </button>
+        <button class="language-button" type="button" data-language-toggle>EN</button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <video
+          class="hero__video"
+          src="assets/video/hero.mp4"
+          poster="assets/video/hero-poster.jpg"
+          autoplay
+          muted
+          playsinline
+          loop
+          data-hero-video
+        ></video>
+        <div class="hero__shade" aria-hidden="true"></div>
+
+        <div class="hero__content">
+          <p class="eyebrow">Museum of Far East Remembrance</p>
+          <p class="hero__name">MOFER · 远东记忆博物馆</p>
+          <h1 id="hero-title" data-i18n="hero.title">收藏、见证、研究，被遗忘的远东记忆</h1>
+          <p class="hero__lede" data-i18n="hero.lede">
+            远东记忆博物馆是一个以收藏、数字化、研究、教育与流动展览为核心的加拿大博物馆项目。
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="collections.html" data-i18n="hero.primary">浏览精选馆藏</a>
+            <a class="button button--secondary" href="exhibitions.html" data-i18n="hero.secondary">查看展览回顾</a>
+          </div>
+        </div>
+
+        <div class="hero__meta" aria-label="Museum focus">
+          <span data-i18n="hero.metaOne">收藏</span>
+          <span data-i18n="hero.metaTwo">数字化</span>
+          <span data-i18n="hero.metaThree">研究</span>
+          <span data-i18n="hero.metaFour">公共教育</span>
+        </div>
+      </section>
+
+      <section class="intro" aria-label="MOFER summary">
+        <div class="intro__statement">
+          <p class="section-label" data-i18n="intro.label">一个没有固定入口的博物馆</p>
+          <h2 data-i18n="intro.title">
+            MOFER 通过快闪展览、合作展览、数字档案与研究项目，让散落的远东记忆重新进入公共视野。
+          </h2>
+        </div>
+        <div class="intro__facts" aria-label="Highlights">
+          <div>
+            <strong>100+</strong>
+            <span data-i18n="facts.objects">2025 年首展展出原始文献、照片与实物</span>
+          </div>
+          <div>
+            <strong>1860s+</strong>
+            <span data-i18n="facts.period">馆藏时间跨度延伸至十九世纪六十年代以后</span>
+          </div>
+          <div>
+            <strong>CA</strong>
+            <span data-i18n="facts.base">以加拿大为基地，面向跨文化研究与教育合作</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="about section" id="about" aria-labelledby="about-title">
+        <div class="section__heading">
+          <p class="section-label" data-i18n="about.label">About MOFER</p>
+          <h2 id="about-title" data-i18n="about.title">收藏不是终点，记忆需要被研究、翻译和公开呈现。</h2>
+        </div>
+        <div class="about__grid">
+          <p data-i18n="about.bodyOne">
+            远东记忆博物馆位于加拿大，是一个独立博物馆项目，致力于收藏、保护、研究并展出与远东近现代历史有关的原始档案与文化藏品。
+          </p>
+          <p data-i18n="about.bodyTwo">
+            许多远东历史深刻塑造了二十世纪，却长期在国际叙事中被低估。MOFER 通过原始档案、展览与学术合作，推动跨文化对话与历史理解。
+          </p>
+          <p data-i18n="about.bodyThree">
+            目前，MOFER 收藏原版照片、档案文件、书籍、期刊、海报、地图与未刊手稿，并以流动展览和跨机构合作的形式与公众见面。
+          </p>
+        </div>
+      </section>
+
+      <section class="collections section" id="collections" aria-labelledby="collections-title">
+        <div class="section__heading section__heading--split">
+          <div>
+            <p class="section-label" data-i18n="collections.label">Selected Collections</p>
+            <h2 id="collections-title" data-i18n="collections.title">用原件保存时代，也保存时代里的人。</h2>
+          </div>
+          <p data-i18n="collections.intro">
+            第一版网站先呈现 8 件代表性藏品。未来这些记录可以扩展为可检索的数字馆藏数据库。
+          </p>
+        </div>
+
+        <div class="collection-layout">
+          <div class="collection-list" data-collection-list></div>
+          <aside class="collection-detail" data-collection-detail aria-live="polite">
+            <img data-detail-image src="assets/collections/tim-louie-victory-address.jpg" alt="">
+            <div class="collection-detail__body">
+              <p class="section-label" data-detail-type></p>
+              <h3 data-detail-title></h3>
+              <p data-detail-description></p>
+              <dl>
+                <div>
+                  <dt data-i18n="collections.date">年代</dt>
+                  <dd data-detail-date></dd>
+                </div>
+                <div>
+                  <dt data-i18n="collections.place">地点</dt>
+                  <dd data-detail-place></dd>
+                </div>
+              </dl>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="pathways section" aria-labelledby="pathways-title">
+        <div class="section__heading section__heading--split">
+          <div>
+            <p class="section-label" data-i18n="pathways.label">More Collection Pathways</p>
+            <h2 id="pathways-title" data-i18n="pathways.title">更多藏品正在成为未来叙事的线索。</h2>
+          </div>
+          <p data-i18n="pathways.intro">
+            这些图片来自正在整理的备选素材，适合作为未来专题、数字展柜与教育项目的延展方向。
+          </p>
+        </div>
+
+        <div class="pathway-grid" aria-label="Additional collection pathways">
+          <article class="pathway-card">
+            <img src="assets/collections/extended/china-orphans-vera-fang.jpg" alt="Children photographed in wartime China.">
+            <div>
+              <span>01</span>
+              <h3 data-i18n="pathways.children.title">孤儿、儿童与战时救援</h3>
+              <p data-i18n="pathways.children.body">从儿童影像、救援读物到跨洋募捐，呈现战争中最脆弱人群如何被看见与援助。</p>
+            </div>
+          </article>
+          <article class="pathway-card">
+            <img src="assets/collections/extended/sutton-university-nanking-letter-1946.jpg" alt="A 1946 letter related to the Sutton files and the University of Nanking.">
+            <div>
+              <span>02</span>
+              <h3 data-i18n="pathways.sutton.title">萨顿档案与战后证词</h3>
+              <p data-i18n="pathways.sutton.body">围绕东京审判、南京大学与战后调查的通信材料，可作为司法、记忆与证据研究的入口。</p>
+            </div>
+          </article>
+          <article class="pathway-card">
+            <img src="assets/collections/extended/medical-instruments-roll.jpg" alt="A roll of historical medical instruments.">
+            <div>
+              <span>03</span>
+              <h3 data-i18n="pathways.medical.title">医疗、人道与前线照护</h3>
+              <p data-i18n="pathways.medical.body">医疗器械、医护文本与救援资料让战争叙事从战场延伸到救治、运输和后方支援。</p>
+            </div>
+          </article>
+          <article class="pathway-card">
+            <img src="assets/collections/extended/madame-chiang-letter-children.jpg" alt="Cover of A Letter from Madame Chiang Kai-shek to Boys and Girls Across the Ocean.">
+            <div>
+              <span>04</span>
+              <h3 data-i18n="pathways.publications.title">跨太平洋儿童读物</h3>
+              <p data-i18n="pathways.publications.body">面向海外儿童的宣传与教育读物，显示远东战争如何进入北美公共教育和家庭阅读。</p>
+            </div>
+          </article>
+          <article class="pathway-card">
+            <img src="assets/collections/extended/boxers-prisoners-photograph.jpg" alt="Historical photograph of Boxer prisoners.">
+            <div>
+              <span>05</span>
+              <h3 data-i18n="pathways.qing.title">晚清冲突与外部凝视</h3>
+              <p data-i18n="pathways.qing.body">十九世纪末至二十世纪初的图像材料，记录晚清中国在战争、条约与跨国摄影中的复杂处境。</p>
+            </div>
+          </article>
+          <article class="pathway-card">
+            <img src="assets/collections/extended/late-qing-officials-photograph.jpg" alt="A late Qing photograph with officials and attendants.">
+            <div>
+              <span>06</span>
+              <h3 data-i18n="pathways.portrait.title">人物肖像与身份记忆</h3>
+              <p data-i18n="pathways.portrait.body">人物照片、题跋与旧式装裱保留了个人身份、社会阶层与视觉文化的线索。</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="exhibition section" id="exhibitions" aria-labelledby="exhibition-title">
+        <div class="section__heading section__heading--split">
+          <div>
+            <p class="section-label" data-i18n="exhibition.label">Past Exhibition</p>
+            <h2 id="exhibition-title">Forgotten Ally from the Far East</h2>
+          </div>
+          <p data-i18n="exhibition.summary">
+            2025 年 9 月 9 日至 14 日，MOFER 在加拿大安大略省 Richmond Hill 的 Boynton House 举办首个独立策展展览，纪念第二次世界大战终结 80 周年。
+          </p>
+        </div>
+
+        <div class="exhibition__feature">
+          <img src="assets/exhibitions/boynton-youth-gallery.jpeg" alt="Young visitors viewing MOFER exhibition materials at Boynton House.">
+          <div>
+            <p class="section-label">Boynton House · Richmond Hill</p>
+            <h3 data-i18n="exhibition.featureTitle">让远东战场重新进入盟军胜利的全球叙事。</h3>
+            <p data-i18n="exhibition.featureBody">
+              展览以“国际支持与合作”“中国的抗争”“胜利”三个主题，展出超过 100 件原始照片、档案文件、书籍、期刊与历史实物，其中许多材料首次在北美公开展出。
+            </p>
+          </div>
+        </div>
+
+        <div class="gallery-grid" aria-label="Boynton House exhibition photographs">
+          <figure>
+            <img src="assets/exhibitions/boynton-uniform-room.jpeg" alt="Visitors standing near a Chinese wartime uniform and Allied poster display.">
+            <figcaption data-i18n="gallery.uniform">军服、海报与历史照片共同构成展览现场。</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/exhibitions/boynton-archive-wall.jpeg" alt="Visitor viewing framed archival documents and wartime photographs.">
+            <figcaption data-i18n="gallery.archive">档案文件与照片以原件形式进入公共观看空间。</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/exhibitions/boynton-guided-tour.jpeg" alt="A guided group viewing a wartime poster and exhibition text.">
+            <figcaption data-i18n="gallery.guided">面向不同族裔与年龄层的导览和公共教育。</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/exhibitions/boynton-poster-wall.jpeg" alt="Visitors reading exhibition materials in front of an Allied wartime poster.">
+            <figcaption data-i18n="gallery.poster">以视觉证据重建“被遗忘的盟友”的位置。</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="research section" id="research" aria-labelledby="research-title">
+        <div class="section__heading">
+          <p class="section-label" data-i18n="research.label">Research & Education</p>
+          <h2 id="research-title" data-i18n="research.title">从私人收藏走向公共知识。</h2>
+        </div>
+        <div class="work-grid">
+          <article>
+            <span>01</span>
+            <h3 data-i18n="work.collect.title">收藏与保护</h3>
+            <p data-i18n="work.collect.body">记录来源、保存状态与材料信息，为后续研究和数字化建立基础。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3 data-i18n="work.digitize.title">数字化与编目</h3>
+            <p data-i18n="work.digitize.body">将照片、文件、手稿、书籍与实物转化为可检索、可引用、可教育的数字记录。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3 data-i18n="work.research.title">研究与合作</h3>
+            <p data-i18n="work.research.body">与博物馆、档案馆、大学、研究者和教育者合作，推动远东历史进入更广阔的全球语境。</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3 data-i18n="work.education.title">展览与教育</h3>
+            <p data-i18n="work.education.body">通过快闪展览、课堂材料、讲座和社区项目，让历史成为可以被讨论的公共经验。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="involvement section" id="contact" aria-labelledby="contact-title">
+        <div class="involvement__image">
+          <img src="assets/exhibitions/boynton-visitors-window.jpeg" alt="Visitors viewing MOFER exhibition materials between tall windows at Boynton House.">
+        </div>
+        <div class="involvement__copy">
+          <p class="section-label" data-i18n="contact.label">Get Involved</p>
+          <h2 id="contact-title" data-i18n="contact.title">与 MOFER 一起保存、研究和呈现远东记忆。</h2>
+          <p data-i18n="contact.body">
+            MOFER 欢迎博物馆、档案馆、大学、研究者、教育者、社区组织与志愿者参与展览、研究、翻译、公共项目和档案保护工作。
+          </p>
+          <div class="contact-panel">
+            <a href="mailto:communications@mofer.org">communications@mofer.org</a>
+            <a href="tel:+16477795286">(647) 779-5286</a>
+          </div>
+          <div class="press-links" aria-label="Press links">
+            <a href="https://www.worldchinesemedia.com/2025/09/09/13163/" target="_blank" rel="noreferrer" data-i18n="press.world">世界华文媒体报道</a>
+            <a href="https://www.canadanewsreport.com/2025/09/09/16923/" target="_blank" rel="noreferrer" data-i18n="press.canada">Canada News Report</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>MOFER · Museum of Far East Remembrance · 远东记忆博物馆</p>
+      <p data-i18n="footer.note">Collecting, witnessing, and studying forgotten memories from the Far East.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

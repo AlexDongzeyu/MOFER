@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.wrangler/
+recovery/reference/
+playwright-report/
+test-results/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+*.log

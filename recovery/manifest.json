@@ -1,0 +1,265 @@
+{
+  "origin": "https://mofer.org",
+  "capturedAt": "2026-09-17T06:35:46.846Z",
+  "pages": [
+    {
+      "route": "index.html",
+      "title": "MOFER | 远东记忆博物馆",
+      "links": [
+        "https://mofer.org/index.html#top",
+        "https://mofer.org/index.html#about",
+        "https://mofer.org/collections.html",
+        "https://mofer.org/exhibitions.html",
+        "https://mofer.org/index.html#research",
+        "https://mofer.org/index.html#contact",
+        "https://mofer.org/collections.html",
+        "https://mofer.org/exhibitions.html",
+        "mailto:communications@mofer.org",
+        "tel:+16477795286",
+        "https://www.worldchinesemedia.com/2025/09/09/13163/",
+        "https://www.canadanewsreport.com/2025/09/09/16923/"
+      ],
+      "collectionCount": 8,
+      "pathwayCount": 6,
+      "hasVideo": true
+    },
+    {
+      "route": "collections.html",
+      "title": "Collections | MOFER 远东记忆博物馆",
+      "links": [
+        "https://mofer.org/index.html#top",
+        "https://mofer.org/index.html#about",
+        "https://mofer.org/collections.html",
+        "https://mofer.org/exhibitions.html",
+        "https://mofer.org/index.html#research",
+        "https://mofer.org/index.html#contact"
+      ],
+      "collectionCount": 8,
+      "pathwayCount": 6,
+      "hasVideo": false
+    },
+    {
+      "route": "exhibitions.html",
+      "title": "Exhibitions | MOFER 远东记忆博物馆",
+      "links": [
+        "https://mofer.org/index.html#top",
+        "https://mofer.org/index.html#about",
+        "https://mofer.org/collections.html",
+        "https://mofer.org/exhibitions.html",
+        "https://mofer.org/index.html#research",
+        "https://mofer.org/index.html#contact",
+        "https://www.worldchinesemedia.com/2025/09/09/13163/",
+        "https://www.canadanewsreport.com/2025/09/09/16923/",
+        "mailto:communications@mofer.org",
+        "tel:+16477795286"
+      ],
+      "collectionCount": 0,
+      "pathwayCount": 0,
+      "hasVideo": false
+    }
+  ],
+  "files": [
+    {
+      "source": "https://mofer.org/assets/collections/anna-may-wong-collection.jpg",
+      "path": "assets/collections/anna-may-wong-collection.jpg",
+      "bytes": 316438,
+      "contentType": "image/jpeg",
+      "sha256": "48a493100ae4ae8d72c11394a03dde19f859cf0882e27d7db09794a0da572c84"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/boxer-protocol-signing.jpg",
+      "path": "assets/collections/boxer-protocol-signing.jpg",
+      "bytes": 247579,
+      "contentType": "image/jpeg",
+      "sha256": "8bf4941a9cf1a2a7b9e14130dca78f415176fcfebc6b7d03f9aaa2cfdef73103"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/china-army-seasoned-team.jpg",
+      "path": "assets/collections/china-army-seasoned-team.jpg",
+      "bytes": 382910,
+      "contentType": "image/jpeg",
+      "sha256": "d0f003c73e9dc05327e9adaef1427111166bcf649b77251b7ee1920506fea0a9"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/extended/boxers-prisoners-photograph.jpg",
+      "path": "assets/collections/extended/boxers-prisoners-photograph.jpg",
+      "bytes": 509632,
+      "contentType": "image/jpeg",
+      "sha256": "8df505722b9d6d6e8e5a4b25c812c93329bff0f77c9b57e6c48d911958cf5b72"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/extended/china-orphans-vera-fang.jpg",
+      "path": "assets/collections/extended/china-orphans-vera-fang.jpg",
+      "bytes": 250929,
+      "contentType": "image/jpeg",
+      "sha256": "fca5fc632075a77e364b4465d6d39b4fc92ca502c3d27a5e7413c20c57ffc70f"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/extended/late-qing-officials-photograph.jpg",
+      "path": "assets/collections/extended/late-qing-officials-photograph.jpg",
+      "bytes": 474217,
+      "contentType": "image/jpeg",
+      "sha256": "cb0cef0e951c0adb18d5d6e44176c5410221a1c29822f7091f19727bb147849c"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/extended/madame-chiang-letter-children.jpg",
+      "path": "assets/collections/extended/madame-chiang-letter-children.jpg",
+      "bytes": 475959,
+      "contentType": "image/jpeg",
+      "sha256": "c7090cd351cfe92f0dd60fe19b1c3d710a118df75653ea52bff014a80bfa4aeb"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/extended/medical-instruments-roll.jpg",
+      "path": "assets/collections/extended/medical-instruments-roll.jpg",
+      "bytes": 227697,
+      "contentType": "image/jpeg",
+      "sha256": "41e7b29953d30f22581d2b5436e4a1c357b412a19238a75bd97b1b30e6fa425a"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/extended/sutton-university-nanking-letter-1946.jpg",
+      "path": "assets/collections/extended/sutton-university-nanking-letter-1946.jpg",
+      "bytes": 355629,
+      "contentType": "image/jpeg",
+      "sha256": "f7265d8c16dc53b093d8897580c0981fee7feda41db6e05642b13fc84683da7b"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/pearl-buck-letter.jpg",
+      "path": "assets/collections/pearl-buck-letter.jpg",
+      "bytes": 359692,
+      "contentType": "image/jpeg",
+      "sha256": "bd40332e17096981451e90e25db44aec88945359f3cb437ad989f7c1b284ce60"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/produce-for-victory.jpg",
+      "path": "assets/collections/produce-for-victory.jpg",
+      "bytes": 195378,
+      "contentType": "image/jpeg",
+      "sha256": "3e97fef365bcfce99d9573c2ca0f51ae4c000c74b9507b5518e1f3e8c051f8a8"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/tim-louie-victory-address.jpg",
+      "path": "assets/collections/tim-louie-victory-address.jpg",
+      "bytes": 116478,
+      "contentType": "image/jpeg",
+      "sha256": "5a1f2bbfd5feb8de42b82f023f129c8f356b5d270aa0d6f3972a412e8ba49844"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/xinhai-revolution-photographs.jpg",
+      "path": "assets/collections/xinhai-revolution-photographs.jpg",
+      "bytes": 318077,
+      "contentType": "image/jpeg",
+      "sha256": "1b09485dbd19421d96e2fdb0854931728baf8f7dcf00a5c6dd82023ddf284af7"
+    },
+    {
+      "source": "https://mofer.org/assets/collections/zhou-yiyu-testimony.jpg",
+      "path": "assets/collections/zhou-yiyu-testimony.jpg",
+      "bytes": 474781,
+      "contentType": "image/jpeg",
+      "sha256": "087547dd61fe3be515fdcaed487d9133cb83ea34d4606e91e7d3507ef7e52c68"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-archive-wall.jpeg",
+      "path": "assets/exhibitions/boynton-archive-wall.jpeg",
+      "bytes": 2086282,
+      "contentType": "image/jpeg",
+      "sha256": "2e019d6ba2b76ab5bb07ab5a85e60a94f8d4d3f19865901229f7faaf1ed77c22"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-family-viewing.jpeg",
+      "path": "assets/exhibitions/boynton-family-viewing.jpeg",
+      "bytes": 2261924,
+      "contentType": "image/jpeg",
+      "sha256": "d2e53498463cfddd8bc3063de38f3fb585356af1e9ad23b80ff9b6ef9a2b958b"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-guided-tour.jpeg",
+      "path": "assets/exhibitions/boynton-guided-tour.jpeg",
+      "bytes": 1914860,
+      "contentType": "image/jpeg",
+      "sha256": "cd15c373819af7cea05d4ec000d1afd096e834a4c4371d71c3565858d0b8d672"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-poster-wall.jpeg",
+      "path": "assets/exhibitions/boynton-poster-wall.jpeg",
+      "bytes": 1850728,
+      "contentType": "image/jpeg",
+      "sha256": "60ae3791ab3ffb0d01599266529d6f3a5e8e2241cfe65f5c01e0d7c9532eef56"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-uniform-room.jpeg",
+      "path": "assets/exhibitions/boynton-uniform-room.jpeg",
+      "bytes": 4281920,
+      "contentType": "image/jpeg",
+      "sha256": "745fab60a4e58e06f29e5e0ed8ba979d139cbcd133813820f5024fe888d838f5"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-visitors-window.jpeg",
+      "path": "assets/exhibitions/boynton-visitors-window.jpeg",
+      "bytes": 3814782,
+      "contentType": "image/jpeg",
+      "sha256": "d99e015d1a6c8cdc6ad0e2875d572e4e10ec86975a7d1c328d9e967844583788"
+    },
+    {
+      "source": "https://mofer.org/assets/exhibitions/boynton-youth-gallery.jpeg",
+      "path": "assets/exhibitions/boynton-youth-gallery.jpeg",
+      "bytes": 4808165,
+      "contentType": "image/jpeg",
+      "sha256": "21a269ca83160c79406ef0c7ebf88e56764d0b5c767cdf3d2be36e2c5dce93c6"
+    },
+    {
+      "source": "https://mofer.org/assets/video/hero-poster.jpg",
+      "path": "assets/video/hero-poster.jpg",
+      "bytes": 204280,
+      "contentType": "image/jpeg",
+      "sha256": "ab455cea0fa362e57a9dafbe3a429e0acc585919c7204748ff763d93505089ff"
+    },
+    {
+      "source": "https://mofer.org/assets/video/hero.mp4",
+      "path": "assets/video/hero.mp4",
+      "bytes": 8465645,
+      "contentType": "video/mp4",
+      "sha256": "b08c9f005160ea2b9c9128b2043bb659774d0e4f1cb8a67b37c81debe39a8494"
+    },
+    {
+      "source": "https://mofer.org/collections.html",
+      "path": "collections.html",
+      "bytes": 7728,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "b72f62d583fbc6bd873e113616968b2dc1c8661bcec2dc8989680d47f2011e2a"
+    },
+    {
+      "source": "https://mofer.org/exhibitions.html",
+      "path": "exhibitions.html",
+      "bytes": 6434,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "f29dac2f657ae2d304f509b006a87f3fb72f2173a217e631121deea3984229da"
+    },
+    {
+      "source": "https://mofer.org/index.html",
+      "path": "index.html",
+      "bytes": 16668,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "9c4a2f8c73780ec4f9185d15db7593d7925e37dd373bada29a407abdd9f7255b"
+    },
+    {
+      "source": "https://mofer.org/script.js",
+      "path": "script.js",
+      "bytes": 23699,
+      "contentType": "application/javascript",
+      "sha256": "8932bcee68a481a93123b0e4a1ed52123d68e78af1a0dba0ac05af0f5df50c38"
+    },
+    {
+      "source": "https://mofer.org/styles.css",
+      "path": "styles.css",
+      "bytes": 16668,
+      "contentType": "text/css",
+      "sha256": "b5ee20850600d5c7f1837ed104fd0b7c6a3f83d11db2c362fca6245344814a58"
+    }
+  ],
+  "totals": {
+    "pages": 3,
+    "resources": 28,
+    "recovered": 28,
+    "missing": 0
+  }
+}

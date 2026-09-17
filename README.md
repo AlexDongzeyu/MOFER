@@ -1,0 +1,92 @@
+# MOFER
+
+The Museum of Far East Remembrance website, recovered from the published site for an owner-authorized restoration on September 17, 2026. This is the existing design, not a redesign.
+
+The three public pages, shared CSS/JavaScript, both language dictionaries, collection records, 21 collection/exhibition images, hero poster, and hero video are stored locally. The original frontend requires no API, database, framework, or runtime CDN.
+
+## Local Preview
+
+Use Node.js 22 or newer:
+
+```sh
+npm ci
+npm run dev
+```
+
+Open <http://127.0.0.1:4173>. The preview serves the production files in `dist/`. After editing source files, run `npm run build` to refresh that directory. If the default port is occupied, build first and use `npx http-server dist -a 127.0.0.1 -p 4180 -c-1`.
+
+On Windows, use `npm.cmd` and `npx.cmd` if PowerShell blocks the corresponding `.ps1` commands.
+
+## Deploy on Cloudflare Pages
+
+In Cloudflare, select **Workers & Pages > Create application > Pages > Import an existing Git repository**, then connect [AlexDongzeyu/MOFER](https://github.com/AlexDongzeyu/MOFER).
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Framework preset | None |
+| Root directory | Leave blank (repository root) |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node.js version | `22` (also set in [.nvmrc](.nvmrc)) |
+
+No environment secrets or Cloudflare bindings are needed. This repository is configured for **Pages**, not a Worker deployment. Do not set the build/deploy command to `wrangler deploy`.
+
+[wrangler.jsonc](wrangler.jsonc) declares the Pages output directory. The build copies only the website into `dist/`, excluding recovery records, tests, dependencies, Git files, and developer documentation. It checks every asset against Pages' 25 MiB per-file limit. No network access to the original site is needed during a build or normal operation.
+
+Pages automatically canonicalizes `.html` URLs to extensionless URLs. The original links remain valid, including cross-page fragment links. The top-level [404.html](404.html) provides a real not-found response rather than a single-page-app fallback. Do not add a catch-all SPA rewrite.
+
+To test Pages routing and headers locally without deploying:
+
+```sh
+npm run build
+npm run preview:cloudflare
+```
+
+Open <http://127.0.0.1:4174>. To use a different free port, run `npx wrangler pages dev dist --ip 127.0.0.1 --port 4181` directly. Connecting a custom domain and changing DNS are separate owner-managed steps after checking the Pages preview deployment.
+
+## Editing the Website
+
+| File | Responsibility |
+| --- | --- |
+| [index.html](index.html) | Homepage, About, collection preview, exhibition, research, and contact sections |
+| [collections.html](collections.html) | Featured collection selector and additional collection themes |
+| [exhibitions.html](exhibitions.html) | Exhibition history, gallery, press coverage, and contact |
+| [styles.css](styles.css) | Original colors, fonts, layout, image crops, and responsive breakpoints |
+| [script.js](script.js) | `translations`, `collectionItems`, language switching, collection selection, video controls, and header scrolling |
+| [404.html](404.html) | Added not-found page using the existing styles |
+| [_headers](_headers) | Cloudflare response headers |
+
+Images and video are in `assets/` at their original relative paths. To change translated copy, update both `zh` and `en` values in `translations`, plus the HTML fallback text where applicable. Update collection titles, dates, places, images, and summaries together in `collectionItems`.
+
+The original language switch applies to the current page and resets to Chinese on navigation/reload. The mobile navigation and visibility of the motion button also retain the original responsive behavior. A searchable collection database is described as a future project in the source; it is not an existing feature of this restoration.
+
+One inherited layout issue is intentionally unchanged: at 390 x 844 in English, the homepage's bottom topic strip overlaps the secondary hero action. The main navigation still reaches Exhibitions. Address this in the redesign phase rather than changing the restoration baseline.
+
+## Verification
+
+```sh
+npx playwright install chromium
+npm run build
+npm test
+```
+
+The functional suite runs against Cloudflare's local Pages emulator, with external browser requests blocked. It covers all three pages in Chinese and English at desktop, wide desktop, tablet, and mobile sizes, plus 320-pixel overflow checks; collection selection; keyboard language activation; video playback; local navigation/anchors; contact links; canonical routes; security headers; and 404s. It starts and stops its own test server on port 4175. Set `TEST_PORT` to another free port if necessary.
+
+GitHub Actions runs the build and functional suite on pushes and pull requests. Test screenshots and failure traces remain local or in CI artifacts, not in the deployed site.
+
+### Restoration Evidence and Limits
+
+All 28 recovered files were independently checked against the hashes recorded from the published source. The three pages, stylesheet, interaction script, images, and video remain byte-identical. The Cloudflare functional suite passed all 60 checks; the six mobile render checks also passed at 320 pixels.
+
+An initial independent visual comparison used 48 live/local screenshots across the same 24 page/language/viewport combinations. Forty-three matched at zero pixel tolerance; five had differences confined to asynchronously painted collection thumbnails. Further full-capture attempts encountered live image/video readiness timeouts. A complete pixel-match result is therefore **not claimed**. The experimental comparison tool is not part of the published commands.
+
+Captured screenshots, comparison evidence, and the experimental tool are retained locally under `recovery/reference/`, outside Git and deployment. For later redesign work, capture a new baseline directly from the live site, wait for image decoding, and compare the same video frame, browser, operating system, and viewport. Matching source does not eliminate platform-specific font rendering differences.
+
+## Recovery Record
+
+[recovery/manifest.json](recovery/manifest.json) records the original URLs, source sizes, hashes, capture time, and discovered page inventory for 28 recovered files. These hashes describe the recovery baseline; ordinary builds do not prevent intentional future edits.
+
+[scripts/recover.mjs](scripts/recover.mjs) can re-fetch public source with `npm run recover`. It refuses to overwrite a local file whose contents differ, so it must not be used as a routine build or update command. No credentials are needed.
+
+Published HTML, CSS, JavaScript, and media were recoverable. The owner's lost Git history, unpublished files, original development tooling, and any private systems are not recovered by downloading the public site. The added tooling, 404 page, headers, and deployment setup are new. External press, email, and telephone links intentionally retain their original destinations.
