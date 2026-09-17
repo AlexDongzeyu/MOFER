@@ -18,7 +18,7 @@ export default defineConfig({
     { name: "mobile", use: { viewport: { width: 390, height: 844 } } }
   ],
   webServer: {
-    command: `node node_modules/wrangler/bin/wrangler.js pages dev dist --ip 127.0.0.1 --port ${port} --inspector-port 0 --show-interactive-dev-session=false`,
+    command: `node node_modules/wrangler/bin/wrangler.js dev --local --ip 127.0.0.1 --port ${port} --inspector-port 0 --show-interactive-dev-session=false`,
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120_000,

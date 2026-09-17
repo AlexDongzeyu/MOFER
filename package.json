@@ -2,7 +2,7 @@
   "name": "mofer",
   "version": "1.0.0",
   "private": true,
-  "description": "Museum of Far East Remembrance website, restored for Cloudflare Pages.",
+  "description": "Museum of Far East Remembrance website, restored for Cloudflare Workers Static Assets.",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -12,7 +12,8 @@
     "build": "node scripts/build.mjs",
     "predev": "npm run build",
     "dev": "http-server dist -a 127.0.0.1 -p 4173 -c-1",
-    "preview:cloudflare": "wrangler pages dev dist --ip 127.0.0.1 --port 4174",
+    "preview:cloudflare": "wrangler dev --local --ip 127.0.0.1 --port 4174",
+    "check:deploy": "wrangler deploy --dry-run",
     "test": "playwright test"
   },
   "devDependencies": {

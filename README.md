@@ -17,33 +17,38 @@ Open <http://127.0.0.1:4173>. The preview serves the production files in `dist/`
 
 On Windows, use `npm.cmd` and `npx.cmd` if PowerShell blocks the corresponding `.ps1` commands.
 
-## Deploy on Cloudflare Pages
+## Deploy on Cloudflare Workers
 
-In Cloudflare, select **Workers & Pages > Create application > Pages > Import an existing Git repository**, then connect [AlexDongzeyu/MOFER](https://github.com/AlexDongzeyu/MOFER).
+This repository uses **Workers Static Assets**, compatible with the `npx wrangler deploy` command in Cloudflare Workers Builds. It serves the static site directly; no Worker script, API, or database is required.
+
+In Cloudflare, create or open a Worker connected to [AlexDongzeyu/MOFER](https://github.com/AlexDongzeyu/MOFER) and use these build settings. If the Worker is already connected, keep the commands below and retry deployment using the latest commit.
 
 | Setting | Value |
 | --- | --- |
+| Worker name | `mofer` (must match `name` in [wrangler.jsonc](wrangler.jsonc)) |
 | Production branch | `main` |
-| Framework preset | None |
 | Root directory | Leave blank (repository root) |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
+| Deploy command | `npx wrangler deploy` |
 | Node.js version | `22` (also set in [.nvmrc](.nvmrc)) |
 
-No environment secrets or Cloudflare bindings are needed. This repository is configured for **Pages**, not a Worker deployment. Do not set the build/deploy command to `wrangler deploy`.
+No application secrets or Cloudflare bindings are needed. Cloudflare's connected build supplies deployment authentication; local build, dry-run, and test commands do not publish anything or require login.
 
-[wrangler.jsonc](wrangler.jsonc) declares the Pages output directory. The build copies only the website into `dist/`, excluding recovery records, tests, dependencies, Git files, and developer documentation. It checks every asset against Pages' 25 MiB per-file limit. No network access to the original site is needed during a build or normal operation.
+[wrangler.jsonc](wrangler.jsonc) declares `assets.directory` as `./dist`. The build copies only the website into that directory, excluding recovery records, tests, dependencies, Git files, and developer documentation. It retains the 25 MiB per-file size check. No network access to the original site is needed during a build or normal operation.
 
-Pages automatically canonicalizes `.html` URLs to extensionless URLs. The original links remain valid, including cross-page fragment links. The top-level [404.html](404.html) provides a real not-found response rather than a single-page-app fallback. Do not add a catch-all SPA rewrite.
+Workers' default HTML handling canonicalizes `.html` URLs to extensionless URLs. The original links remain valid, including cross-page fragment links. `assets.not_found_handling` is explicitly set to `404-page`, using the top-level [404.html](404.html) for missing routes. Do not add a catch-all SPA rewrite.
 
-To test Pages routing and headers locally without deploying:
+The earlier Pages-only `pages_build_output_dir` setting is not compatible with `wrangler deploy`: it caused the reported "Missing entry-point to Worker script or to assets directory" error. Keep the Workers configuration and deploy command together.
+
+To validate deployment configuration and test Workers routing and headers locally without deploying:
 
 ```sh
 npm run build
+npm run check:deploy
 npm run preview:cloudflare
 ```
 
-Open <http://127.0.0.1:4174>. To use a different free port, run `npx wrangler pages dev dist --ip 127.0.0.1 --port 4181` directly. Connecting a custom domain and changing DNS are separate owner-managed steps after checking the Pages preview deployment.
+Open <http://127.0.0.1:4174>. To use a different free port, run `npx wrangler dev --local --ip 127.0.0.1 --port 4181` directly. Connecting a custom domain and changing DNS are separate owner-managed steps after checking the deployment.
 
 ## Editing the Website
 
@@ -68,12 +73,13 @@ One inherited layout issue is intentionally unchanged: at 390 x 844 in English, 
 ```sh
 npx playwright install chromium
 npm run build
+npm run check:deploy
 npm test
 ```
 
-The functional suite runs against Cloudflare's local Pages emulator, with external browser requests blocked. It covers all three pages in Chinese and English at desktop, wide desktop, tablet, and mobile sizes, plus 320-pixel overflow checks; collection selection; keyboard language activation; video playback; local navigation/anchors; contact links; canonical routes; security headers; and 404s. It starts and stops its own test server on port 4175. Set `TEST_PORT` to another free port if necessary.
+The functional suite runs against Cloudflare's local Workers Static Assets runtime, with external browser requests blocked. It covers all three pages in Chinese and English at desktop, wide desktop, tablet, and mobile sizes, plus 320-pixel overflow checks; collection selection; keyboard language activation; video playback; local navigation/anchors; contact links; canonical routes; security headers; and 404s. It starts and stops its own test server on port 4175. Set `TEST_PORT` to another free port if necessary.
 
-GitHub Actions runs the build and functional suite on pushes and pull requests. Test screenshots and failure traces remain local or in CI artifacts, not in the deployed site.
+GitHub Actions runs the build, deployment dry run, and functional suite on pushes and pull requests. Test screenshots and failure traces remain local or in CI artifacts, not in the deployed site.
 
 ### Restoration Evidence and Limits
 
