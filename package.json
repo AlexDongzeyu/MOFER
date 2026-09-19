@@ -17,8 +17,13 @@
     "test": "playwright test"
   },
   "devDependencies": {
+    "@fontsource-variable/bodoni-moda": "5.3.0",
+    "@fontsource-variable/hanken-grotesk": "5.3.0",
+    "@fontsource-variable/noto-serif-sc": "5.3.0",
     "@playwright/test": "1.63.0",
     "http-server": "14.1.1",
+    "lucide-static": "1.47.0",
+    "parse5": "8.0.1",
     "wrangler": "4.133.0"
   }
 }

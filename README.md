@@ -1,8 +1,10 @@
 # MOFER
 
-The Museum of Far East Remembrance website, recovered from the published site for an owner-authorized restoration on September 17, 2026. This is the existing design, not a redesign.
+The Museum of Far East Remembrance website, recovered on September 17, 2026 and redesigned on September 18. It presents the museum's original collections and exhibition history in Chinese and English, with concise copy, dark archival surfaces, and a slow historical film.
 
 The three public pages, shared CSS/JavaScript, both language dictionaries, collection records, 21 collection/exhibition images, hero poster, and hero video are stored locally. The original frontend requires no API, database, framework, or runtime CDN.
+
+[PRODUCT.md](PRODUCT.md) records the content and product constraints. [DESIGN.md](DESIGN.md) documents the implemented museum visual system, with machine-readable component metadata in [.impeccable/design.json](.impeccable/design.json).
 
 ## Local Preview
 
@@ -57,16 +59,20 @@ Open <http://127.0.0.1:4174>. To use a different free port, run `npx wrangler de
 | [index.html](index.html) | Homepage, About, collection preview, exhibition, research, and contact sections |
 | [collections.html](collections.html) | Featured collection selector and additional collection themes |
 | [exhibitions.html](exhibitions.html) | Exhibition history, gallery, press coverage, and contact |
-| [styles.css](styles.css) | Original colors, fonts, layout, image crops, and responsive breakpoints |
-| [script.js](script.js) | `translations`, `collectionItems`, language switching, collection selection, video controls, and header scrolling |
-| [404.html](404.html) | Added not-found page using the existing styles |
+| [styles.css](styles.css) | Museum design tokens, local typography, gallery layouts, responsive breakpoints, and image-viewer presentation |
+| [script.js](script.js) | Bilingual copy, collection records, navigation menu, collection selection, full-image viewer, and ambient video playback |
+| [404.html](404.html) | Not-found page using the museum design |
 | [_headers](_headers) | Cloudflare response headers |
 
-Images and video are in `assets/` at their original relative paths. To change translated copy, update both `zh` and `en` values in `translations`, plus the HTML fallback text where applicable. Update collection titles, dates, places, images, and summaries together in `collectionItems`.
+Images and video are in `assets/` at their original relative paths. To edit copy, update both `zh` and `en` values in `translations`, then run `node scripts/sync-copy.mjs` to synchronize the Chinese HTML fallback without reformatting the markup. Collection titles, dates, places, images, and summaries live in `collectionItems`; verify historical details before changing them.
 
-The original language switch applies to the current page and resets to Chinese on navigation/reload. The mobile navigation and visibility of the motion button also retain the original responsive behavior. A searchable collection database is described as a future project in the source; it is not an existing feature of this restoration.
+The language switch applies to the current page and resets to Chinese on navigation/reload. Navigation collapses to a keyboard-accessible menu on tablet and mobile. The hero film is muted, loops automatically at `0.25` playback speed, and has no on-page playback control. As requested, the film remains visible and playing even when reduced motion is enabled; that preference still disables decorative animation and smooth scrolling. Browsers that block autoplay retain the still-image fallback.
 
-One inherited layout issue is intentionally unchanged: at 390 x 844 in English, the homepage's bottom topic strip overlaps the secondary hero action. The main navigation still reaches Exhibitions. Address this in the redesign phase rather than changing the restoration baseline.
+Collection photographs, documents, themes, and exhibition photographs open in a full-resolution viewer with previous/next, zoom, Escape, and focus return. Selecting a collection thumbnail brings its detail into view without discarding keyboard focus. A searchable collection database is still a future project described in the museum's copy, not a new feature claimed by this redesign.
+
+Typography is self-hosted under `assets/fonts/`: Bodoni Moda, Hanken Grotesk, and Noto Serif SC from their pinned Fontsource packages, with the original font licenses. Lucide SVG icons and their license are under `assets/icons/`. No fonts or icons are requested from an external CDN. Existing photography and video remain at their original paths.
+
+The background texture in `assets/textures/archive-paper.png` comes from a blank margin of the Pearl S. Buck letter, not a generated historical artifact. `node scripts/prepare-texture.mjs` reproduces the muted, mirrored raster tile. The document image itself is unchanged. Charcoal, olive, brass, and a muted wine exhibition band replace white surfaces; spacing and tonal changes replace decorative rules.
 
 ## Verification
 
@@ -77,17 +83,21 @@ npm run check:deploy
 npm test
 ```
 
-The functional suite runs against Cloudflare's local Workers Static Assets runtime, with external browser requests blocked. It covers all three pages in Chinese and English at desktop, wide desktop, tablet, and mobile sizes, plus 320-pixel overflow checks; collection selection; keyboard language activation; video playback; local navigation/anchors; contact links; canonical routes; security headers; and 404s. It starts and stops its own test server on port 4175. Set `TEST_PORT` to another free port if necessary.
+The functional suite runs against Cloudflare's local Workers Static Assets runtime, with external browser requests blocked. It covers all three pages in Chinese and English at desktop, wide desktop, tablet, and mobile sizes, plus 320-pixel overflow and short-screen hero checks; historical facts; collection selection and focus; the mobile menu; the image viewer; quarter-speed looping and reduced motion; Chinese fallback text; base-color contrast; local navigation; headers; and 404s. It starts and stops its own test server on port 4175. Set `TEST_PORT` to another free port if necessary.
 
 GitHub Actions runs the build, deployment dry run, and functional suite on pushes and pull requests. Test screenshots and failure traces remain local or in CI artifacts, not in the deployed site.
 
-### Restoration Evidence and Limits
+### Content and Visual Verification
 
-All 28 recovered files were independently checked against the hashes recorded from the published source. The three pages, stylesheet, interaction script, images, and video remain byte-identical. The Cloudflare functional suite passed all 60 checks; the six mobile render checks also passed at 320 pixels.
+Before the redesign, all 28 recovered files were independently checked against the original source hashes. That version remains in Git history. The current HTML, CSS, and JavaScript intentionally differ: the user authorized both a visual redesign and an editorial pass. The original historical media and collection metadata remain unchanged.
 
-An initial independent visual comparison used 48 live/local screenshots across the same 24 page/language/viewport combinations. Forty-three matched at zero pixel tolerance; five had differences confined to asynchronously painted collection thumbnails. Further full-capture attempts encountered live image/video readiness timeouts. A complete pixel-match result is therefore **not claimed**. The experimental comparison tool is not part of the published commands.
+[tests/fixtures/content.json](tests/fixtures/content.json) retains all 73 original entries per language, eight collection records, and each page's content keys as reference evidence. Tests keep collection metadata exact and require every original content field to render. [tests/fixtures/facts.json](tests/fixtures/facts.json) independently protects historical names, dates, counts, places, themes, and other details while allowing the requested prose changes. These checks support, rather than replace, editorial review.
 
-Captured screenshots, comparison evidence, and the experimental tool are retained locally under `recovery/reference/`, outside Git and deployment. For later redesign work, capture a new baseline directly from the live site, wait for image decoding, and compare the same video frame, browser, operating system, and viewport. Matching source does not eliminate platform-specific font rendering differences.
+The render tests save first-viewport screenshots and full-page desktop/mobile captures in `test-results/`, including legible homepage-section captures. Those files and prior recovery/reference captures are excluded from deployment and Git. The current design is intentionally not a pixel-identical copy of the recovered site or of the Loewentheil reference.
+
+Current test results and screenshots are written to `test-results/`. The site has not been formally certified for accessibility, and a local test pass is not a claim of completed production deployment.
+
+The final September 18 revision passed 92 browser checks with no failures, errors, or skips, plus the Workers deployment dry run. The editorial review found no material change to historical meaning, and the visual finish review returned `ship` after the blocked-autoplay fallback was corrected. All 23 original image/video assets still match their recovery hashes.
 
 ## Recovery Record
 

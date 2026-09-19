@@ -1,0 +1,98 @@
+{
+  "translations": [
+    {
+      "key": "hero.lede",
+      "en": ["Canada", "collects", "digitizes", "studies", "exhibitions", "education"],
+      "zh": ["加拿大", "收藏", "数字化", "研究", "教育", "流动展览"]
+    },
+    {
+      "key": "about.bodyOne",
+      "en": ["independent", "Canada", "preserve", "original", "modern Far East"],
+      "zh": ["独立", "加拿大", "保护", "原始档案", "近现代"]
+    },
+    {
+      "key": "about.bodyThree",
+      "en": ["photographs", "documents", "books", "periodicals", "posters", "maps", "unpublished manuscripts", "travelling exhibitions", "institutional partnerships"],
+      "zh": ["原版照片", "档案", "书籍", "期刊", "海报", "地图", "未刊手稿", "流动展览", "跨机构合作"]
+    },
+    {
+      "key": "collections.intro",
+      "en": ["Eight", "could", "searchable"],
+      "zh": ["8", "未来", "可检索"]
+    },
+    {
+      "key": "facts.objects",
+      "en": ["2025", "first exhibition"],
+      "zh": ["2025", "首展"]
+    },
+    {
+      "key": "facts.period",
+      "en": ["1860s", "onward"],
+      "zh": ["1860"]
+    },
+    {
+      "key": "pathways.sutton.body",
+      "en": ["Tokyo Trial", "University of Nanking", "postwar", "justice", "memory", "evidence"],
+      "zh": ["东京审判", "南京大学", "战后", "司法", "记忆", "证据"]
+    },
+    {
+      "key": "pathways.medical.body",
+      "en": ["instruments", "nursing", "relief", "treatment", "transport", "support"],
+      "zh": ["器械", "医护", "救援", "救治", "运输", "支援"]
+    },
+    {
+      "key": "pathways.publications.body",
+      "en": ["children", "Pacific", "North American", "classrooms", "homes"],
+      "zh": ["儿童", "宣传", "教育", "北美", "课堂", "家庭"]
+    },
+    {
+      "key": "exhibition.summary",
+      "en": ["first independently curated", "Boynton House", "Richmond Hill", "Ontario", "Canada", "September 9 to 14, 2025", "80 years", "Second World War"],
+      "zh": ["首个独立策展", "Boynton House", "Richmond Hill", "安大略", "加拿大", "2025 年 9 月 9 日至 14 日", "80 周年", "第二次世界大战"]
+    },
+    {
+      "key": "exhibition.featureBody",
+      "en": ["More than 100", "original photographs", "documents", "books", "periodicals", "objects", "first time in North America", "International Support and Cooperation", "China Fights Back", "Victory"],
+      "zh": ["100 余件", "原始照片", "档案", "书籍", "期刊", "实物", "首次在北美", "国际支持与合作", "中国的抗争", "胜利"]
+    },
+    {
+      "key": "contact.body",
+      "en": ["Museums", "archives", "universities", "researchers", "educators", "community groups", "volunteers", "exhibitions", "research", "translation", "public programs", "archival preservation"],
+      "zh": ["博物馆", "档案馆", "大学", "研究者", "教育者", "社区组织", "志愿者", "展览", "研究", "翻译", "公共项目", "档案保护"]
+    }
+  ],
+  "collections": [
+    {
+      "en": ["Second World War", "Vancouver", "Tim Louie", "Chinese Canadians", "front", "at home"],
+      "zh": ["二战", "温哥华", "Tim Louie", "华裔加拿大人", "前线", "后方"]
+    },
+    {
+      "en": ["Milton Caniff", "large poster", "American audiences", "China's armed forces", "Allies", "fascism"],
+      "zh": ["美国漫画家", "Milton Caniff", "美国公众", "中国抗战", "盟军", "反法西斯"]
+    },
+    {
+      "en": ["after Pearl Harbor", "Chinese soldiers", "planes", "tanks", "guns", "Allied victory"],
+      "zh": ["珍珠港事件后", "美国", "中国士兵", "飞机", "坦克", "武器", "盟军"]
+    },
+    {
+      "en": ["Zhou Yiyu", "Chongshantang", "general manager", "more than 110,000", "Nanjing Massacre", "postwar trials"],
+      "zh": ["周一渔", "崇善堂", "总经理", "超过 11 万", "南京大屠杀", "战后审判"]
+    },
+    {
+      "en": ["Nobel", "Pearl S. Buck", "chair", "China Emergency Relief Committee", "donor", "war effort", "humanitarian relief"],
+      "zh": ["诺贝尔文学奖", "赛珍珠", "主席", "中国紧急救援委员会", "捐款者", "抗战", "人道救援"]
+    },
+    {
+      "en": ["more than 30", "original photographs", "Xinhai Revolution", "Wuhan", "Nanjing", "Shanghai", "Xi'an", "Canton"],
+      "zh": ["30 余张", "原版照片", "辛亥革命", "武汉战事", "南京光复", "上海革命活动", "军事行动"]
+    },
+    {
+      "en": ["original photograph", "Boxer Protocol", "Prince Qing", "Li Hongzhang", "Qing government"],
+      "zh": ["原版照片", "辛丑条约", "庆亲王奕劻", "李鸿章", "清政府", "谈判", "签署"]
+    },
+    {
+      "en": ["Anna May Wong", "first Chinese American", "international recognition", "original photographs", "multilingual magazines", "tobacco cards", "autographs", "commemorative coins", "film posters"],
+      "zh": ["黄柳霜", "首位", "华裔美国", "国际", "原版照片", "多语种杂志", "烟卡", "签名", "纪念币", "电影海报"]
+    }
+  ]
+}

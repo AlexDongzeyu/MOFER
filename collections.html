@@ -10,14 +10,15 @@
     >
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body data-page="collections">
+    <a class="skip-link" href="#top" data-i18n="nav.skip">跳至内容</a>
     <header class="site-header is-scrolled" data-header>
       <a class="brand" href="index.html#top" aria-label="MOFER home">
         <span class="brand__mark">MOFER</span>
         <span class="brand__name">Museum of Far East Remembrance</span>
       </a>
 
-      <nav class="primary-nav" aria-label="Primary navigation">
+      <nav class="primary-nav" id="primary-navigation" aria-label="Primary navigation">
         <a href="index.html#about" data-i18n="nav.about">关于</a>
         <a href="collections.html" aria-current="page" data-i18n="nav.collections">馆藏</a>
         <a href="exhibitions.html" data-i18n="nav.exhibitions">展览</a>
@@ -27,16 +28,19 @@
 
       <div class="header-actions">
         <button class="language-button" type="button" data-language-toggle>EN</button>
+        <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="打开菜单">
+          <span class="icon icon--menu" aria-hidden="true"></span>
+        </button>
       </div>
     </header>
 
-    <main id="top">
+    <main id="top" tabindex="-1">
       <section class="page-hero" aria-labelledby="page-title">
         <div class="page-hero__copy">
-          <p class="section-label" data-i18n="collections.label">Selected Collections</p>
           <h1 id="page-title" data-i18n="page.collections.title">馆藏</h1>
+          <p class="section-label" data-i18n="collections.label">馆藏精选</p>
           <p data-i18n="page.collections.lede">
-            MOFER 以原始照片、档案文件、书籍、期刊、海报、地图、未刊手稿与实物为核心，逐步建立可研究、可引用、可教育的数字馆藏。
+            原版照片、档案、书籍、期刊、海报、地图、未刊手稿和实物。MOFER 正逐步整理这些藏品，建立可供研究、引用和教学使用的数字馆藏。
           </p>
         </div>
         <div class="page-hero__media">
@@ -47,16 +51,15 @@
       <section class="collections section" id="collections" aria-labelledby="collections-title">
         <div class="section__heading section__heading--split">
           <div>
-            <p class="section-label" data-i18n="collections.label">Selected Collections</p>
-            <h2 id="collections-title" data-i18n="collections.title">用原件保存时代，也保存时代里的人。</h2>
+            <h2 id="collections-title" data-i18n="collections.label">馆藏精选</h2>
+            <p class="section__statement" data-i18n="collections.title">从原件了解一个时代，也了解其中的人。</p>
           </div>
           <p data-i18n="collections.intro">
-            第一版网站先呈现 8 件代表性藏品。未来这些记录可以扩展为可检索的数字馆藏数据库。
+            这 8 件代表性藏品是了解馆藏的起点。它们的记录未来可扩展为可检索的数字目录。
           </p>
         </div>
 
         <div class="collection-layout">
-          <div class="collection-list" data-collection-list></div>
           <aside class="collection-detail" data-collection-detail aria-live="polite">
             <img data-detail-image src="assets/collections/tim-louie-victory-address.jpg" alt="">
             <div class="collection-detail__body">
@@ -75,17 +78,18 @@
               </dl>
             </div>
           </aside>
+          <div class="collection-list" data-collection-list></div>
         </div>
       </section>
 
       <section class="pathways section" aria-labelledby="pathways-title">
         <div class="section__heading section__heading--split">
           <div>
-            <p class="section-label" data-i18n="pathways.label">More Collection Pathways</p>
-            <h2 id="pathways-title" data-i18n="pathways.title">更多藏品正在成为未来叙事的线索。</h2>
+            <h2 id="pathways-title" data-i18n="pathways.label">更多馆藏主题</h2>
+            <p class="section__statement" data-i18n="pathways.title">正在整理的藏品，还有更多故事。</p>
           </div>
           <p data-i18n="pathways.intro">
-            这些图片来自正在整理的备选素材，适合作为未来专题、数字展柜与教育项目的延展方向。
+            这些资料仍在整理中，可用于未来的专题、线上展示和教育项目。
           </p>
         </div>
 
@@ -95,7 +99,7 @@
             <div>
               <span>01</span>
               <h3 data-i18n="pathways.children.title">孤儿、儿童与战时救援</h3>
-              <p data-i18n="pathways.children.body">从儿童影像、救援读物到跨洋募捐，呈现战争中最脆弱人群如何被看见与援助。</p>
+              <p data-i18n="pathways.children.body">儿童与孤儿的照片、救援读物和跨洋募捐资料，记录战争中孩子们的处境，以及人们如何向他们伸出援手。</p>
             </div>
           </article>
           <article class="pathway-card">
@@ -103,7 +107,7 @@
             <div>
               <span>02</span>
               <h3 data-i18n="pathways.sutton.title">萨顿档案与战后证词</h3>
-              <p data-i18n="pathways.sutton.body">围绕东京审判、南京大学与战后调查的通信材料，可作为司法、记忆与证据研究的入口。</p>
+              <p data-i18n="pathways.sutton.body">有关东京审判、南京大学和战后调查的通信，为研究司法、记忆与证据提供线索。</p>
             </div>
           </article>
           <article class="pathway-card">
@@ -111,7 +115,7 @@
             <div>
               <span>03</span>
               <h3 data-i18n="pathways.medical.title">医疗、人道与前线照护</h3>
-              <p data-i18n="pathways.medical.body">医疗器械、医护文本与救援资料让战争叙事从战场延伸到救治、运输和后方支援。</p>
+              <p data-i18n="pathways.medical.body">医疗器械、医护文本和救援资料，记录战场之外的救治、运输与后方支援。</p>
             </div>
           </article>
           <article class="pathway-card">
@@ -119,7 +123,7 @@
             <div>
               <span>04</span>
               <h3 data-i18n="pathways.publications.title">跨太平洋儿童读物</h3>
-              <p data-i18n="pathways.publications.body">面向海外儿童的宣传与教育读物，显示远东战争如何进入北美公共教育和家庭阅读。</p>
+              <p data-i18n="pathways.publications.body">面向海外儿童的宣传与教育读物，记录远东战争如何进入北美课堂和家庭阅读。</p>
             </div>
           </article>
           <article class="pathway-card">
@@ -127,7 +131,7 @@
             <div>
               <span>05</span>
               <h3 data-i18n="pathways.qing.title">晚清冲突与外部凝视</h3>
-              <p data-i18n="pathways.qing.body">十九世纪末至二十世纪初的图像材料，记录晚清中国在战争、条约与跨国摄影中的复杂处境。</p>
+              <p data-i18n="pathways.qing.body">十九世纪末至二十世纪初的照片，记录战争、条约与跨国摄影中的晚清中国。</p>
             </div>
           </article>
           <article class="pathway-card">
@@ -135,7 +139,7 @@
             <div>
               <span>06</span>
               <h3 data-i18n="pathways.portrait.title">人物肖像与身份记忆</h3>
-              <p data-i18n="pathways.portrait.body">人物照片、题跋与旧式装裱保留了个人身份、社会阶层与视觉文化的线索。</p>
+              <p data-i18n="pathways.portrait.body">人物照片、题跋和原有装裱，留下了身份、社会阶层与视觉文化的线索。</p>
             </div>
           </article>
         </div>
@@ -143,8 +147,12 @@
     </main>
 
     <footer class="site-footer">
-      <p>MOFER · Museum of Far East Remembrance · 远东记忆博物馆</p>
-      <p data-i18n="footer.note">Collecting, witnessing, and studying forgotten memories from the Far East.</p>
+      <div>
+        <a class="footer-wordmark" href="index.html#top" aria-label="MOFER home">MOFER</a>
+        <p>MOFER · Museum of Far East Remembrance · 远东记忆博物馆</p>
+      </div>
+      <p data-i18n="footer.note">收藏、研究与分享远东的历史。</p>
+      <a class="back-to-top" href="#top" data-i18n="nav.top">返回顶部</a>
     </footer>
 
     <script src="script.js"></script>
