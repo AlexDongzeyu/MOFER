@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-Hans">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Exhibitions | MOFER 远东记忆博物馆</title>
+    <title>Exhibitions | MOFER</title>
     <meta
       name="description"
       content="Explore exhibitions by MOFER, the Museum of Far East Remembrance, including the 2025 Boynton House exhibition Forgotten Ally from the Far East."
@@ -11,98 +11,111 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body data-page="exhibitions">
-    <a class="skip-link" href="#top" data-i18n="nav.skip">跳至内容</a>
+    <a class="skip-link" href="#top" data-i18n="nav.skip">Skip to content</a>
     <header class="site-header is-scrolled" data-header>
-      <a class="brand" href="index.html#top" aria-label="MOFER home">
+      <a class="brand" href="index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">
         <span class="brand__mark">MOFER</span>
-        <span class="brand__name">Museum of Far East Remembrance</span>
+        <span class="brand__name" data-i18n="museum.name">Museum of Far East Remembrance</span>
       </a>
 
-      <nav class="primary-nav" id="primary-navigation" aria-label="Primary navigation">
-        <a href="index.html#about" data-i18n="nav.about">关于</a>
-        <a href="collections.html" data-i18n="nav.collections">馆藏</a>
-        <a href="exhibitions.html" aria-current="page" data-i18n="nav.exhibitions">展览</a>
-        <a href="index.html#research" data-i18n="nav.research">研究教育</a>
-        <a href="index.html#contact" data-i18n="nav.contact">联系</a>
+      <nav class="primary-nav" id="primary-navigation" aria-label="Main navigation" data-i18n-aria="nav.primary">
+        <a href="about.html" data-i18n="nav.about">About</a>
+        <a href="collections.html" data-i18n="nav.collections">Collections</a>
+        <a href="exhibitions.html" aria-current="page" data-i18n="nav.exhibitions">Exhibitions</a>
+        <a href="research.html" data-i18n="nav.research">Research</a>
+        <a href="contact.html" data-i18n="nav.contact">Contact</a>
       </nav>
 
       <div class="header-actions">
-        <button class="language-button" type="button" data-language-toggle>EN</button>
-        <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="打开菜单">
+        <label class="language-control">
+          <span class="icon icon--languages" aria-hidden="true"></span>
+          <select data-language-select aria-label="Choose language">
+            <option value="en">English</option>
+            <option value="zh-Hans">简体中文</option>
+            <option value="fr">Français</option>
+            <option value="zh-Hant">繁體中文</option>
+            <option value="ja">日本語</option>
+            <option value="ru">Русский</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+          </select>
+        </label>
+        <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu">
           <span class="icon icon--menu" aria-hidden="true"></span>
         </button>
       </div>
+      <p class="language-status" data-language-status role="status" hidden></p>
     </header>
 
     <main id="top" tabindex="-1">
       <section class="page-hero" aria-labelledby="page-title">
         <div class="page-hero__copy">
-          <h1 id="page-title" data-i18n="page.exhibitions.title">展览</h1>
-          <p class="section-label" data-i18n="exhibition.label">往期展览</p>
+          <h1 id="page-title" data-i18n="page.exhibitions.title">Exhibitions</h1>
+          <p class="section-label" data-i18n="exhibition.label">Past exhibition</p>
           <p data-i18n="page.exhibitions.lede">
-            MOFER 通过快闪展览和合作展览，让公众近距离接触原始藏品，也在探索未来举办常设展览的可能。
+            Our pop-up and partner exhibitions bring original objects into public spaces. We are also exploring the possibility of permanent exhibitions.
           </p>
         </div>
         <div class="page-hero__media">
-          <img src="assets/exhibitions/boynton-visitors-window.jpeg" alt="Visitors viewing MOFER exhibition materials at Boynton House.">
+          <img src="assets/exhibitions/boynton-visitors-window.jpeg" alt="Visitors viewing MOFER exhibition materials at Boynton House." data-i18n-alt="alt.exhibitionWindow">
         </div>
       </section>
 
       <section class="exhibition section" id="exhibitions" aria-labelledby="exhibition-title">
         <div class="section__heading section__heading--split">
           <div>
-            <h2 id="exhibition-title">Forgotten Ally from the Far East</h2>
-            <p class="section-label" data-i18n="exhibition.label">往期展览</p>
+            <h2 id="exhibition-title" data-i18n="exhibition.name">Forgotten Ally from the Far East</h2>
+            <p class="section-label" data-i18n="exhibition.label">Past exhibition</p>
           </div>
           <p data-i18n="exhibition.summary">
-            2025 年 9 月 9 日至 14 日，MOFER 在加拿大安大略省 Richmond Hill 的 Boynton House 举办首个独立策展展览，纪念第二次世界大战结束 80 周年。
+            Our first independently curated exhibition ran at Boynton House in Richmond Hill, Ontario, Canada, from September 9 to 14, 2025, marking 80 years since the end of the Second World War.
           </p>
         </div>
 
         <div class="exhibition__feature">
-          <img src="assets/exhibitions/boynton-youth-gallery.jpeg" alt="Young visitors viewing MOFER exhibition materials at Boynton House.">
+          <img src="assets/exhibitions/boynton-youth-gallery.jpeg" alt="Young visitors viewing MOFER exhibition materials at Boynton House." data-i18n-alt="alt.exhibitionYouth">
           <div>
-            <h3 data-i18n="exhibition.featureTitle">重新认识远东在盟军胜利中的位置。</h3>
+            <h3 data-i18n="exhibition.featureTitle">The Far East's place in Allied victory.</h3>
             <p class="section-label">Boynton House · Richmond Hill</p>
             <p data-i18n="exhibition.featureBody">
-              展览围绕“国际支持与合作”“中国的抗争”“胜利”三个主题，呈现 100 余件原始照片、档案、书籍、期刊和实物，许多首次在北美公开展出。
+              More than 100 original photographs, documents, books, periodicals, and objects were shown, many for the first time in North America. Three sections shaped the exhibition: International Support and Cooperation, China Fights Back, and Victory.
             </p>
-            <div class="press-links" aria-label="Press links">
-              <a href="https://www.worldchinesemedia.com/2025/09/09/13163/" target="_blank" rel="noreferrer" data-i18n="press.world">世界华文媒体报道</a>
+            <div class="press-links" aria-label="In the press" data-i18n-aria="contact.press">
+              <a href="https://www.worldchinesemedia.com/2025/09/09/13163/" target="_blank" rel="noreferrer" data-i18n="press.world">World Chinese Media report</a>
               <a href="https://www.canadanewsreport.com/2025/09/09/16923/" target="_blank" rel="noreferrer" data-i18n="press.canada">Canada News Report</a>
             </div>
           </div>
         </div>
 
-        <div class="gallery-grid" aria-label="Boynton House exhibition photographs">
+        <div class="gallery-grid" aria-label="Boynton House exhibition photographs" data-i18n-aria="aria.gallery">
           <figure>
-            <img src="assets/exhibitions/boynton-uniform-room.jpeg" alt="Visitors standing near a Chinese wartime uniform and Allied poster display.">
-            <figcaption data-i18n="gallery.uniform">展厅中的军服、海报与历史照片。</figcaption>
+            <img src="assets/exhibitions/boynton-uniform-room.jpeg" alt="Visitors standing near a Chinese wartime uniform and Allied poster display." data-i18n-alt="alt.exhibitionUniform">
+            <figcaption data-i18n="gallery.uniform">Uniforms, posters, and historical photographs on display.</figcaption>
           </figure>
           <figure>
-            <img src="assets/exhibitions/boynton-archive-wall.jpeg" alt="Visitor viewing framed archival documents and wartime photographs.">
-            <figcaption data-i18n="gallery.archive">向公众展出的档案与照片原件。</figcaption>
+            <img src="assets/exhibitions/boynton-archive-wall.jpeg" alt="Visitor viewing framed archival documents and wartime photographs." data-i18n-alt="alt.exhibitionArchive">
+            <figcaption data-i18n="gallery.archive">Original documents and photographs, on public view.</figcaption>
           </figure>
           <figure>
-            <img src="assets/exhibitions/boynton-guided-tour.jpeg" alt="A guided group viewing a wartime poster and exhibition text.">
-            <figcaption data-i18n="gallery.guided">面向不同年龄与背景观众的导览和公共教育。</figcaption>
+            <img src="assets/exhibitions/boynton-guided-tour.jpeg" alt="A guided group viewing a wartime poster and exhibition text." data-i18n-alt="alt.exhibitionTour">
+            <figcaption data-i18n="gallery.guided">Guided tours and public education for visitors of different ages and backgrounds.</figcaption>
           </figure>
           <figure>
-            <img src="assets/exhibitions/boynton-poster-wall.jpeg" alt="Visitors reading exhibition materials in front of an Allied wartime poster.">
-            <figcaption data-i18n="gallery.poster">通过战时海报，了解这位“被遗忘的盟友”。</figcaption>
+            <img src="assets/exhibitions/boynton-poster-wall.jpeg" alt="Visitors reading exhibition materials in front of an Allied wartime poster." data-i18n-alt="alt.exhibitionPoster">
+            <figcaption data-i18n="gallery.poster">Wartime posters help tell the story of a forgotten ally.</figcaption>
           </figure>
         </div>
       </section>
 
       <section class="involvement section" id="contact" aria-labelledby="contact-title">
         <div class="involvement__image">
-          <img src="assets/exhibitions/boynton-family-viewing.jpeg" alt="Visitors viewing MOFER exhibition materials together.">
+          <img src="assets/exhibitions/boynton-family-viewing.jpeg" alt="Visitors viewing MOFER exhibition materials together." data-i18n-alt="alt.exhibitionFamily">
         </div>
         <div class="involvement__copy">
-          <h2 id="contact-title" data-i18n="contact.label">合作与参与</h2>
-          <p class="section__statement" data-i18n="contact.title">和我们一起保存、研究与分享远东历史。</p>
+          <h2 id="contact-title" data-i18n="contact.label">Work with us</h2>
+          <p class="section__statement" data-i18n="contact.title">Help preserve, study, and share the history of the Far East.</p>
           <p data-i18n="contact.body">
-            欢迎博物馆、档案馆、大学、研究者、教育者、社区组织和志愿者与我们联系，参与展览、研究、翻译、公共项目或档案保护。
+            Museums, archives, universities, researchers, educators, community groups, and volunteers are welcome. Contact us about exhibitions, research, translation, public programs, or archival preservation.
           </p>
           <div class="contact-panel">
             <a href="mailto:communications@mofer.org">communications@mofer.org</a>
@@ -114,11 +127,11 @@
 
     <footer class="site-footer">
       <div>
-        <a class="footer-wordmark" href="index.html#top" aria-label="MOFER home">MOFER</a>
-        <p>MOFER · Museum of Far East Remembrance · 远东记忆博物馆</p>
+        <a class="footer-wordmark" href="index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">MOFER</a>
+        <p data-i18n="museum.name">Museum of Far East Remembrance</p>
       </div>
-      <p data-i18n="footer.note">收藏、研究与分享远东的历史。</p>
-      <a class="back-to-top" href="#top" data-i18n="nav.top">返回顶部</a>
+      <p data-i18n="footer.note">Preserving, studying, and sharing the history of the Far East.</p>
+      <a class="back-to-top" href="#top" data-i18n="nav.top">Back to top</a>
     </footer>
 
     <script src="script.js"></script>

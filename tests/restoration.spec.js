@@ -1,207 +1,297 @@
 import { test as base, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
+import { parse } from "parse5";
 
+const languages = ["en", "zh-Hans", "fr", "zh-Hant", "ja", "ru", "de", "es"];
+const languageNames = ["English", "简体中文", "Français", "繁體中文", "日本語", "Русский", "Deutsch", "Español"];
+const pages = ["index.html", "about.html", "collections.html", "exhibitions.html", "research.html", "contact.html"];
+const destinations = ["about.html", "collections.html", "exhibitions.html", "research.html", "contact.html"];
+const packs = Object.fromEntries(languages.map((language) => [language, JSON.parse(readFileSync(new URL(`../assets/i18n/${language}.json`, import.meta.url), "utf8"))]));
 const contentBaseline = JSON.parse(readFileSync(new URL("./fixtures/content.json", import.meta.url), "utf8"));
 const historicalFacts = JSON.parse(readFileSync(new URL("./fixtures/facts.json", import.meta.url), "utf8"));
 
-const routes = ["index.html", "collections.html", "exhibitions.html"];
 const test = base.extend({
   localOnly: [async ({ context, baseURL }, use) => {
     const externalRequests = [];
     await context.route("**/*", async (route) => {
-      const url = new URL(route.request().url());
-      if (url.origin !== new URL(baseURL).origin) {
-        externalRequests.push(url.href);
+      if (new URL(route.request().url()).origin !== new URL(baseURL).origin) {
+        externalRequests.push(route.request().url());
         await route.abort();
       } else {
         await route.continue();
       }
     });
     await use();
-    expect(externalRequests, "The website must not depend on its original host").toEqual([]);
+    expect(externalRequests, "The museum must not depend on external services").toEqual([]);
   }, { auto: true }]
 });
 
-for (const route of routes) {
-  for (const language of ["zh", "en"]) {
-    test(`${route} renders ${language} locally`, async ({ page }, testInfo) => {
-      const errors = [];
-      page.on("pageerror", (error) => errors.push(error.message));
-      page.on("response", (response) => {
-        if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`);
-      });
-      const response = await page.goto(`/${route}`);
-      expect(response.status()).toBe(200);
-      const content = await page.evaluate(() => ({ translations, collectionItems }));
-      expect(Object.keys(content.translations[language])).toEqual(expect.arrayContaining(Object.keys(contentBaseline.translations[language])));
-      expect(content.collectionItems.map(({ summary, ...metadata }) => metadata)).toEqual(contentBaseline.collectionItems.map(({ summary, ...metadata }) => metadata));
-      for (const fact of historicalFacts.translations) {
-        for (const value of fact[language]) {
-          expect(content.translations[language][fact.key], `${fact.key} must preserve ${value}`).toContain(value);
-        }
-      }
-      for (const [index, fact] of historicalFacts.collections.entries()) {
-        for (const value of fact[language]) {
-          expect(content.collectionItems[index].summary[language], `Collection ${index + 1} must preserve ${value}`).toContain(value);
-        }
-      }
-      const initialHeading = await page.locator("h1").innerText();
-      if (language === "en") {
-        await page.locator("[data-language-toggle]").click();
-        await expect(page.locator("h1")).not.toHaveText(initialHeading);
-      }
-      await expect(page.locator("html")).toHaveAttribute("lang", language === "zh" ? "zh-Hans" : "en");
-      for (const key of contentBaseline.pages[route].filter((key) => key !== "nav.pause")) {
-        await expect(page.locator(`[data-i18n="${key}"]`).first()).toHaveText(content.translations[language][key]);
-      }
-      await expect(page.locator("h1")).toBeVisible();
-      await expect(page.locator(".primary-nav a")).toHaveCount(5);
-      await expect(page.locator(".site-footer")).toContainText("MOFER");
-      if (route !== "exhibitions.html") {
-        await expect(page.locator(".collection-card")).toHaveCount(8);
-        await expect(page.locator(".pathway-card")).toHaveCount(6);
-      }
-      await page.waitForFunction(() => Array.from(document.images).every((image) => image.complete && image.naturalWidth > 0));
-      await page.evaluate(() => document.fonts.ready);
-      await page.locator("img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "Page has horizontal overflow").toBe(true);
-      await page.screenshot({ path: testInfo.outputPath("viewport.png"), animations: "disabled" });
-      if (["desktop", "mobile"].includes(testInfo.project.name)) {
-        await page.screenshot({ path: testInfo.outputPath("full.png"), fullPage: true, animations: "disabled" });
-        if (route === "index.html" && language === "en") {
-          for (const section of ["collections", "pathways", "exhibition", "research", "involvement"]) {
-            await page.locator(`section.${section}`).screenshot({
-              path: testInfo.outputPath(`${section}.png`),
-              animations: "disabled",
-              style: ".site-header, .skip-link { visibility: hidden !important; }"
-            });
-          }
-        }
-      }
-      if (testInfo.project.name === "mobile") {
-        await page.setViewportSize({ width: 320, height: 740 });
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "Small phone has horizontal overflow").toBe(true);
-        await expect(page.locator("h1")).toBeVisible();
-      }
-      expect(errors).toEqual([]);
-    });
+async function chooseLanguage(page, language) {
+  await expect(page.locator("[data-language-select]")).toBeEnabled();
+  await page.locator("[data-language-select]").selectOption(language);
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", language);
+  await expect(page.locator("html")).toHaveAttribute("lang", language);
+}
+
+test("English-first visits offer all eight native-language choices", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await expect(page.locator("h1")).toContainText("Museum of Far East Remembrance");
+  await expect(page.locator("[data-language-select]")).toHaveValue("en");
+  await expect(page.locator("[data-language-select] option")).toHaveText(languageNames);
+});
+
+test("language files preserve collection identity and source historical facts", async () => {
+  const keys = Object.keys(packs.en.strings).sort();
+  for (const language of languages) {
+    const pack = packs[language];
+    expect(pack.locale).toBe(language);
+    expect(Object.keys(pack.strings).sort()).toEqual(keys);
+    expect(pack.collections).toHaveLength(8);
+    for (const value of Object.values(pack.strings)) expect(value.trim()).not.toBe("");
+    for (const [index, item] of pack.collections.entries()) {
+      expect(item.id).toBe(packs.en.collections[index].id);
+      expect(item.image).toBe(contentBaseline.collectionItems[index].image);
+      expect(item.fit).toBe(contentBaseline.collectionItems[index].fit);
+      for (const field of ["type", "title", "date", "place", "summary"]) expect(item[field].trim()).not.toBe("");
+    }
   }
-
-  test(`${route} keeps navigation and anchors local`, async ({ page, baseURL }) => {
-    await page.goto(`/${route}`);
-    const links = await page.locator(".primary-nav a").evaluateAll((elements) => elements.map((element) => element.getAttribute("href")));
-    expect(links).toEqual(["index.html#about", "collections.html", "exhibitions.html", "index.html#research", "index.html#contact"]);
-    for (const href of links) {
-      const response = await page.goto(new URL(href, baseURL).href);
-      if (response) expect(response.status()).toBe(200);
-      expect(new URL(page.url()).origin).toBe(baseURL);
-      const anchor = new URL(page.url()).hash;
-      if (anchor) await expect(page.locator(anchor)).toBeVisible();
+  for (const [language, originalLanguage] of [["en", "en"], ["zh-Hans", "zh"]]) {
+    const pack = packs[language];
+    for (const fact of historicalFacts.translations) {
+      for (const value of fact[originalLanguage]) expect(pack.strings[fact.key], fact.key).toContain(value);
     }
-    await page.locator(".brand").click();
-    await expect(page).toHaveURL(/#top$/);
-  });
-}
-
-for (const route of ["index.html", "collections.html"]) {
-  test(`${route} selects all eight collections in both languages`, async ({ page }) => {
-    await page.goto(`/${route}`);
-    const revisedDescriptions = await page.evaluate(() => collectionItems.map((item) => item.summary));
-    for (const language of ["zh", "en"]) {
-      if (language === "en") await page.locator("[data-language-toggle]").click();
-      for (let index = 0; index < 8; index += 1) {
-        const card = page.locator(".collection-card").nth(index);
-        const title = await card.locator("h3").innerText();
-        const image = await card.locator("img").getAttribute("src");
-        await card.click();
-        await expect(card).toHaveAttribute("aria-pressed", "true");
-        await expect(page.locator(".collection-card[aria-pressed=true]")).toHaveCount(1);
-        await expect(page.locator("[data-detail-title]")).toHaveText(title);
-        await expect(page.locator("[data-detail-image]")).toHaveAttribute("src", image);
-        await expect(page.locator("[data-detail-description]")).toHaveText(revisedDescriptions[index][language]);
-        await expect(page.locator("[data-detail-date]")).not.toBeEmpty();
-        await expect(page.locator("[data-detail-place]")).not.toBeEmpty();
+    for (const [index, fact] of historicalFacts.collections.entries()) {
+      for (const value of fact[originalLanguage]) expect(pack.collections[index].summary, `${language} collection ${index}`).toContain(value);
+      for (const field of ["type", "title", "date", "place"]) {
+        expect(pack.collections[index][field]).toBe(contentBaseline.collectionItems[index][field][originalLanguage]);
       }
     }
+  }
+});
+
+test("the dedicated pages retain all substantive museum content", async () => {
+  const usedKeys = new Set();
+  function visit(node) {
+    const key = node.attrs?.find((attribute) => attribute.name === "data-i18n")?.value;
+    if (key) usedKeys.add(key);
+    for (const child of node.childNodes || []) visit(child);
+  }
+  for (const route of pages) visit(parse(readFileSync(new URL(`../${route}`, import.meta.url), "utf8")));
+  const substantive = Object.keys(contentBaseline.translations.en).filter((key) => /body|summary|\.lede$|\.intro$|^gallery\.|^facts\.|^hero\.title$|^footer\.note$/u.test(key));
+  for (const key of substantive) expect(usedKeys.has(key), `The site must render ${key}`).toBe(true);
+});
+
+for (const route of pages) {
+  test(`${route} renders all eight languages without missing content`, async ({ page }, testInfo) => {
+    test.setTimeout(120_000);
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("response", (response) => {
+      if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`);
+    });
+    expect((await page.goto(`/${route}`)).status()).toBe(200);
+    await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+    for (const language of languages) {
+      await test.step(language, async () => {
+        await chooseLanguage(page, language);
+        const pack = packs[language];
+        const rendered = await page.locator("[data-i18n]").evaluateAll((elements) => elements.map((element) => ({ key: element.dataset.i18n, text: element.textContent })));
+        expect(rendered.length).toBeGreaterThan(8);
+        for (const element of rendered) expect(element.text, `${route} ${language} ${element.key}`).toBe(pack.strings[element.key]);
+        for (const [dataAttribute, attribute] of [["data-i18n-alt", "alt"], ["data-i18n-aria", "aria-label"]]) {
+          const values = await page.locator(`[${dataAttribute}]`).evaluateAll((elements, attributes) => elements.map((element) => ({ key: element.getAttribute(attributes[0]), value: element.getAttribute(attributes[1]) })), [dataAttribute, attribute]);
+          for (const value of values) expect(value.value).toBe(pack.strings[value.key]);
+        }
+        await expect(page.locator("[data-language-select]")).toHaveAttribute("aria-label", pack.strings["language.label"]);
+        await expect(page.locator(".primary-nav a")).toHaveCount(5);
+        await expect(page.locator("h1")).toBeVisible();
+        await expect(page.locator(".site-footer")).toContainText("MOFER");
+        if (route === "index.html") {
+          await expect(page.locator(".museum-paths")).toHaveAccessibleName(`${pack.strings["research.label"]} ${pack.strings["contact.label"]}`);
+        }
+        if (route === "collections.html") {
+          await expect(page.locator(".collection-card h3")).toHaveText(pack.collections.map((item) => item.title));
+          await expect(page.locator(".pathway-card")).toHaveCount(6);
+          await expect(page.locator("[data-detail-description]")).toHaveText(pack.collections[0].summary);
+        }
+        await page.waitForFunction(() => Array.from(document.images).every((image) => image.complete && image.naturalWidth > 0));
+        await page.evaluate(() => document.fonts.ready);
+        await page.locator("img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${route} ${language} overflow`).toBe(true);
+        if (["desktop", "mobile"].includes(testInfo.project.name) && ["en", "zh-Hans", "de"].includes(language)) {
+          await page.screenshot({ path: testInfo.outputPath(`${language}-viewport.png`), animations: "disabled" });
+          await page.screenshot({ path: testInfo.outputPath(`${language}-full.png`), fullPage: true, animations: "disabled" });
+        }
+        if (testInfo.project.name === "mobile") {
+          await page.setViewportSize({ width: 320, height: 740 });
+          expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${route} ${language} small-phone overflow`).toBe(true);
+          await page.setViewportSize({ width: 390, height: 844 });
+        }
+      });
+    }
+    expect(errors).toEqual([]);
   });
 }
 
-test("language retains the original reload behavior and keyboard control", async ({ page }) => {
+test("main navigation uses dedicated destinations consistently", async ({ page, request }) => {
+  for (const route of pages) {
+    await page.goto(`/${route}`);
+    expect(await page.locator(".primary-nav a").evaluateAll((links) => links.map((link) => link.getAttribute("href")))).toEqual(destinations);
+    if (route !== "index.html") await expect(page.locator('.primary-nav a[aria-current="page"]')).toHaveAttribute("href", route);
+  }
+  for (const route of pages) {
+    for (const path of [`/${route}`, route === "index.html" ? "/" : `/${route.replace(".html", "")}`]) {
+      const response = await request.get(path);
+      expect(response.status(), path).toBe(200);
+      expect(response.headers()["x-content-type-options"]).toBe("nosniff");
+    }
+  }
+  await page.goto("/");
+  for (const anchor of ["about", "collections", "exhibitions", "research", "contact"]) await expect(page.locator(`#${anchor}`)).toHaveCount(1);
+});
+
+test("language choices survive navigation, reload, and keyboard selection", async ({ page }) => {
   await page.goto("/collections.html");
-  const toggle = page.locator("[data-language-toggle]");
-  await toggle.focus();
-  await page.keyboard.press("Enter");
-  await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hans");
-  await toggle.click();
+  await chooseLanguage(page, "fr");
+  await expect(page.locator("[data-detail-title]")).toHaveText(packs.fr.collections[0].title);
   const menu = page.locator("[data-menu-toggle]");
   if (await menu.isVisible()) await menu.click();
-  await page.locator('.primary-nav a[href="exhibitions.html"]').click();
-  await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hans");
+  await page.locator('.primary-nav a[href="research.html"]').click();
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "fr");
+  await expect(page.locator("h1")).toHaveText(packs.fr.strings["page.research.title"]);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "fr");
+  await page.locator("[data-language-select]").focus();
+  await page.keyboard.press("Home");
+  await page.keyboard.press("Enter");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
 });
 
-test("hero video loops at quarter speed without playback controls", async ({ page }) => {
+test("a failed translation retains readable content and the prior selection", async ({ page }) => {
   await page.goto("/");
-  const video = page.locator("[data-hero-video]");
-  await expect(video).toHaveJSProperty("playbackRate", 0.25);
-  await expect(video).toHaveJSProperty("defaultPlaybackRate", 0.25);
-  await expect(video).toHaveJSProperty("muted", true);
-  await expect(video).toHaveJSProperty("loop", true);
-  await expect(video).toHaveJSProperty("controls", false);
-  await expect(page.locator("[data-motion-toggle]")).toHaveCount(0);
-  await page.waitForFunction(() => document.querySelector("video").currentTime > 0.1);
-  await video.evaluate((element) => { element.currentTime = element.duration - 0.2; });
-  await page.waitForFunction(() => document.querySelector("video").currentTime < 1);
-  await expect(video).toHaveJSProperty("paused", false);
-  await expect(video).toHaveJSProperty("playbackRate", 0.25);
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await page.route("**/assets/i18n/de.json", (route) => route.fulfill({ status: 503, body: "Unavailable" }));
+  await page.locator("[data-language-select]").selectOption("de");
+  await expect(page.locator("[data-language-status]")).toBeVisible();
+  await expect(page.locator("[data-language-select]")).toHaveValue("en");
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator(".hero__statement")).toHaveText(packs.en.strings["hero.title"]);
+  await chooseLanguage(page, "es");
+  await expect(page.locator("[data-language-status]")).not.toBeVisible();
 });
 
-test("blocked autoplay keeps hero text and actions fully visible", async ({ page }, testInfo) => {
-  await page.addInitScript(() => {
-    Object.defineProperty(HTMLMediaElement.prototype, "autoplay", {
-      configurable: true,
-      get() { return false; },
-      set() {}
-    });
-    HTMLMediaElement.prototype.play = function () {
-      return Promise.reject(new DOMException("Autoplay is blocked", "NotAllowedError"));
-    };
+test("an initial English load failure can be retried without reloading", async ({ page }) => {
+  let firstRequest = true;
+  await page.route("**/assets/i18n/en.json", async (route) => {
+    if (firstRequest) {
+      firstRequest = false;
+      await route.fulfill({ status: 503, body: "Unavailable" });
+    } else {
+      await route.continue();
+    }
   });
+  await page.goto("/collections.html");
+  const status = page.locator("[data-language-status]");
+  await expect(status).toBeVisible();
+  await expect(status.getByRole("button", { name: "Try again" })).toBeVisible();
+  await status.getByRole("button", { name: "Try again" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await expect(page.locator(".collection-card")).toHaveCount(8);
+  await expect(status).not.toBeVisible();
+});
+
+test("an open image viewer follows a pending language change", async ({ page }) => {
+  await page.goto("/collections.html");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  let releaseTranslation;
+  const translationGate = new Promise((resolve) => { releaseTranslation = resolve; });
+  await page.route("**/assets/i18n/fr.json", async (route) => {
+    await translationGate;
+    await route.continue();
+  });
+  await page.locator("[data-language-select]").selectOption("fr");
+  await page.locator("[data-collection-detail] [data-image-open]").click();
+  await expect(page.locator("[data-image-viewer]")).toBeVisible();
+  await page.locator("[data-viewer-zoom]").click();
+  const scrollPosition = await page.locator(".viewer-stage").evaluate((stage) => {
+    stage.scrollTo({ left: 80, top: 60, behavior: "instant" });
+    return { left: stage.scrollLeft, top: stage.scrollTop };
+  });
+  expect(scrollPosition.left + scrollPosition.top).toBeGreaterThan(0);
+  releaseTranslation();
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "fr");
+  await expect(page.locator("#viewer-caption")).toHaveText(packs.fr.collections[0].title);
+  await expect(page.locator("[data-viewer-image]")).toHaveAttribute("alt", packs.fr.collections[0].title);
+  await expect(page.locator("[data-image-viewer]")).toHaveClass(/is-zoomed/);
+  await expect(page.locator("[data-viewer-zoom]")).toHaveAttribute("aria-label", packs.fr.strings["viewer.zoomOut"]);
+  expect(await page.locator(".viewer-stage").evaluate((stage) => ({ left: stage.scrollLeft, top: stage.scrollTop }))).toEqual(scrollPosition);
+  await page.locator("[data-viewer-next]").click();
+  await expect(page.locator("#viewer-caption")).toHaveText(packs.fr.collections[1].title);
+  await expect(page.locator("[data-image-viewer]")).not.toHaveClass(/is-zoomed/);
+});
+
+test("an invalid saved language falls back to English", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("mofer-language", "../unavailable"));
   await page.goto("/");
-  await expect(page.locator("[data-hero-video]")).toHaveJSProperty("paused", true);
-  await expect(page.locator(".hero__content")).toHaveCSS("opacity", "1");
-  await expect(page.locator(".hero__actions a")).toHaveCount(2);
-  for (const action of await page.locator(".hero__actions a").all()) await expect(action).toBeVisible();
-  await expect(page.locator("[data-motion-toggle]")).toHaveCount(0);
-  await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: testInfo.outputPath("autoplay-fallback.png") });
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await expect(page.locator("[data-language-select]")).toHaveValue("en");
 });
 
-test("Cloudflare canonical routes, security headers, and true 404s work", async ({ request }) => {
-  for (const route of ["/", "/index.html", "/collections", "/collections.html", "/exhibitions", "/exhibitions.html"]) {
-    const response = await request.get(route);
-    expect(response.status()).toBe(200);
-    expect(response.headers()["x-content-type-options"]).toBe("nosniff");
-    expect(await response.text()).toContain("MOFER");
+test("all collection records and image captions follow every language", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/collections.html");
+  for (const language of languages) {
+    await chooseLanguage(page, language);
+    for (const [index, item] of packs[language].collections.entries()) {
+      const card = page.locator(".collection-card").nth(index);
+      await card.click();
+      await expect(card).toBeFocused();
+      await expect(card).toHaveAttribute("aria-pressed", "true");
+      await expect(page.locator('.collection-card[aria-pressed="true"]')).toHaveCount(1);
+      await expect(page.locator("[data-detail-title]")).toHaveText(item.title);
+      await expect(page.locator("[data-detail-description]")).toHaveText(item.summary);
+      await expect(page.locator("[data-detail-date]")).toHaveText(item.date);
+      await expect(page.locator("[data-detail-place]")).toHaveText(item.place);
+      await expect(page.locator("[data-detail-image]")).toHaveAttribute("alt", item.title);
+    }
+    await page.locator("[data-collection-detail] [data-image-open]").click();
+    await expect(page.locator("#viewer-caption")).toHaveText(packs[language].collections[7].title);
+    await expect(page.locator("[data-viewer-close]")).toHaveAttribute("aria-label", packs[language].strings["viewer.close"]);
+    await page.keyboard.press("Escape");
   }
-  for (const route of ["/not-a-museum-page", "/nested/missing", "/package.json", "/recovery/manifest.json"]) {
-    const response = await request.get(route);
-    expect(response.status()).toBe(404);
-    expect(await response.text()).toContain("Page not found");
-  }
 });
 
-test("contact and press links retain their original destinations", async ({ page }) => {
-  await page.goto("/exhibitions.html");
-  await expect(page.locator('a[href="mailto:communications@mofer.org"]')).toHaveCount(1);
-  await expect(page.locator('a[href="tel:+16477795286"]')).toHaveCount(1);
-  await expect(page.locator('a[href="https://www.worldchinesemedia.com/2025/09/09/13163/"]')).toHaveAttribute("target", "_blank");
-  await expect(page.locator('a[href="https://www.canadanewsreport.com/2025/09/09/16923/"]')).toHaveAttribute("rel", /noreferrer/);
-});
-
-test("museum navigation opens, closes with Escape, and follows an anchor", async ({ page }, testInfo) => {
+test("homepage collection links select the corresponding object", async ({ page }) => {
   await page.goto("/");
+  await page.locator('[data-collection-preview="7"]').click();
+  await expect(page.locator("[data-detail-title]")).toHaveText(packs.en.collections[7].title);
+  await expect(page.locator(".collection-card").last()).toHaveAttribute("aria-pressed", "true");
+});
+
+test("artifact viewer supports next, previous, zoom, Escape and focus return", async ({ page }) => {
+  await page.goto("/collections.html");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  const trigger = page.locator("[data-collection-detail] [data-image-open]");
+  await trigger.click();
+  const viewer = page.locator("[data-image-viewer]");
+  await expect(viewer).toBeVisible();
+  await viewer.locator("[data-viewer-next]").click();
+  await expect(viewer.locator("img")).toHaveAttribute("src", packs.en.collections[1].image);
+  await page.keyboard.press("ArrowLeft");
+  await expect(viewer.locator("img")).toHaveAttribute("src", packs.en.collections[0].image);
+  const initialWidth = (await viewer.locator("img").boundingBox()).width;
+  await viewer.locator("[data-viewer-zoom]").click();
+  expect((await viewer.locator("img").boundingBox()).width).toBeGreaterThan(initialWidth * 1.9);
+  await page.keyboard.press("Escape");
+  await expect(viewer).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+});
+
+test("museum navigation opens and closes predictably", async ({ page }, testInfo) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
   const menu = page.locator("[data-menu-toggle]");
   const navigation = page.locator(".primary-nav");
   if (["desktop", "wide"].includes(testInfo.project.name)) {
@@ -209,135 +299,132 @@ test("museum navigation opens, closes with Escape, and follows an anchor", async
     await expect(navigation).toBeVisible();
     return;
   }
-  await expect(menu).toBeVisible();
-  await expect(menu).toHaveAttribute("aria-expanded", "false");
   await expect(navigation).not.toBeVisible();
   await menu.click();
   await expect(navigation).toBeVisible();
-  await expect(menu).toHaveAttribute("aria-expanded", "true");
   await page.keyboard.press("Escape");
   await expect(navigation).not.toBeVisible();
   await expect(menu).toBeFocused();
   await menu.click();
-  await navigation.locator('[href="index.html#about"]').click();
-  await expect(page).toHaveURL(/#about$/);
-  await expect(menu).toHaveAttribute("aria-expanded", "false");
-  await expect(navigation).not.toBeVisible();
+  await navigation.locator('[href="about.html"]').click();
+  await expect(page).toHaveURL(/\/about(?:\.html)?$/u);
+  await expect(page.locator("[data-menu-toggle]")).toHaveAttribute("aria-expanded", "false");
 });
 
-test("hero actions stay unobscured in both languages", async ({ page }, testInfo) => {
+test("translated header stays separated at intermediate widths", async ({ page }) => {
   await page.goto("/");
-  for (const language of ["zh", "en"]) {
-    if (language === "en") await page.locator("[data-language-toggle]").click();
-    for (const action of await page.locator(".hero__actions a").all()) {
-      await action.scrollIntoViewIfNeeded();
-      expect(await action.evaluate((element) => {
-        const box = element.getBoundingClientRect();
-        return element.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
-      }), "Hero action is covered by another element").toBe(true);
+  for (const width of [961, 1024, 1025, 1120, 1200]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const language of ["ru", "es", "de", "fr"]) {
+      await chooseLanguage(page, language);
+      await page.evaluate(() => document.fonts.ready);
+      const menu = page.locator("[data-menu-toggle]");
+      if (await menu.isVisible()) {
+        await expect(page.locator(".primary-nav")).not.toBeVisible();
+        await menu.click();
+        await expect(page.locator(".primary-nav")).toBeVisible();
+        await page.keyboard.press("Escape");
+      } else {
+        const brand = await page.locator(".brand").boundingBox();
+        const firstLink = await page.locator(".primary-nav a").first().boundingBox();
+        const lastLink = await page.locator(".primary-nav a").last().boundingBox();
+        const controls = await page.locator(".header-actions").boundingBox();
+        expect(firstLink.x, `${language} at ${width}px`).toBeGreaterThanOrEqual(brand.x + brand.width + 8);
+        expect(lastLink.x + lastLink.width).toBeLessThanOrEqual(controls.x - 8);
+      }
     }
-    await expect(page.locator("[data-motion-toggle]")).toHaveCount(0);
-  }
-  if (testInfo.project.name === "mobile") {
-    await page.setViewportSize({ width: 320, height: 640 });
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-    await expect(page.locator(".intro h2")).toBeInViewport({ ratio: .1 });
   }
 });
 
-test("artifact image viewer supports navigation, Escape, and focus return", async ({ page }) => {
-  await page.goto("/collections.html");
-  const trigger = page.locator("[data-collection-detail] [data-image-open]");
-  await trigger.click();
-  const viewer = page.locator("[data-image-viewer]");
-  await expect(viewer).toBeVisible();
-  await expect(viewer.locator("img")).toHaveAttribute("src", "assets/collections/tim-louie-victory-address.jpg");
-  await viewer.locator("[data-viewer-next]").click();
-  await expect(viewer.locator("img")).toHaveAttribute("src", "assets/collections/china-army-seasoned-team.jpg");
-  await page.keyboard.press("ArrowLeft");
-  await expect(viewer.locator("img")).toHaveAttribute("src", "assets/collections/tim-louie-victory-address.jpg");
-  await page.keyboard.press("Escape");
-  await expect(viewer).not.toBeVisible();
-  await expect(trigger).toBeFocused();
+test("hero video loops at quarter speed without playback controls", async ({ page }) => {
+  await page.goto("/");
+  const video = page.locator("[data-hero-video]");
+  for (const [property, value] of [["playbackRate", .25], ["defaultPlaybackRate", .25], ["muted", true], ["loop", true], ["controls", false]]) await expect(video).toHaveJSProperty(property, value);
+  await expect(page.locator("[data-motion-toggle]")).toHaveCount(0);
+  await page.waitForFunction(() => document.querySelector("video").currentTime > .1);
+  await video.evaluate((element) => { element.currentTime = element.duration - .2; });
+  await page.waitForFunction(() => document.querySelector("video").currentTime < 1);
+  await expect(video).toHaveJSProperty("paused", false);
 });
 
-test("hero video stays visible and playing when reduced motion is enabled", async ({ page }) => {
+test("hero video stays visible and playing with reduced motion enabled", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   const video = page.locator("[data-hero-video]");
   await expect(video).toBeVisible();
-  await expect(video).toHaveJSProperty("autoplay", true);
-  await expect(video).toHaveJSProperty("playbackRate", 0.25);
-  await page.waitForFunction(() => document.querySelector("video").currentTime > 0.1);
+  await expect(video).toHaveJSProperty("playbackRate", .25);
+  await page.waitForFunction(() => document.querySelector("video").currentTime > .1);
   await expect(video).toHaveJSProperty("paused", false);
-  await expect(page.locator("[data-motion-toggle]")).toHaveCount(0);
   await expect(page.locator(".hero__content")).toHaveCSS("animation-name", "none");
   expect(await video.evaluate((element) => element.getVideoPlaybackQuality().totalVideoFrames)).toBeGreaterThan(0);
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(video).toBeVisible();
-  await expect(video).toHaveJSProperty("paused", false);
-  await expect(video).toHaveJSProperty("playbackRate", 0.25);
 });
 
-test("selected artifact is brought into view without losing the selected control", async ({ page }) => {
-  await page.goto("/collections.html");
-  const card = page.locator(".collection-card").last();
-  await card.click();
-  await expect(card).toBeFocused();
-  await expect(page.locator("[data-collection-detail]")).toBeInViewport({ ratio: .3 });
-  await expect(page.locator("[data-detail-title]")).toContainText("黄柳霜");
+test("blocked autoplay keeps hero content fully visible", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(HTMLMediaElement.prototype, "autoplay", { configurable: true, get() { return false; }, set() {} });
+    HTMLMediaElement.prototype.play = function () { return Promise.reject(new DOMException("Autoplay blocked", "NotAllowedError")); };
+  });
+  await page.goto("/");
+  await expect(page.locator("[data-hero-video]")).toHaveJSProperty("paused", true);
+  await expect(page.locator(".hero__content")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".hero__actions a")).toHaveCount(2);
 });
 
-test("Chinese editorial copy is readable before scripts run", async ({ page }) => {
+test("English fallback content remains readable without the script", async ({ page }) => {
   await page.route("**/script.js", (route) => route.abort());
-  for (const route of routes) {
+  for (const route of pages) {
     await page.goto(`/${route}`);
-    await expect(page.locator(".site-footer > p")).toHaveText("收藏、研究与分享远东的历史。");
-    if (route === "index.html") {
-      await expect(page.locator(".hero__statement")).toHaveText("保存远东记忆，让更多人了解这段历史。");
-      await expect(page.locator("#about-title")).toHaveText("关于 MOFER");
-    }
-    if (route !== "exhibitions.html") {
-      await expect(page.locator("#collections-title")).toHaveText("馆藏精选");
-    }
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator(".site-footer > p")).toHaveText(packs.en.strings["footer.note"]);
+    await expect(page.locator(".primary-nav a")).toHaveText(["About", "Collections", "Exhibitions", "Research", "Contact"]);
   }
 });
 
-test("archive surfaces have readable base colors without decorative dividers", async ({ page }) => {
+test("missing nested pages retain localized content and true 404 responses", async ({ page, request }) => {
+  expect((await page.goto("/nested/not-a-page")).status()).toBe(404);
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  for (const language of languages) {
+    await chooseLanguage(page, language);
+    await expect(page.locator("h1")).toHaveText(packs[language].strings["error.title"]);
+  }
+  for (const route of ["/package.json", "/recovery/manifest.json", "/docs/not-public"]) expect((await request.get(route)).status()).toBe(404);
+});
+
+test("contact destinations remain intact and no upcoming event is invented", async ({ page }) => {
+  await page.goto("/contact.html");
+  await expect(page.locator('a[href="mailto:communications@mofer.org"]')).toHaveCount(1);
+  await expect(page.locator('a[href="tel:+16477795286"]')).toHaveCount(1);
+  await expect(page.locator('a[href="https://www.worldchinesemedia.com/2025/09/09/13163/"]')).toHaveAttribute("target", "_blank");
+  await expect(page.locator('a[href="https://www.canadanewsreport.com/2025/09/09/16923/"]')).toHaveAttribute("rel", /noreferrer/);
+  await page.goto("/exhibitions.html");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await expect(page.locator("[data-i18n='exhibition.summary']")).toContainText("2025");
+  await expect(page.locator("[data-upcoming], .upcoming-exhibition")).toHaveCount(0);
+});
+
+test("facts stay compact, images use their frames, and text has sufficient contrast", async ({ page }) => {
   await page.goto("/");
-  const presentation = await page.evaluate(() => {
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await expect(page.locator(".intro__facts strong")).toHaveCount(0);
+  await expect(page.locator(".intro .museum-notes > div")).toHaveCount(3);
+  await expect(page.locator(".intro .museum-notes")).toContainText("100");
+  const contrast = await page.evaluate(() => {
     function luminance(color) {
       const channels = color.match(/[\d.]+/gu).slice(0, 3).map(Number).map((channel) => {
         const value = channel / 255;
-        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+        return value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4;
       });
-      return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+      return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
     }
-    const pairs = [
-      [".intro__summary", "body"],
-      [".about__grid p", "body"],
-      [".section__statement", "body"],
-      [".collection-detail__body > p:not(.section-label)", ".collection-detail"],
-      [".gallery-grid figcaption", ".exhibition"],
-      [".hero .button--primary", ".hero .button--primary"]
-    ];
-    return {
-      contrast: pairs.map(([textSelector, surfaceSelector]) => {
-        const foreground = luminance(getComputedStyle(document.querySelector(textSelector)).color);
-        const background = luminance(getComputedStyle(document.querySelector(surfaceSelector)).backgroundColor);
-        return { textSelector, ratio: (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05) };
-      }),
-      dividers: Array.from(document.querySelectorAll(".site-header, .intro, .section, .work-grid article, .hero__footer")).map((element) => {
-        const style = getComputedStyle(element);
-        return [style.borderTopWidth, style.borderBottomWidth, style.borderLeftWidth, style.borderRightWidth].map(parseFloat);
-      }),
-      texture: getComputedStyle(document.body).backgroundImage,
-      canvasLuminance: luminance(getComputedStyle(document.body).backgroundColor)
-    };
+    return [[".intro__summary", "body"], [".museum-notes dd", "body"], [".hero .button--primary", ".hero .button--primary"]].map(([text, background]) => {
+      const foreground = luminance(getComputedStyle(document.querySelector(text)).color);
+      const surface = luminance(getComputedStyle(document.querySelector(background)).backgroundColor);
+      return (Math.max(foreground, surface) + .05) / (Math.min(foreground, surface) + .05);
+    });
   });
-  for (const sample of presentation.contrast) expect(sample.ratio, sample.textSelector).toBeGreaterThanOrEqual(4.5);
-  for (const widths of presentation.dividers) expect(widths).toEqual([0, 0, 0, 0]);
-  expect(presentation.texture).toContain("archive-paper.png");
-  expect(presentation.canvasLuminance).toBeLessThan(0.2);
+  for (const ratio of contrast) expect(ratio).toBeGreaterThanOrEqual(4.5);
+  await page.goto("/collections.html");
+  await expect(page.locator(".collection-card")).toHaveCount(8);
+  const images = await page.locator(".collection-card img, [data-detail-image]").evaluateAll((elements) => elements.map((image) => ({ fit: getComputedStyle(image).objectFit, padding: parseFloat(getComputedStyle(image).paddingTop) })));
+  for (const image of images) { expect(image.fit).toBe("contain"); expect(image.padding).toBeLessThanOrEqual(8); }
 });

@@ -18,30 +18,31 @@ Working assumption for the September 18 redesign: general visitors exploring the
 
 ## Capabilities and Constraints
 
-- Preserve the substantive Chinese and English content, eight featured collection records, six collection themes, exhibition facts and captions, research activities, contact details, and external press links.
-- Preserve the three public routes and existing section anchors.
+- Preserve the substantive museum content, eight featured collection records, six collection themes, exhibition facts and captions, research activities, contact details, and external press links across all supported languages.
+- Keep the original routes and legacy homepage anchors working. All main navigation items now lead to dedicated About, Collections, Exhibitions, Research & Education, and Contact pages.
 - Use the original recovered photography and video, not invented or generated historical evidence.
 - Improve visual design, navigation, responsive behavior, and accessibility without adding a backend, fabricated exhibits, visitor hours, ticketing, donations, or a new collection database.
 - Keep the static HTML/CSS/JavaScript stack and Cloudflare Workers Static Assets deployment. Build: `npm run build`. Deploy: `npx wrangler deploy`.
-- Existing Chinese-first language behavior is the starting point. Both languages must remain complete and readable.
+- English is the default for a fresh visit. Provide English, 简体中文, Français, 繁體中文, 日本語, Русский, Deutsch, and Español, retaining an explicitly selected language across pages and reloads.
+- Upcoming exhibitions and poster/marketing presentation are planning-only until the owner supplies approved content. Do not add placeholders, fabricated events, dates, or promotional images.
 
 ## Brand Commitments
 
 Preserve MOFER's name and its identity as the Museum of Far East Remembrance. Reference sites inform hierarchy and image presentation, not branding or content to copy: https://loewentheilcollection.com/, https://www.rom.on.ca/, https://ago.ca/, and https://www.moma.org/.
 
-The user's latest direction rejects white surfaces and decorative dividing lines. Use an atmospheric color scheme related to the historical film, visible but restrained background texture, and efficient spacing. The film should play continuously at one quarter of normal speed without an on-page start/stop button. Reduced-motion settings must not hide or pause this requested film; they still disable decorative interface animation. A still fallback remains for browsers that block autoplay.
+The user's latest direction retains the paper texture and muted purple exhibition area but replaces green with a porcelain-blue palette. Avoid white canvases, decorative dividing lines, and oversized standalone statistics. Use readable contextual facts, aligned text groups, and images that make good use of their frames without cropping historical documents. The film should play continuously at one quarter of normal speed without an on-page start/stop button. Reduced-motion settings must not hide or pause this requested film; they still disable decorative interface animation. A still fallback remains for browsers that block autoplay.
 
-The user explicitly requests humanizing the entire bilingual site. Shorter, more natural wording is authorized; historical names, dates, counts, places, exhibition themes, collection identity, and the substance of the information must survive. Original prose is reference evidence, not wording that must remain verbatim.
+The user requests natural, concise language and high-quality translations, while focusing this revision on text placement rather than changing content. Historical names, dates, counts, places, exhibition themes, collection identity, and substantive meaning must survive. Original prose is reference evidence, not wording that must remain verbatim. Source ambiguities are recorded in `docs/translation-review.md` for owner confirmation.
 
 ## Evidence on Hand
 
-- Three public-page source files and the bilingual dictionaries and collection records in `script.js`.
+- Six public pages and a localized not-found page, with eight local language packs in `assets/i18n/` and shared interactions in `script.js`.
 - Original collection photography in `assets/collections/` and `assets/collections/extended/`.
 - Original Boynton House exhibition photography in `assets/exhibitions/`.
 - Original video and poster in `assets/video/`.
 - Recovery provenance in `recovery/manifest.json` and restoration baseline in Git history.
 - Original-copy and collection-metadata fixtures, plus independently recorded historical details for the editorial pass.
-- Playwright tests for bilingual rendering, facts, navigation, collection selection, slow video, responsive widths, and Workers routing.
+- Playwright tests for all eight languages, source facts, dedicated navigation, saved language choice, translation-load failures, collection selection, slow video, responsive widths, and Workers routing.
 
 ## Product Principles
 
@@ -52,4 +53,4 @@ The user explicitly requests humanizing the entire bilingual site. Shorter, more
 
 ## Accessibility and Inclusion
 
-Maintain bilingual access, readable text, visible keyboard focus, reduced-motion support, labelled controls, and layouts without text or control overlap. These are implementation quality requirements, not claims of an independent accessibility certification.
+Maintain multilingual access, readable text, visible keyboard focus, reduced-motion support for decorative UI, labelled controls, and layouts without text or control overlap. These are implementation quality requirements, not claims of an independent accessibility certification.

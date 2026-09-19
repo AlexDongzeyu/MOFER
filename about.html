@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="About MOFER, an independent Canadian museum initiative preserving the modern history of the Far East.">
+    <title>About MOFER | MOFER</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="about">
+    <a class="skip-link" href="#top" data-i18n="nav.skip">Skip to content</a>
+    <header class="site-header" data-header>
+      <a class="brand" href="index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">
+        <span class="brand__mark">MOFER</span>
+        <span class="brand__name" data-i18n="museum.name">Museum of Far East Remembrance</span>
+      </a>
+      <nav class="primary-nav" id="primary-navigation" aria-label="Main navigation" data-i18n-aria="nav.primary">
+        <a href="about.html" aria-current="page" data-i18n="nav.about">About</a>
+        <a href="collections.html" data-i18n="nav.collections">Collections</a>
+        <a href="exhibitions.html" data-i18n="nav.exhibitions">Exhibitions</a>
+        <a href="research.html" data-i18n="nav.research">Research</a>
+        <a href="contact.html" data-i18n="nav.contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <label class="language-control">
+          <span class="icon icon--languages" aria-hidden="true"></span>
+          <select data-language-select aria-label="Choose language">
+            <option value="en">English</option><option value="zh-Hans">简体中文</option>
+            <option value="fr">Français</option><option value="zh-Hant">繁體中文</option>
+            <option value="ja">日本語</option><option value="ru">Русский</option>
+            <option value="de">Deutsch</option><option value="es">Español</option>
+          </select>
+        </label>
+        <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu"><span class="icon icon--menu" aria-hidden="true"></span></button>
+      </div>
+      <p class="language-status" data-language-status role="status" hidden></p>
+    </header>
+    <main id="top" tabindex="-1">
+      <section class="page-hero" aria-labelledby="page-title">
+        <div class="page-hero__copy">
+          <h1 id="page-title" data-i18n="page.about.title">About MOFER</h1>
+          <p data-i18n="about.title">We care for collections, research and translate them, and share what we learn.</p>
+        </div>
+        <div class="page-hero__media"><img src="assets/exhibitions/boynton-visitors-window.jpeg" alt="Visitors viewing archival exhibits at Boynton House." data-i18n-alt="alt.exhibitionWindow"></div>
+      </section>
+      <section class="about section" id="about" aria-labelledby="about-title">
+        <div class="section__heading">
+          <h2 id="about-title" data-i18n="intro.label">A collection made public</h2>
+          <p class="section__statement" data-i18n="intro.title">Our pop-up and partner exhibitions, digital archives, and research bring scattered histories of the Far East into public view.</p>
+        </div>
+        <div class="about__grid">
+          <p data-i18n="about.bodyOne">MOFER is an independent museum initiative in Canada. We collect, preserve, study, and exhibit original archives and cultural objects from the modern Far East.</p>
+          <p data-i18n="about.bodyTwo">Far East history shaped the twentieth century, yet many of its stories receive little attention internationally. Our archives, exhibitions, and academic partnerships help people understand that history across cultures.</p>
+          <p data-i18n="about.bodyThree">Our holdings include original photographs, documents, books, periodicals, posters, maps, and unpublished manuscripts. We present them through travelling exhibitions and institutional partnerships.</p>
+        </div>
+      </section>
+      <section class="museum-record section" aria-labelledby="record-title">
+        <h2 id="record-title" data-i18n="facts.label">Museum notes</h2>
+        <dl class="museum-notes">
+          <div><dt data-i18n="facts.objects.label">Our first exhibition</dt><dd data-i18n="facts.objects">More than 100 original documents, photographs, and objects shown in our first exhibition in 2025.</dd></div>
+          <div><dt data-i18n="facts.period.label">The collection</dt><dd data-i18n="facts.period">Collection dates from the 1860s onward</dd></div>
+          <div><dt data-i18n="facts.base.label">Where we work</dt><dd data-i18n="facts.base">A Canadian base for cross-cultural research and education</dd></div>
+        </dl>
+        <div class="section-links"><a class="button button--primary" href="collections.html" data-i18n="links.collections">Explore the collection</a><a class="button button--secondary" href="research.html" data-i18n="links.research">Research &amp; education</a></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div><a class="footer-wordmark" href="index.html#top" data-i18n-aria="nav.homeLabel" aria-label="MOFER home">MOFER</a><p data-i18n="museum.name">Museum of Far East Remembrance</p></div>
+      <p data-i18n="footer.note">Preserving, studying, and sharing the history of the Far East.</p>
+      <a class="back-to-top" href="#top" data-i18n="nav.top">Back to top</a>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>

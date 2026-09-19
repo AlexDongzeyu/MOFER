@@ -4,7 +4,7 @@ import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
 const output = path.join(root, "dist");
-const entries = ["index.html", "collections.html", "exhibitions.html", "404.html", "styles.css", "script.js", "assets", "_headers"];
+const entries = ["index.html", "about.html", "collections.html", "exhibitions.html", "research.html", "contact.html", "404.html", "styles.css", "script.js", "assets", "_headers"];
 
 for (const entry of entries) {
   await stat(path.join(root, entry));

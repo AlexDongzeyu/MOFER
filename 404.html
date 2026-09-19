@@ -7,21 +7,32 @@
     <title>Page not found | MOFER</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="MOFER home">
+  <body data-page="not-found">
+    <a class="skip-link" href="#top" data-i18n="nav.skip">Skip to content</a>
+    <header class="site-header" data-header>
+      <a class="brand" href="/index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">
         <span class="brand__mark">MOFER</span>
-        <span class="brand__name">Museum of Far East Remembrance</span>
+        <span class="brand__name" data-i18n="museum.name">Museum of Far East Remembrance</span>
       </a>
+      <nav class="primary-nav" id="primary-navigation" aria-label="Main navigation" data-i18n-aria="nav.primary">
+        <a href="/about.html" data-i18n="nav.about">About</a><a href="/collections.html" data-i18n="nav.collections">Collections</a><a href="/exhibitions.html" data-i18n="nav.exhibitions">Exhibitions</a><a href="/research.html" data-i18n="nav.research">Research</a><a href="/contact.html" data-i18n="nav.contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <label class="language-control"><span class="icon icon--languages" aria-hidden="true"></span><select data-language-select aria-label="Choose language">
+          <option value="en">English</option><option value="zh-Hans">简体中文</option><option value="fr">Français</option><option value="zh-Hant">繁體中文</option><option value="ja">日本語</option><option value="ru">Русский</option><option value="de">Deutsch</option><option value="es">Español</option>
+        </select></label>
+        <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu"><span class="icon icon--menu" aria-hidden="true"></span></button>
+      </div>
+      <p class="language-status" data-language-status role="status" hidden></p>
     </header>
-    <main>
-      <section class="page-hero">
+    <main id="top" tabindex="-1">
+      <section class="page-hero" aria-labelledby="page-title">
         <div class="page-hero__copy">
-          <h1>Page not found</h1>
-          <p>This page could not be found.</p>
+          <h1 id="page-title" data-i18n="error.title">Page not found</h1>
+          <p data-i18n="error.body">We could not find this page.</p>
           <div class="hero__actions">
-            <a class="button button--primary" href="/">Return to MOFER</a>
-            <a class="button button--secondary" href="/collections.html">Collections</a>
+            <a class="button button--primary" href="/" data-i18n="error.home">Return to MOFER</a>
+            <a class="button button--secondary" href="/collections.html" data-i18n="nav.collections">Collections</a>
           </div>
         </div>
         <div class="page-hero__media">
@@ -29,5 +40,10 @@
         </div>
       </section>
     </main>
+    <footer class="site-footer">
+      <div><a class="footer-wordmark" href="/index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">MOFER</a><p data-i18n="museum.name">Museum of Far East Remembrance</p></div>
+      <p data-i18n="footer.note">Preserving, studying, and sharing the history of the Far East.</p><a class="back-to-top" href="#top" data-i18n="nav.top">Back to top</a>
+    </footer>
+    <script src="/script.js"></script>
   </body>
 </html>
