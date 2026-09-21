@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { cp, mkdir, readdir, rm, stat } from "node:fs/promises";
 import path from "node:path";
+import { prepareFonts } from "./prepare-fonts.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const output = path.join(root, "dist");
@@ -12,8 +13,12 @@ for (const entry of entries) {
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 for (const entry of entries) {
-  await cp(path.join(root, entry), path.join(output, entry), { recursive: true });
+  await cp(path.join(root, entry), path.join(output, entry), {
+    recursive: true,
+    filter: (source) => source !== path.join(root, "assets/fonts")
+  });
 }
+await prepareFonts(output);
 
 let fileCount = 0;
 let totalBytes = 0;

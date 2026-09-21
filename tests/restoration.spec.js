@@ -41,6 +41,127 @@ test("English-first visits offer all eight native-language choices", async ({ pa
   await expect(page.locator("[data-language-select] option")).toHaveText(languageNames);
 });
 
+test("script-specific typography loads locally for every museum language", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/about.html");
+  const regionalFonts = {
+    "zh-Hans": ["Noto Serif SC Variable", "Noto Sans SC Variable"],
+    "zh-Hant": ["Noto Serif TC Variable", "Noto Sans TC Variable"],
+    ja: ["Noto Serif JP Variable", "Noto Sans JP Variable"]
+  };
+  for (const language of languages) {
+    await chooseLanguage(page, language);
+    const [display, body] = regionalFonts[language] || ["Source Serif 4 Variable", "Source Sans 3 Variable"];
+    const typography = await page.evaluate(async ({ display, body }) => {
+      const heading = document.querySelector("h1");
+      const prose = document.querySelector(".about__grid p");
+      const headingFaces = await document.fonts.load(`500 32px "${display}"`, heading.textContent);
+      const bodyFaces = await document.fonts.load(`400 16px "${body}"`, prose.textContent);
+      return {
+        heading: getComputedStyle(heading).fontFamily,
+        body: getComputedStyle(prose).fontFamily,
+        headingLoaded: headingFaces.some((face) => face.status === "loaded"),
+        bodyLoaded: bodyFaces.some((face) => face.status === "loaded"),
+        proseSize: parseFloat(getComputedStyle(prose).fontSize),
+        wordmark: getComputedStyle(document.querySelector(".brand__mark")).fontFamily
+      };
+    }, { display, body });
+    expect(typography.heading, language).toContain(display);
+    expect(typography.body, language).toContain(body);
+    expect(typography.headingLoaded, `${language} display font`).toBe(true);
+    expect(typography.bodyLoaded, `${language} reading font`).toBe(true);
+    expect(typography.proseSize, `${language} prose size`).toBeGreaterThanOrEqual(16);
+    expect(typography.wordmark).toContain("Bodoni Moda Variable");
+  }
+});
+
+test("open gallery presentation retains the palette and uncropped objects", async ({ page }) => {
+  await page.goto("/collections.html");
+  await expect(page.locator(".collection-card")).toHaveCount(8);
+  const palette = await page.evaluate(() => {
+    const style = getComputedStyle(document.documentElement);
+    return Object.fromEntries(["paper", "white", "ink", "muted", "cobalt", "mineral", "accent", "wine", "deep"].map((name) => [name, style.getPropertyValue(`--${name}`).trim()]));
+  });
+  expect(palette).toEqual({ paper: "#152436", white: "#f0eee8", ink: "#e8edf1", muted: "#b6c5d4", cobalt: "#30496a", mineral: "#21374e", accent: "#bdd4e7", wine: "#3d2d34", deep: "#0f1b2a" });
+  for (const selector of [".collection-detail", ".collection-detail > .image-open", ".collection-card img", ".pathway-card > .image-open"]) {
+    await expect(page.locator(selector).first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  }
+  for (const selector of ["[data-detail-image]", ".collection-card img", ".pathway-card img"]) {
+    await expect(page.locator(selector).first()).toHaveCSS("object-fit", "contain");
+  }
+  await page.goto("/");
+  await expect(page.locator(".preview-object__image").first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+});
+
+test("primary collection and contact content are visible on arrival", async ({ page }) => {
+  test.setTimeout(120_000);
+  for (const route of ["collections.html", "contact.html"]) {
+    await page.goto(`/${route}`);
+    for (const language of languages) {
+      await chooseLanguage(page, language);
+      await page.evaluate(() => document.fonts.ready);
+      if (route === "collections.html") {
+        await expect(page.locator("[data-detail-image]"), language).toBeInViewport({ ratio: .7 });
+      } else {
+        await expect(page.locator('a[href="mailto:communications@mofer.org"]'), language).toBeInViewport();
+      }
+    }
+  }
+});
+
+test("artifact captions and expansion controls stay with the visible image", async ({ page }) => {
+  for (const route of ["index.html", "collections.html"]) {
+    await page.goto(`/${route}`);
+    await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+    const selector = route === "index.html" ? ".preview-object img" : "[data-detail-image], .pathway-card img";
+    await page.locator(selector).evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
+    const images = await page.locator(selector).evaluateAll((elements) => elements.map((image) => {
+      const bounds = image.getBoundingClientRect();
+      const opener = image.closest(".image-open");
+      const control = opener?.querySelector(".image-open__symbol")?.getBoundingClientRect();
+      const caption = image.closest(".preview-object")?.querySelector("h3")?.getBoundingClientRect();
+      return {
+        source: image.getAttribute("src"),
+        ratio: bounds.width / bounds.height,
+        naturalRatio: image.naturalWidth / image.naturalHeight,
+        controlInside: !control || (control.left >= bounds.left && control.right <= bounds.right && control.top >= bounds.top && control.bottom <= bounds.bottom),
+        captionGap: caption ? caption.top - bounds.bottom : null
+      };
+    }));
+    for (const image of images) {
+      expect(Math.abs(image.ratio - image.naturalRatio), image.source).toBeLessThan(.01);
+      expect(image.controlInside, image.source).toBe(true);
+      if (image.captionGap !== null) expect(image.captionGap, image.source).toBeLessThanOrEqual(28);
+    }
+  }
+});
+
+test("editorial pages remain usable with doubled text size", async ({ page }) => {
+  test.setTimeout(120_000);
+  for (const route of ["index.html", "collections.html", "contact.html"]) {
+    await page.goto(`/${route}`);
+    await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+    for (const language of ["en", "de", "zh-Hant", "ja", "ru"]) {
+      await chooseLanguage(page, language);
+      await page.evaluate(() => document.fonts.ready);
+      const layout = await page.evaluate(() => {
+        const brand = document.createRange();
+        brand.selectNodeContents(document.querySelector(".brand"));
+        const navigation = document.querySelector(".primary-nav");
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          brandRight: brand.getBoundingClientRect().right,
+          actionsLeft: document.querySelector(".header-actions").getBoundingClientRect().left,
+          navigationLeft: getComputedStyle(navigation).display === "none" ? null : navigation.querySelector("a").getBoundingClientRect().left
+        };
+      });
+      expect(layout.overflow, `${route} ${language} enlarged text`).toBe(false);
+      expect(layout.brandRight, `${route} ${language} masthead`).toBeLessThanOrEqual(layout.actionsLeft - 4);
+      if (layout.navigationLeft !== null) expect(layout.navigationLeft).toBeGreaterThanOrEqual(layout.brandRight + 8);
+    }
+  }
+});
+
 test("language files preserve collection identity and source historical facts", async () => {
   const keys = Object.keys(packs.en.strings).sort();
   for (const language of languages) {
@@ -120,7 +241,7 @@ for (const route of pages) {
         await page.locator("img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${route} ${language} overflow`).toBe(true);
-        if (["desktop", "mobile"].includes(testInfo.project.name) && ["en", "zh-Hans", "de"].includes(language)) {
+        if (["desktop", "mobile"].includes(testInfo.project.name) && ["en", "zh-Hans", "zh-Hant", "ja", "ru", "de"].includes(language)) {
           await page.screenshot({ path: testInfo.outputPath(`${language}-viewport.png`), animations: "disabled" });
           await page.screenshot({ path: testInfo.outputPath(`${language}-full.png`), fullPage: true, animations: "disabled" });
         }
@@ -406,9 +527,7 @@ test("facts stay compact, images use their frames, and text has sufficient contr
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
   await expect(page.locator(".intro__facts strong")).toHaveCount(0);
-  await expect(page.locator(".intro .museum-notes > div")).toHaveCount(3);
-  await expect(page.locator(".intro .museum-notes")).toContainText("100");
-  const contrast = await page.evaluate(() => {
+  const measureContrast = (pairs) => {
     function luminance(color) {
       const channels = color.match(/[\d.]+/gu).slice(0, 3).map(Number).map((channel) => {
         const value = channel / 255;
@@ -416,13 +535,20 @@ test("facts stay compact, images use their frames, and text has sufficient contr
       });
       return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
     }
-    return [[".intro__summary", "body"], [".museum-notes dd", "body"], [".hero .button--primary", ".hero .button--primary"]].map(([text, background]) => {
+    return pairs.map(([text, background]) => {
       const foreground = luminance(getComputedStyle(document.querySelector(text)).color);
       const surface = luminance(getComputedStyle(document.querySelector(background)).backgroundColor);
       return (Math.max(foreground, surface) + .05) / (Math.min(foreground, surface) + .05);
     });
-  });
+  };
+  const contrast = await page.evaluate(measureContrast, [[".intro__summary", "body"], [".hero .button--primary", ".hero .button--primary"]]);
   for (const ratio of contrast) expect(ratio).toBeGreaterThanOrEqual(4.5);
+  await page.goto("/about.html");
+  await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+  await expect(page.locator(".museum-record .museum-notes > div")).toHaveCount(3);
+  await expect(page.locator(".museum-record .museum-notes")).toContainText("100");
+  const notesContrast = await page.evaluate(measureContrast, [[".museum-notes dd", "body"]]);
+  expect(notesContrast[0]).toBeGreaterThanOrEqual(4.5);
   await page.goto("/collections.html");
   await expect(page.locator(".collection-card")).toHaveCount(8);
   const images = await page.locator(".collection-card img, [data-detail-image]").evaluateAll((elements) => elements.map((image) => ({ fit: getComputedStyle(image).objectFit, padding: parseFloat(getComputedStyle(image).paddingTop) })));

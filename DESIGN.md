@@ -1,6 +1,6 @@
 ---
 name: MOFER
-description: A porcelain-blue, textured multilingual museum built around original historical material.
+description: A porcelain-blue moving archive with script-specific typography and open editorial galleries.
 colors:
   paper: "#152436"
   white: "#f0eee8"
@@ -12,53 +12,59 @@ colors:
   wine: "#3d2d34"
   deep: "#0f1b2a"
 typography:
-  display:
-    fontFamily: '"Bodoni Moda Variable", "Noto Serif SC Variable", serif'
-    fontSize: "5rem"
+  identity:
+    fontFamily: '"Bodoni Moda Variable", serif'
+    fontSize: "38px"
     fontWeight: 500
-    lineHeight: 1.12
+    lineHeight: 1
+    letterSpacing: "0"
+  display:
+    fontFamily: '"Source Serif 4 Variable", "Noto Serif SC Variable", serif'
+    fontSize: "4.25rem"
+    fontWeight: 500
+    lineHeight: 1.2
     letterSpacing: "0"
   headline:
-    fontFamily: '"Bodoni Moda Variable", "Noto Serif SC Variable", serif'
-    fontSize: "2.6rem"
+    fontFamily: '"Source Serif 4 Variable", "Noto Serif SC Variable", serif'
+    fontSize: "2.5rem"
     fontWeight: 500
-    lineHeight: 1.25
+    lineHeight: 1.2
     letterSpacing: "0"
   title:
-    fontFamily: '"Hanken Grotesk Variable", "Microsoft YaHei", sans-serif'
-    fontSize: "1.35rem"
+    fontFamily: '"Source Sans 3 Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", sans-serif'
+    fontSize: "1.25rem"
     fontWeight: 500
-    lineHeight: 1.4
+    lineHeight: 1.45
     letterSpacing: "0"
   body:
-    fontFamily: '"Hanken Grotesk Variable", "Microsoft YaHei", sans-serif'
-    fontSize: "1rem"
+    fontFamily: '"Source Sans 3 Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", sans-serif'
+    fontSize: "1.0625rem"
     fontWeight: 400
-    lineHeight: 1.7
+    lineHeight: 1.75
     letterSpacing: "0"
   label:
-    fontFamily: '"Hanken Grotesk Variable", "Microsoft YaHei", sans-serif'
-    fontSize: ".78rem"
-    fontWeight: 600
+    fontFamily: '"Source Sans 3 Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", sans-serif'
+    fontSize: ".875rem"
+    fontWeight: 500
     lineHeight: 1.5
     letterSpacing: "0"
   control:
-    fontFamily: '"Hanken Grotesk Variable", "Microsoft YaHei", sans-serif'
+    fontFamily: '"Source Sans 3 Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", sans-serif'
     fontSize: ".9rem"
     fontWeight: 600
     lineHeight: 1.45
     letterSpacing: "0"
   navigation:
-    fontFamily: '"Hanken Grotesk Variable", "Microsoft YaHei", sans-serif'
+    fontFamily: '"Source Sans 3 Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", sans-serif'
     fontSize: ".875rem"
     fontWeight: 500
-    lineHeight: 1.7
+    lineHeight: 1.75
     letterSpacing: "0"
   collection-title:
-    fontFamily: '"Hanken Grotesk Variable", "Microsoft YaHei", sans-serif'
-    fontSize: ".96rem"
+    fontFamily: '"Source Sans 3 Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", sans-serif'
+    fontSize: "1rem"
     fontWeight: 500
-    lineHeight: 1.55
+    lineHeight: 1.5
     letterSpacing: "0"
 rounded:
   square: "0"
@@ -73,10 +79,14 @@ spacing:
   "30": "30px"
   "36": "36px"
   "40": "40px"
+  "44": "44px"
   "48": "48px"
-  "52": "52px"
   "56": "56px"
   "64": "64px"
+  "72": "72px"
+  "88": "88px"
+  "96": "96px"
+  "104": "104px"
   gutter: "48px"
 components:
   button-primary:
@@ -95,6 +105,11 @@ components:
     padding: "12px 21px"
   button-secondary-hover:
     backgroundColor: "{colors.cobalt}"
+  text-link:
+    backgroundColor: "transparent"
+    textColor: "{colors.accent}"
+  text-link-hover:
+    textColor: "{colors.white}"
   icon-button:
     backgroundColor: "{colors.mineral}"
     textColor: "inherit"
@@ -126,7 +141,7 @@ components:
     textColor: "{colors.ink}"
     rounded: "{rounded.square}"
   collection-detail:
-    backgroundColor: "{colors.mineral}"
+    backgroundColor: "transparent"
     textColor: "{colors.ink}"
     rounded: "{rounded.square}"
   museum-notes:
@@ -151,18 +166,22 @@ components:
 
 **Creative North Star: "Moving Archive"**
 
-MOFER's original photographs, documents and film lead a quiet, dark museum site. Muted China/porcelain-blue surfaces and pale-blue actions frame the material; the existing muted purple exhibition field and real paper grain remain. The interface gives images more room without cropping historical objects.
+MOFER's original photographs, documents and film lead a quiet editorial museum. The established porcelain-blue palette, pale-blue actions, muted purple exhibition field and real paper grain remain. Intact objects sit directly in open layouts, with deliberate whitespace instead of repeated colored mats or enclosing panels.
 
-Display serifs, compact sans-serif controls and aligned text groups support an English-default, eight-language museum. Titles lead, full contextual copy follows, and small factual notes replace oversized statistics. ROM, AGO and MoMA inform hierarchy and image presentation, with less visual flourish than AGO. Open layouts and tonal fields separate content without white canvases or decorative dividing lines.
+Locale-specific serif headings and sans-serif reading text give eight languages a shared, legible hierarchy. Names lead, full historical context follows, and small factual notes remain in context. The MOFER wordmark over the original film anchors the identity; artifacts and their stories guide visitors through the museum.
 
 **Key Characteristics:**
-- Porcelain-blue fields, pale-blue actions and retained muted purple exhibitions.
-- Real paper grain around larger, contained and untextured historical images.
-- Title-first text groups and compact contextual notes, with visible keyboard focus.
-- Six dedicated pages with an English default and eight persistent language choices.
-- Original quarter-speed ambient film, with reduced motion for decorative UI.
+- Unchanged porcelain-blue fields, pale-blue actions and muted purple exhibitions.
+- Original paper grain around contained, untextured historical images.
+- Script-specific reading typography, title-first context and deliberate whitespace.
+- Six dedicated pages with English fallback and eight persistent language choices.
+- Original quarter-speed film; reduced motion removes decorative UI movement.
 
-The frontmatter records reusable tokens from [styles.css](styles.css); component-specific values and responsive exceptions stay with their roles below. Current HTML and [script.js](script.js) outrank planning language. [PRODUCT.md](PRODUCT.md) and the [approved revision plan](docs/superpowers/plans/2026-09-19-porcelain-blue-multilingual.md) supply the authorized constraints. [.impeccable/design.json](.impeccable/design.json) adds metadata and component previews. Its generated tonal ramps are swatch aids, not additional site colors.
+This authorized refresh records the local September 20 implementation, not a new identity or a publication. The original seed (`f90512f9`) remains in [index.html](index.html). Published commit `7cfd293` is the previous version; this revision has no push or deployment authority.
+
+The frontmatter records reusable desktop/default-language tokens from [styles.css](styles.css); locale mappings and responsive exceptions follow below. Current source outranks intentions in the [editorial typography plan](docs/superpowers/plans/2026-09-20-editorial-typography.md). [PRODUCT.md](PRODUCT.md) retains product constraints. [.impeccable/design.json](.impeccable/design.json) extends the tokens with metadata and component previews; its preserved tonal ramps are swatch aids, not additional site colors.
+
+[ROM](https://www.rom.on.ca/), [AGO](https://ago.ca/), [Smithsonian American History](https://americanhistory.si.edu/) and [Canadian Museum of History](https://www.historymuseum.ca/) inform hierarchy, image scale and readable context, not borrowed branding, fonts or assets. Available reference evidence is limited to the successful DOM, font and content observations documented in [README.md](README.md); blocked, loading or failed-video captures are not visual evidence.
 
 ## Colors
 
@@ -170,7 +189,7 @@ Cool, readable lettering and pale-blue actions sit against muted porcelain blue,
 
 ### Primary
 - **Pale Porcelain Blue** (`accent`): primary actions, selected titles, navigation feedback, factual labels, text selection and keyboard focus.
-- **Muted Cobalt** (`cobalt`): secondary-action and icon-button hover backing, plus hovered and selected collection-image mats.
+- **Muted Cobalt** (`cobalt`): icon-button and retained filled-secondary-action hover backing, not image mats.
 
 ### Secondary
 - **Muted Exhibition Purple** (`wine`): the retained full-width exhibition field. Its existing token name and value are unchanged.
@@ -180,56 +199,90 @@ Cool, readable lettering and pale-blue actions sit against muted porcelain blue,
 - **Warm White** (`white`): lettering over film and dark bands, the wordmark and secondary actions; never a white canvas.
 - **Reading White** (`ink`): primary body text.
 - **Blue Gray** (`muted`): supporting prose and metadata.
-- **Mineral Blue** (`mineral`): object displays, thumbnail mats, navigation states and native-select hover backing.
+- **Mineral Blue** (`mineral`): navigation states, icon controls, language status and native-select hover backing; no longer an object-display surround.
 - **Deep Porcelain Blue** (`deep`): masthead, footer, viewer stage, native select and opaque image-control backing.
 
 **The Quiet Accent Rule.** Pale blue marks actions, selection and keyboard focus against dark surfaces; it does not recolor the historical media.
 
-Image mats, exhibition captions and media overlays retain their component-specific colors. Hero gradients support text legibility over contextual media, not object inspection.
+All nine palette primitives are unchanged. Exhibition captions and media overlays retain component-specific colors. Hero gradients support text legibility over contextual media, not object inspection; removing a mat does not change the palette.
 
 ## Typography
 
-Bodoni Moda supplies Latin display lettering, with Noto Serif SC for Chinese headings. Hanken Grotesk handles Latin body text and controls; Chinese body text falls back to Microsoft YaHei and platform sans-serif. Other scripts use available glyphs in these stacks and platform fallbacks; local imports do not establish complete local coverage for Cyrillic, Japanese or every supported script. There is no language-driven font switch. The three variable families are imported locally through [styles.css](styles.css); font files and their accompanying licenses are unchanged.
+**Display Font:** Source Serif 4 for Latin and Cyrillic; regional Noto Serif families for Chinese and Japanese.
+**Body Font:** Source Sans 3 for Latin and Cyrillic; regional Noto Sans families for Chinese and Japanese, also used for controls and metadata.
+**Identity Font:** Bodoni Moda, only for MOFER identity lettering.
+
+| Document Language | Heading Family | Reading and Control Family |
+| --- | --- | --- |
+| `en`, `fr`, `de`, `es`, `ru` | Source Serif 4 Variable | Source Sans 3 Variable |
+| `zh-Hans` | Noto Serif SC Variable | Noto Sans SC Variable |
+| `zh-Hant` | Noto Serif TC Variable | Noto Sans TC Variable |
+| `ja` | Noto Serif JP Variable | Noto Sans JP Variable |
+
+The root language selects the roles. The default heading stack ends with Noto Serif SC and generic serif; the default body stack includes Noto Sans SC, Noto Sans JP and generic sans-serif. Regional Noto stacks fall back to the corresponding Source family and then the generic family. Source includes Cyrillic subsets; SC, TC and JP preserve the intended regional glyph forms instead of sharing one Chinese face.
+
+The pairing is editorial rather than ornamental: serifs establish subjects; sans-serif prose, captions and controls carry reading and action. No display face is assigned to ordinary body copy.
 
 ### Hierarchy
-- **Display:** shared page titles, reducing to (3.4rem) on phones. The homepage MOFER wordmark uses a separate identity scale (6rem, then 5rem, 4rem and 3.5rem at the narrower breakpoints).
-- **Headline:** the shared section-heading baseline changes to (2.65rem) at widths up to (960px) and (2.35rem) up to (640px). Exhibition, introduction and Contact headings have local overrides, not separate global scales.
-- **Title:** the sans-serif `h3` baseline. Featured-object titles instead use the display family at (1.75rem), then (1.5rem) on tablets and (1.65rem) in the single-column phone layout. Research, pathway and exhibition titles follow their own component roles.
-- **Body:** the inherited reading baseline. Editorial components adjust leading, usually within (1.7 to 1.9); supporting statements, About prose and homepage pathways use limits such as (60ch), (68ch) and (48ch).
-- **Label:** factual metadata below headings, with natural case and zero tracking.
-- **Control / Navigation:** sans-serif action and route labels; actions carry the heavier weight.
-- **Collection Title:** compact thumbnail titles, reducing to (.89rem) on phones. Home preview titles are larger than selector labels, without adopting the display scale.
 
-The root is (16px). Type steps at explicit breakpoints rather than scaling with viewport width; letter spacing stays zero. Headings balance and wrap, while prose uses pretty wrapping.
+| Role | Above 960px | 641px to 960px | Up to 640px |
+| --- | --- | --- | --- |
+| Shared page title | 4.25rem | 3.75rem | 3rem |
+| Shared section heading | 2.5rem | 2.25rem | 2rem |
+| Main reading copy | 1.0625rem | 1.0625rem | 1rem |
+| Shared metadata size | .875rem | .875rem | .875rem |
+
+The frontmatter is the default role baseline, not a promise that every element uses one size or leading. Latin/Cyrillic reading copy uses (1.75) leading and a (64ch) measure. Chinese and Japanese use (1.95), (32em), strict line breaking and heading leading (1.45), versus (1.2) for default headings. Heading weights are generally (500); research item titles use (600). The root remains (16px), while main prose sizes are assigned by component.
+
+- **Content titles:** the shared sans-serif third-level heading is (1.25rem / 1.45). The selected-object serif title is (2rem), becoming (1.75rem) at (960px); collection-theme titles are (1.5rem). Exhibition section headings retain their own (3.125rem / 2.8rem / 2.25rem) steps.
+- **Reading exceptions:** compact-intro ledes and the Home introduction use (1.125rem) on desktop. On phones they become (1rem) and (1.0625rem), respectively. Home pathway copy uses a (48ch) limit. Hero statements, metadata and control labels have local leading, not the universal reading leading.
+- **Metadata:** normal-case labels remain below titles. Metadata size does not imply a uniform weight or line-height; definition labels, exhibition captions and thumbnail types retain their own roles.
+- **Controls:** button text is (.9rem), then (.83rem) on phones. Navigation is (.875rem), (.8rem) at (1200px), and (1.1rem) in the expanded compact menu. The native select is (.8rem), then (.75rem). These are control exceptions, not a smaller prose baseline.
+- **Collection titles:** thumbnail text is (1rem), then (.9375rem) on phones; Home preview titles stay (1.125rem). Full titles wrap rather than being truncated.
+
+Ordinary text uses `rem` so text enlargement remains useful. Large identity marks deliberately use fixed pixel sizes: masthead (38 / 34 / 32px), Home wordmark (96 / 80 / 64 / 56px), and footer (72 / 64px), at their existing breakpoints. The Home museum-name subtitle still uses `rem`; the small viewer wordmark is also an exception at (1.8rem / 1.4rem). Preserve the graphic identity without freezing readable copy at 200% text size.
+
+Type changes only at explicit breakpoints; no font size depends on viewport width. Tracking is zero. Headings balance, prose wraps naturally, and German prose/headings allow automatic hyphenation. Long thumbnail metadata also allows hyphenation and anywhere wrapping.
+
+**The Script Before Style Rule.** Use the locale's Source or regional Noto pair for readable text; reserve Bodoni for MOFER identity lettering.
 
 **The Title First Rule.** Give headings and object names priority; place classification and exhibition status below them.
 
 **The Context Before Count Rule.** Keep quantities, dates and location facts inside compact labelled notes, not oversized standalone statistics.
 
-This revision records text allocation, not a new English story: retain full-copy summaries and substantive meaning while giving titles, paragraphs and metadata distinct positions. Preserve names, dates, counts, places, themes and collection identity in every language. [tests/fixtures/content.json](tests/fixtures/content.json) provides original-copy reference evidence, while [tests/fixtures/facts.json](tests/fixtures/facts.json) records independently protected facts. Native-language and curatorial approval questions belong in [docs/translation-review.md](docs/translation-review.md), not in public theme or interface copy; this design record does not certify that approval.
+### Local Font Delivery
+
+[scripts/prepare-fonts.mjs](scripts/prepare-fonts.mjs) copies the nine pinned Fontsource (5.3.0) families into `dist/assets/fonts/` during [scripts/build.mjs](scripts/build.mjs). Each family receives its package stylesheet, license and all supplied `-wght-normal.woff2` files. Normal variable faces, Fontsource `unicode-range` subsets and `font-display: swap` are retained; this is not custom character subsetting. No runtime font CDN is involved.
+
+Committed source font assets remain legacy references and are explicitly excluded from the build copy. Hanken's remaining development dependency is not a public type role or a generated family. Family routing and checked runtime samples do not certify every Unicode character, fallback environment or native translation. Historical and linguistic approval questions remain in [docs/translation-review.md](docs/translation-review.md).
 
 ## Layout
 
-The shared frame has a maximum width of (1320px), with two responsive side gutters. Full-width exhibition and footer bands align their content to that frame. Sections are open layouts or tonal fields, not floating cards.
+The shared content frame has a maximum width of (1320px), with two responsive side gutters. Full-width exhibition and footer bands align their content to that frame. Sections are open layouts or tonal fields, not floating cards. Larger breaks separate subjects; images, captions and related prose stay close enough to read together.
 
 | Viewport Width | Side Gutter | Masthead Minimum | Section Block Padding |
 | --- | --- | --- | --- |
-| Above 1200px | 48px | 84px | 64px |
-| 961px to 1200px | 36px | 84px | 64px |
-| 641px to 960px | 30px | 82px | 52px |
-| 361px to 640px | 22px | 74px | 40px |
-| Up to 360px | 18px | 74px | 40px |
+| Above 1200px | 48px | 5.25rem | 88px |
+| 961px to 1200px | 36px | 5.25rem | 88px |
+| 641px to 960px | 30px | 5.125rem | 64px |
+| 361px to 640px | 22px | 4.625rem | 56px |
+| Up to 360px | 18px | 4.625rem | 56px |
 
-Keep controls and metadata compact, with enough separation to scan images and their descriptions. The spacing entries capture recurring values, not a strict mathematical grid. The same masthead, footer, section frame and page-hero treatment connect Home, About, Collections, Exhibitions, Research and Contact; the homepage previews lead into dedicated pages rather than substituting for them.
+These are shared defaults, not universal element dimensions. Compact introductions use (72px 40px), (56px 32px), then (40px 24px) block padding; the next section starts with (24px) top padding. Header heights are minima in `rem`, not fixed pixel boxes.
 
-- Featured objects use an image/detail split (1.45fr / .85fr), equal columns on tablets, then one on phones. The detail sits above the thumbnail grid.
-- Collection selectors use four columns, then two on phones. Pathways use three, two and one across desktop, tablet and phone layouts.
-- Home collection previews use three image-led links, then one column on phones. Each link includes an item query that selects the corresponding record on Collections.
-- Exhibition photographs use four columns, then two from (960px), with contextual photographs in (4 / 3) frames. Research entries use two columns, then one on phones.
-- Museum notes use a definition list: label and full contextual text, not a number display. The homepage pairs this list with introductory prose; About uses a three-column record row. Tablet notes form three columns and phone notes return to stacked rows with label/value tracks.
-- Flexible tracks use `minmax(0, ...)` where content must shrink and wrap. The phone Contact layout specifically uses `minmax(0, 1fr)`, a (2rem) section heading and a shrinkable details column; long contact links wrap anywhere. This local long-language fix is not a global type-scaling rule.
+- Home's introduction pairs its headline on the left with prose on the right (0.8fr / 1.2fr; 104px gap), stacking at (960px). The duplicate three-fact block and four small hero topic labels no longer appear on Home; contextual museum notes remain on About.
+- Home collection highlights are three open images in varied columns (1.15fr / .75fr / 1.15fr; 56px gap), then one column on phones. Images keep their natural proportions within maximum heights of (350 / 260 / 320px). Captions follow the visible image rather than an invisible fixed-height stage.
+- Collections uses a compact introduction and count lede instead of an image banner and repeated headings. The large selected object and unframed reading column sit above the thumbnails: (1.5fr / .85fr), then (1.2fr / 1fr) at (960px), then one column on phones. Images keep their natural proportions within maximum heights of (520 / 420 / 360px). Featured-object and theme inspection triggers fit the image bounds so expansion controls remain on the artwork.
+- Collection selectors use four columns and two on phones. Collection themes use two columns on desktop/tablet and one on phones. Exhibition photographs likewise use two columns and one on phones, retaining contextual (4 / 3) crops.
+- About and Exhibitions retain photographic openings. Research and Contact use compact introductions; Research keeps a descriptive heading, all four existing activities in a two-column grid, and its collaboration photograph. Activity entries stack on phones.
+- Contact places email, telephone and press links first, in the left desktop column. Collaboration copy and the original photograph follow on the right. At (640px), the single-column order keeps contact methods first; its photograph retains its original proportions.
+- About's three contextual notes use a three-column record row and stack on phones. Labels sit above complete facts, not beside giant numerals. The homepage's research/contact routes use two open columns, then one on phones.
 
-The sticky masthead's anchor offset is its height plus (24px). Short-phone hero adjustments apply below (640px) wide and (740px) high without shrinking the whole page.
+The spacing entries represent recurring values, not a strict mathematical grid. Shrinkable grid tracks and children prevent intrinsic widths from forcing long translations off-screen; metadata and contact links wrap. Preserve these constraints when enlarging text. The navigation breakpoint (1024px) is separate from content-grid changes (960px).
+
+The sticky masthead's anchor offset uses the header token plus (24px). Short-phone hero adjustments apply up to (640px) wide and (740px) high without shrinking the whole page. First-view tasks and the limited verification evidence are recorded in [README.md](README.md), not promoted into a universal hero requirement.
+
+**The Open Gallery Rule.** Give intact objects and their context space; do not restore colored thumbnail mats or an enclosing collection-detail panel.
 
 ## Elevation & Depth
 
@@ -237,7 +290,7 @@ There are no box shadows. Dark tonal fields, spacing and fine raster grain provi
 
 [assets/textures/archive-paper.png](assets/textures/archive-paper.png) comes from a blank margin of [assets/collections/pearl-buck-letter.jpg](assets/collections/pearl-buck-letter.jpg). [scripts/prepare-texture.mjs](scripts/prepare-texture.mjs) removes uneven local illumination, limits contrast and mirrors the crop into a repeating raster tile. CSS blends it with `soft-light` on the body, masthead, exhibition field and footer. It is derived paper grain, not an AI-generated historical artifact; the original letter image is unchanged.
 
-The texture asset and its preparation are retained, not regenerated for the palette change.
+The texture asset and its preparation are retained, not regenerated for this typography and layout refinement.
 
 **The Flat Gallery Rule.** Use tonal fields, subtle paper grain and spacing for depth; keep texture off original object photographs and avoid imitation bevels.
 
@@ -245,7 +298,7 @@ The texture asset and its preparation are retained, not regenerated for the pale
 
 Media frames, icon controls and the native dialog are square; text-action buttons have a slight radius (2px). Components have no decorative borders or horizontal rules. Keyboard focus retains its pale-blue outline (3px) with an offset (5px).
 
-Historical objects, documents and posters use containment. Image padding is small and component-specific: selectors use (4px), previews and pathways (5px), and featured objects (8px), reducing to (5px) on phones. Larger images come from the frame allocation and thinner mats, never destructive cropping. Contextual hero and exhibition photographs use cover; the inspection viewer always contains the full original image.
+Historical objects, documents and posters use containment without added mat padding or backing. Preview, thumbnail and theme surrounds are transparent; the collection detail no longer has a filled enclosing panel. Any mount or border inside an original scan remains part of that image. Contextual hero and exhibition photographs use cover; the inspection viewer always contains the full original image. A framed modal inspection tool remains appropriate even though editorial content is unframed.
 
 The image-expansion affordance is a warm-white Lucide icon (20px) on an opaque deep-blue square (36px). Generic icon buttons are (46px), reducing to (42px) on phones.
 
@@ -253,31 +306,31 @@ The image-expansion affordance is a warm-white Lucide icon (20px) on an opaque d
 
 ### Buttons
 
-Primary actions use pale blue with deep-blue text, including over the film; hover lightens the blue. Secondary actions use warm-white text on translucent dark-blue backing, with muted-cobalt hover and no underline. Both have a directional arrow that moves (2px, -2px) over (180ms ease).
+Primary actions use pale blue with deep-blue text, including over the film; hover lightens the blue. Their directional arrow moves (2px, -2px) over (180ms ease). Home's secondary route is now an unfilled text link, warm white over the film, not a second filled button. The existing filled-secondary CSS variant remains defined with translucent dark-blue backing and muted-cobalt hover; it is not the default for supporting routes.
 
-Minimum height is (50px). On phones, both variants use (46px) minimum height, (.83rem) text and (11px 16px) padding. Icon buttons use mineral-blue backing, muted-cobalt hover over (160ms ease) and disabled opacity (.3). Viewer and menu icons retain accessible names and native title tooltips. Supporting text links use pale blue, warm-white hover and the same directional icon without a filled button surface.
+Button minimum height is (50px); phones use (46px), (.83rem) text and (11px 16px) padding. Text links use (44px) minimum height, (.9rem / 1.5) text, pale blue and warm-white hover outside the hero. Icon buttons use mineral-blue backing, muted-cobalt hover over (160ms ease) and disabled opacity (.3). Viewer and menu controls retain accessible names and native title tooltips.
 
 ### Navigation And Language
 
 The masthead is dark and textured. Route hover, focus and `aria-current="page"` use pale-blue text on mineral-blue backing; the current route also uses bold text. There are no underline indicators. The MOFER wordmark leads Home; the five navigation links lead directly to [about.html](about.html), [collections.html](collections.html), [exhibitions.html](exhibitions.html), [research.html](research.html) and [contact.html](contact.html). Legacy homepage anchors remain available, but are not substitutes for these page destinations.
 
-At widths up to (1024px), a labelled toggle opens a full-width dark menu so long translated labels do not overlap the wordmark. Content-grid changes remain at (960px). Link activation, an outside click, Escape or returning to desktop closes it; Escape returns focus to the toggle. Without JavaScript, route links remain visible.
+Desktop route links can wrap as text enlarges; the header grows beyond its minimum instead of clipping them. At widths up to (1024px), a labelled toggle opens a full-width dark menu. Content-grid changes remain at (960px). Link activation, an outside click, Escape or returning to desktop closes it; Escape returns focus to the toggle. Without JavaScript, route links remain visible. Phones hide the small brand descriptor, not the MOFER wordmark or readable page title.
 
-The language control is a native select with eight autonyms, no flags and no two-state toggle: English (`en`), 简体中文 (`zh-Hans`), Français (`fr`), 繁體中文 (`zh-Hant`), 日本語 (`ja`), Русский (`ru`), Deutsch (`de`) and Español (`es`). It uses reading-white text on deep blue, mineral-blue hover, a (44px) minimum height and a (132px) maximum width. On phones its maximum width is (103px) and the adjacent language icon is hidden. Native option rendering remains platform-controlled.
+The language control is a native select with eight autonyms, no flags and no two-state toggle: English (`en`), 简体中文 (`zh-Hans`), Français (`fr`), 繁體中文 (`zh-Hant`), 日本語 (`ja`), Русский (`ru`), Deutsch (`de`) and Español (`es`). It uses reading-white text on deep blue, mineral-blue hover, a (44px) minimum height and a (132px) maximum width, including phones. Phones hide the adjacent language icon. Native option rendering remains platform-controlled.
 
 All six pages start with English HTML fallback. The script loads English first, then restores a supported explicit choice from `localStorage` under `mofer-language`; an unavailable storage API leaves the control usable without persistence. Locale packs provide shared strings and eight collection records. Switching updates document language and title, metadata, page copy, image descriptions, accessible control names and collection content. The select is temporarily disabled during loading; a failed switch retains the current content and exposes a status message with a localized retry button. An initial English-load failure can also be retried without reloading.
 
 ### Home Preview And Museum Notes
 
-Each home preview is a real link with a contained original image, the complete object title and smaller type metadata. Its image frame is (280px), becomes (205px) on tablets, then returns to (280px) in the single-column phone layout. Hover changes the title to pale blue; keyboard focus remains visible. These are individual image-led items, not nested section cards.
+Each Home preview is a real item-query link with a contained original image, complete title and smaller type metadata. The transparent frame and varied grid give images room without card chrome. Hover changes the title to pale blue; keyboard focus remains visible.
 
-Museum notes use a semantic definition list. Labels are restrained pale-blue sans-serif text; supporting facts are muted and readable. The first-exhibition quantity, collection period and Canadian base remain in their complete context. There is no giant-number or statistic-card component.
+Museum notes remain on About as a semantic definition list. Labels are restrained pale-blue sans-serif text; supporting facts are muted and readable. The first-exhibition quantity, collection period and Canadian base retain their complete context. Removing their duplicate Home presentation does not remove the facts or locale-pack entries. There is no giant-number or statistic-card component.
 
 ### Collection Selector And Detail
 
-Each native thumbnail button shows a contained image, its title, then type metadata. Hover and selection change the image mat to muted cobalt; selection adds a pale-blue title and checkmark alongside `aria-pressed`. No line carries the selected state.
+Each native thumbnail button shows a contained image, title and type metadata. Hover changes image opacity to (.85); selection uses a pale-blue title, checkmark and `aria-pressed`, not a colored mat or dividing line. Images are (210px) high by default, (155px) up to (1200px), (165px) up to (960px), and (125px) up to (360px). The phone title uses the smaller collection-title role without shrinking its metadata below the shared size.
 
-Selection updates the live detail region and scrolls it into view, instantly under reduced motion. Language switching preserves the selected record and focused thumbnail. The mineral-blue detail field presents the title, type, full summary, date and place without nested cards; summaries are not repeated visibly in thumbnails. The featured image is (440px) high, then (360px) on tablets and (295px) on phones, with containment throughout.
+Selection updates the live detail region and scrolls it into view, instantly under reduced motion. Language switching preserves the selected record and focused thumbnail. The unframed reading column presents the title, type, full summary, date and place; summaries are not repeated visibly in thumbnails. Preserve the selected title as an `h2`, its `data-detail-title` hook and its section-label association. Full descriptions and locale JSON are not shortened to create whitespace.
 
 ### Image Inspection
 
@@ -293,24 +346,26 @@ Reduced-motion CSS removes decorative animation and transitions and makes scroll
 
 ### Fields And Other Patterns
 
-The native language select is the implemented input control; there are no text-entry forms, search fields, filter chips or ticketing controls. The sidecar contains nine self-contained previews using original imagery, scoped CSS and inline Lucide paths. They record appearance and CSS states, not the runtime language, menu, collection-selection or dialog logic.
+The native language select is the implemented input control; there are no text-entry forms, search fields, filter chips or ticketing controls. The sidecar contains ten self-contained previews using original imagery, scoped CSS and inline Lucide paths. They record appearance and CSS states, not runtime language, menu, collection-selection or dialog logic. Font delivery, identity provenance and responsive metadata extend the frontmatter without adding new palette primitives.
 
-Upcoming-exhibition and poster presentation remains brainstorming only in the [revision plan](docs/superpowers/plans/2026-09-19-porcelain-blue-multilingual.md). No proposed poster layout, promotion, event, placeholder or generated imagery is part of this recorded system.
+Upcoming-exhibition and poster presentation remains brainstorming only in the [earlier revision plan](docs/superpowers/plans/2026-09-19-porcelain-blue-multilingual.md). No proposed poster layout, promotion, event, placeholder or generated imagery is part of this recorded system.
 
 ## Do's and Don'ts
 
 ### Do:
 - Do keep original object images fully visible and free of texture overlays.
 - Do place names and headings before type and status metadata.
-- Do use compact responsive spacing and let all eight languages wrap naturally.
+- Do use deliberate responsive whitespace and let all eight languages wrap naturally.
+- Do use the locale-specific font pair and enlarge readable text independently of graphic identity marks.
 - Do retain full contextual facts and original meaning while improving text allocation.
 - Do keep the native language select and explicit preference persistence across dedicated pages.
 - Do retain visible focus, labelled controls, dialog focus return and motion-preference fallbacks.
-- Do use the existing local fonts, Lucide icons and historical media.
+- Do use build-generated local fonts, existing Lucide icons and original historical media.
 
 ### Don't:
 - Don't add white canvases, decorative dividing lines or above-title kickers.
 - Don't turn sections into floating cards or add bevels, offset shadows or pill controls.
+- Don't restore colored image mats or an enclosing collection-detail panel.
 - Don't replace contextual museum notes with giant standalone numbers or crop documents to fill frames.
 - Don't add visible film playback controls or promise autoplay when the browser blocks it.
 - Don't hide or pause the requested film for reduced motion; remove decorative UI animation instead.
@@ -318,3 +373,4 @@ Upcoming-exhibition and poster presentation remains brainstorming only in the [r
 - Don't publish upcoming-exhibition placeholders or treat a future poster proposal as a shipped pattern.
 - Don't use wordmark-sized type in compact controls or scale fonts with viewport width.
 - Don't replace Lucide icons with glyphs or treat sidecar tonal ramps as site colors.
+- Don't treat legacy source fonts, borrowed museum branding or failed reference captures as current design authority.
