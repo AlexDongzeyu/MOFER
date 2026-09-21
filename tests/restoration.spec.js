@@ -14,7 +14,11 @@ const test = base.extend({
   localOnly: [async ({ context, baseURL }, use) => {
     const externalRequests = [];
     await context.route("**/*", async (route) => {
-      if (new URL(route.request().url()).origin !== new URL(baseURL).origin) {
+      const url = new URL(route.request().url());
+      const approvedMap = url.origin === "https://www.google.com" && url.pathname === "/maps" && url.searchParams.get("output") === "embed" && route.request().isNavigationRequest() && route.request().frame().parentFrame();
+      if (approvedMap) {
+        await route.fulfill({ contentType: "text/html", body: "<!doctype html><html><head><title>Google Maps test document</title></head><body></body></html>" });
+      } else if (url.origin !== new URL(baseURL).origin) {
         externalRequests.push(route.request().url());
         await route.abort();
       } else {
@@ -22,7 +26,7 @@ const test = base.extend({
       }
     });
     await use();
-    expect(externalRequests, "The museum must not depend on external services").toEqual([]);
+    expect(externalRequests, "Only the requested Google Maps embed may use an external service").toEqual([]);
   }, { auto: true }]
 });
 
@@ -41,6 +45,58 @@ test("English-first visits offer all eight native-language choices", async ({ pa
   await expect(page.locator("[data-language-select] option")).toHaveText(languageNames);
 });
 
+test("Boynton House maps sit below the exhibition links in every language", async ({ page }) => {
+  test.setTimeout(120_000);
+  const mapLanguages = { en: "en", "zh-Hans": "zh-CN", fr: "fr", "zh-Hant": "zh-TW", ja: "ja", ru: "ru", de: "de", es: "es" };
+  const place = "Boynton House, 1300 Elgin Mills Road East, Richmond Hill, Ontario, Canada";
+  for (const route of ["index.html", "exhibitions.html"]) {
+    await page.goto(`/${route}`);
+    const map = page.locator("[data-venue-map]");
+    await expect(map).toHaveCount(1);
+    await expect(map).toHaveAttribute("loading", "lazy");
+    await expect(map).toHaveAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    await expect(map).toHaveCSS("color-scheme", "light");
+    for (const language of languages) {
+      await chooseLanguage(page, language);
+      await expect(map).toHaveAttribute("title", packs[language].strings["venue.mapTitle"]);
+      await expect(page.locator("[data-i18n='venue.caption']")).toHaveText(packs[language].strings["venue.caption"]);
+      const source = new URL(await map.getAttribute("src"));
+      expect(source.origin).toBe("https://www.google.com");
+      expect(source.pathname).toBe("/maps");
+      expect(source.searchParams.get("cid")).toBe("522738823898078509");
+      expect(source.searchParams.get("output")).toBe("embed");
+      expect(source.searchParams.get("hl")).toBe(mapLanguages[language]);
+      const link = page.locator("[data-i18n='venue.openMap']");
+      await expect(link).toHaveText(packs[language].strings["venue.openMap"]);
+      const destination = new URL(await link.getAttribute("href"));
+      expect(destination.searchParams.get("query")).toBe(place);
+      await expect(link).toHaveAttribute("rel", /noopener/);
+    }
+    const placement = await page.locator(".venue-map").evaluate((element) => {
+      const parent = element.parentElement;
+      const preceding = parent.querySelector(".press-links") || parent.querySelector(".text-link");
+      const bounds = element.getBoundingClientRect();
+      const frame = element.querySelector("iframe").getBoundingClientRect();
+      return { afterLinks: bounds.top >= preceding.getBoundingClientRect().bottom, fits: bounds.width <= parent.getBoundingClientRect().width, height: frame.height };
+    });
+    expect(placement.afterLinks).toBe(true);
+    expect(placement.fits).toBe(true);
+    expect(placement.height).toBeGreaterThanOrEqual(200);
+    expect(placement.height).toBeLessThanOrEqual(280);
+  }
+});
+
+test("venue address and external map link remain usable if Google is unavailable", async ({ page }) => {
+  await page.route("https://www.google.com/maps?**", (route) => route.abort());
+  await page.goto("/exhibitions.html");
+  const map = page.locator("[data-venue-map]");
+  await expect(map).toHaveCount(1);
+  await map.scrollIntoViewIfNeeded();
+  await expect(page.locator(".venue-map")).toContainText("1300 Elgin Mills Road East");
+  await expect(page.locator("[data-i18n='venue.openMap']")).toBeVisible();
+  await expect(page.locator("[data-i18n='exhibition.summary']")).toContainText("2025");
+});
+
 test("script-specific typography loads locally for every museum language", async ({ page }) => {
   test.setTimeout(120_000);
   await page.goto("/about.html");
@@ -56,10 +112,13 @@ test("script-specific typography loads locally for every museum language", async
       const heading = document.querySelector("h1");
       const prose = document.querySelector(".about__grid p");
       const headingFaces = await document.fonts.load(`500 32px "${display}"`, heading.textContent);
+      const proseFaces = await document.fonts.load(`400 18px "${display}"`, prose.textContent);
       const bodyFaces = await document.fonts.load(`400 16px "${body}"`, prose.textContent);
       return {
         heading: getComputedStyle(heading).fontFamily,
-        body: getComputedStyle(prose).fontFamily,
+        body: getComputedStyle(document.body).fontFamily,
+        prose: getComputedStyle(prose).fontFamily,
+        proseLoaded: proseFaces.some((face) => face.status === "loaded"),
         headingLoaded: headingFaces.some((face) => face.status === "loaded"),
         bodyLoaded: bodyFaces.some((face) => face.status === "loaded"),
         proseSize: parseFloat(getComputedStyle(prose).fontSize),
@@ -68,14 +127,16 @@ test("script-specific typography loads locally for every museum language", async
     }, { display, body });
     expect(typography.heading, language).toContain(display);
     expect(typography.body, language).toContain(body);
+    expect(typography.prose, language).toContain(display);
+    expect(typography.proseLoaded, `${language} editorial reading font`).toBe(true);
     expect(typography.headingLoaded, `${language} display font`).toBe(true);
     expect(typography.bodyLoaded, `${language} reading font`).toBe(true);
-    expect(typography.proseSize, `${language} prose size`).toBeGreaterThanOrEqual(16);
+    expect(typography.proseSize, `${language} prose size`).toBeGreaterThanOrEqual(18);
     expect(typography.wordmark).toContain("Bodoni Moda Variable");
   }
 });
 
-test("open gallery presentation retains the palette and uncropped objects", async ({ page }) => {
+test("gallery presentation retains the palette and uncropped objects", async ({ page }) => {
   await page.goto("/collections.html");
   await expect(page.locator(".collection-card")).toHaveCount(8);
   const palette = await page.evaluate(() => {
@@ -91,6 +152,100 @@ test("open gallery presentation retains the palette and uncropped objects", asyn
   }
   await page.goto("/");
   await expect(page.locator(".preview-object__image").first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+});
+
+test("centered artifact rows keep captions aligned with their images", async ({ page }) => {
+  for (const route of ["index.html", "collections.html"]) {
+    await page.goto(`/${route}`);
+    await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+    await page.locator("img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
+    await page.evaluate(() => document.fonts.ready);
+    await expect.poll(async () => page.evaluate(() => {
+      let error = 0;
+      for (const grid of document.querySelectorAll(".preview-grid, .collection-list, .pathway-grid")) {
+        const rows = new Map();
+        for (const item of grid.children) {
+          const image = item.querySelector("img");
+          const caption = item.querySelector("h3");
+          const imageBox = image.getBoundingClientRect();
+          const mount = image.closest(".artifact-mount, .image-open, .preview-object__image") || image;
+          const mountStyle = getComputedStyle(mount);
+          const inset = parseFloat(mountStyle.paddingLeft) + parseFloat(mountStyle.borderLeftWidth);
+          error = Math.max(error, Math.abs(caption.getBoundingClientRect().left - (imageBox.left - inset)));
+          const row = Math.round(item.getBoundingClientRect().top);
+          if (!rows.has(row)) rows.set(row, []);
+          rows.get(row).push(imageBox.top + imageBox.height / 2);
+        }
+        for (const centers of rows.values()) error = Math.max(error, Math.max(...centers) - Math.min(...centers));
+      }
+      return error;
+    }), { message: `${route} artifact alignment` }).toBeLessThanOrEqual(2);
+    const sizes = await page.locator(".preview-object p, .collection-card__copy > span, .pathway-card p").evaluateAll((elements) => elements.map((element) => parseFloat(getComputedStyle(element).fontSize)));
+    expect(sizes.length).toBeGreaterThan(0);
+    for (const size of sizes) expect(size).toBeGreaterThanOrEqual(16);
+  }
+});
+
+test("faded exhibition borders stay subtle and isolated", async ({ page }) => {
+  const accents = {
+    "index.html": "exhibition",
+    "exhibitions.html": "exhibition"
+  };
+  for (const route of [...pages, "404.html"]) {
+    await page.goto(`/${route}`);
+    await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
+    const edges = await page.locator("main > section, .site-footer").evaluateAll((elements) => elements.map((element) => {
+      const ornament = getComputedStyle(element, "::before");
+      return {
+        classes: Array.from(element.classList),
+        content: ornament.content,
+        display: ornament.display,
+        mask: ornament.maskImage,
+        width: parseFloat(ornament.width),
+        height: parseFloat(ornament.height),
+        opacity: parseFloat(ornament.opacity),
+        left: parseFloat(ornament.left),
+        sectionWidth: element.getBoundingClientRect().width
+      };
+    }).filter((edge) => edge.content !== "none" && edge.content !== "normal" && edge.display !== "none"));
+    expect(edges, route).toHaveLength(accents[route] ? 1 : 0);
+    if (edges.length) {
+      const edge = edges[0];
+      expect(edge.classes, route).toContain(accents[route]);
+      expect(edge.width, route).toBeGreaterThanOrEqual(180);
+      expect(edge.width, route).toBeLessThanOrEqual(320);
+      expect(edge.height, route).toBeLessThanOrEqual(28);
+      expect(edge.opacity, route).toBeGreaterThanOrEqual(.2);
+      expect(edge.opacity, route).toBeLessThanOrEqual(.4);
+      expect(edge.left, route).toBeLessThan(edge.sectionWidth / 3);
+      expect(edge.mask, route).toContain("exhibition-border.png");
+    }
+    await expect(page.locator("body")).not.toContainText(/[\u00b7\u2022\u25cf]/u);
+  }
+  const ornament = await page.evaluate(async () => {
+    const image = new Image();
+    image.src = "/assets/textures/exhibition-border.png";
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let visible = 0;
+    let clipped = false;
+    for (let offset = 3; offset < pixels.length; offset += 4) {
+      if (pixels[offset] <= 40) continue;
+      visible += 1;
+      const column = ((offset - 3) / 4) % canvas.width;
+      const row = Math.floor((offset - 3) / 4 / canvas.width);
+      if (column < 2 || row < 2 || column >= canvas.width - 2 || row >= canvas.height - 2) clipped = true;
+    }
+    return { coverage: visible / (canvas.width * canvas.height), clipped };
+  });
+  expect(ornament.coverage).toBeGreaterThan(.02);
+  expect(ornament.coverage).toBeLessThan(.4);
+  expect(ornament.clipped).toBe(false);
 });
 
 test("primary collection and contact content are visible on arrival", async ({ page }) => {

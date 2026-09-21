@@ -1,6 +1,9 @@
 {
   "locale": "zh-Hant",
   "strings": {
+    "venue.mapTitle": "Boynton House 地圖（Richmond Hill）",
+    "venue.caption": "2025 年展覽場地",
+    "venue.openMap": "在 Google 地圖中查看",
     "language.retry": "重試",
     "language.label": "選擇語言",
     "language.error": "無法載入此語言的譯文，請再試一次。",

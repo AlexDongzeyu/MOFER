@@ -1,6 +1,6 @@
 # Translation Review Notes
 
-The museum provides English, Simplified Chinese, French, Traditional Chinese, Japanese, Russian, German, and Spanish. Each local language pack contains 126 text fields and eight collection records. Interface labels, image descriptions, page titles, dates, places, collection summaries, and translation-retry controls are included.
+The museum provides English, Simplified Chinese, French, Traditional Chinese, Japanese, Russian, German, and Spanish. Each local language pack contains 129 text fields and eight collection records. Interface labels, image descriptions, page titles, dates, places, collection summaries, translation-retry controls, and venue-map labels are included. The map addition contributes three interface strings per language; it does not revise historical descriptions.
 
 ## Review Basis
 

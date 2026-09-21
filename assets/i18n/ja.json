@@ -1,6 +1,9 @@
 {
   "locale": "ja",
   "strings": {
+    "venue.mapTitle": "Boynton House（リッチモンドヒル）の地図",
+    "venue.caption": "2025年の展示会場",
+    "venue.openMap": "Google マップで開く",
     "language.retry": "再試行",
     "language.label": "言語を選択",
     "language.error": "この言語の翻訳を読み込めませんでした。もう一度お試しください。",

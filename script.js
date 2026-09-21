@@ -31,13 +31,20 @@ function translateStaticText() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = text(element.dataset.i18n);
   });
-  for (const [dataAttribute, attribute] of [["data-i18n-alt", "alt"], ["data-i18n-aria", "aria-label"]]) {
+  for (const [dataAttribute, attribute] of [["data-i18n-alt", "alt"], ["data-i18n-aria", "aria-label"], ["data-i18n-title", "title"]]) {
     document.querySelectorAll(`[${dataAttribute}]`).forEach((element) => {
       element.setAttribute(attribute, text(element.getAttribute(dataAttribute)));
     });
   }
   document.querySelectorAll("[data-collection-image]").forEach((image) => {
     image.alt = currentContent.collections[Number(image.dataset.collectionImage)].title;
+  });
+  const mapLanguage = { "zh-Hans": "zh-CN", "zh-Hant": "zh-TW" }[currentLanguage] || currentLanguage;
+  document.querySelectorAll("[data-venue-map]").forEach((frame) => {
+    const source = new URL(frame.src);
+    if (source.searchParams.get("hl") === mapLanguage) return;
+    source.searchParams.set("hl", mapLanguage);
+    frame.src = source.href;
   });
   const page = document.body.dataset.page || "home";
   document.title = page === "home" ? `MOFER | ${text("museum.name")}`
@@ -98,6 +105,7 @@ async function setLanguage(language, remember = false) {
     });
     renderCollections();
     updateCollectionDetail();
+    scheduleArtifactLayout();
     if (imageViewer.open) {
       refreshViewerItems();
       updateViewerCaption();
@@ -145,6 +153,10 @@ function renderCollections() {
     image.decoding = "async";
     if (item.fit === "contain") image.classList.add("image--contain");
 
+    const mount = document.createElement("span");
+    mount.className = "artifact-mount";
+    mount.appendChild(image);
+
     const copy = document.createElement("div");
     copy.className = "collection-card__copy";
     const title = document.createElement("h3");
@@ -152,7 +164,7 @@ function renderCollections() {
     const type = document.createElement("span");
     type.textContent = item.type;
     copy.append(title, type);
-    card.append(image, copy);
+    card.append(mount, copy);
     card.addEventListener("click", () => {
       selectedCollectionIndex = index;
       updateCollectionDetail();
@@ -350,6 +362,54 @@ document.querySelectorAll("[data-detail-image], .gallery-grid img, .pathway-card
 });
 
 window.addEventListener("scroll", () => header?.classList.toggle("is-scrolled", window.scrollY > 24), { passive: true });
+
+let artifactLayoutFrame = 0;
+const artifactGrids = Array.from(document.querySelectorAll(".preview-grid, .collection-list, .pathway-grid, .gallery-grid"));
+
+function scheduleArtifactLayout() {
+  if (artifactLayoutFrame) return;
+  artifactLayoutFrame = requestAnimationFrame(() => {
+    artifactLayoutFrame = 0;
+    const updates = [];
+    for (const grid of artifactGrids) {
+      const rows = new Map();
+      for (const item of grid.children) {
+        const image = item.querySelector("img");
+        if (!image?.complete || !image.naturalWidth) continue;
+        const mount = image.closest(".artifact-mount, .image-open, .preview-object__image") || image;
+        const bounds = mount.getBoundingClientRect();
+        const row = Math.round(item.getBoundingClientRect().top);
+        if (!rows.has(row)) rows.set(row, []);
+        rows.get(row).push({ item, width: bounds.width, height: bounds.height });
+      }
+      for (const items of rows.values()) {
+        const height = Math.max(...items.map((item) => item.height));
+        for (const item of items) updates.push({ ...item, offset: (height - item.height) / 2 });
+      }
+    }
+    for (const { item, width, offset } of updates) {
+      item.style.setProperty("--caption-width", `${width}px`);
+      item.style.setProperty("--media-offset", `${offset}px`);
+    }
+  });
+}
+
+const artifactGridWidths = new WeakMap();
+const artifactResizeObserver = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    if (artifactGridWidths.get(entry.target) === entry.contentRect.width) continue;
+    artifactGridWidths.set(entry.target, entry.contentRect.width);
+    scheduleArtifactLayout();
+  }
+});
+artifactGrids.forEach((grid) => artifactResizeObserver.observe(grid));
+document.addEventListener("load", (event) => {
+  if (event.target instanceof HTMLImageElement) scheduleArtifactLayout();
+}, true);
+document.fonts.ready.then(scheduleArtifactLayout);
+document.fonts.addEventListener("loadingdone", scheduleArtifactLayout);
+window.addEventListener("resize", scheduleArtifactLayout, { passive: true });
+scheduleArtifactLayout();
 
 async function initializeLanguage() {
   let preferred = "en";

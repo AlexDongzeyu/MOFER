@@ -1,6 +1,9 @@
 {
   "locale": "en",
   "strings": {
+    "venue.mapTitle": "Boynton House map, Richmond Hill",
+    "venue.caption": "2025 exhibition venue",
+    "venue.openMap": "Open in Google Maps",
     "language.retry": "Try again",
     "language.label": "Choose language",
     "language.error": "This translation could not be loaded. Please try again.",

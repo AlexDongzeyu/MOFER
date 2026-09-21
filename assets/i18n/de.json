@@ -1,6 +1,9 @@
 {
   "locale": "de",
   "strings": {
+    "venue.mapTitle": "Karte von Boynton House, Richmond Hill",
+    "venue.caption": "Ausstellungsort 2025",
+    "venue.openMap": "In Google Maps öffnen",
     "language.retry": "Erneut versuchen",
     "language.label": "Sprache wählen",
     "language.error": "Diese Übersetzung konnte nicht geladen werden. Bitte versuchen Sie es erneut.",

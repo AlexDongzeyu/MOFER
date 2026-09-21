@@ -1,6 +1,9 @@
 {
   "locale": "ru",
   "strings": {
+    "venue.mapTitle": "Карта: Boynton House, Ричмонд-Хилл",
+    "venue.caption": "Место проведения выставки 2025 года",
+    "venue.openMap": "Открыть в Google Картах",
     "language.retry": "Повторить",
     "language.label": "Выбрать язык",
     "language.error": "Не удалось загрузить перевод. Попробуйте ещё раз.",
