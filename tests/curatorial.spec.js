@@ -79,9 +79,14 @@ test("gallery access applies the sticky-header offset only once", async ({ page 
     await page.goto(route);
     await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
     if (!route.includes("#")) await page.locator(".collection-gallery-link").click();
-    const headerBottom = await page.locator(".site-header").evaluate((header) => header.getBoundingClientRect().bottom);
-    await expect.poll(() => page.locator(".collection-gallery").evaluate((gallery) => gallery.getBoundingClientRect().top)).toBeLessThanOrEqual(headerBottom + 32);
-    expect(await page.locator(".collection-gallery").evaluate((gallery) => gallery.getBoundingClientRect().top)).toBeGreaterThanOrEqual(headerBottom);
+    await expect(async () => {
+      const geometry = await page.locator(".collection-gallery").evaluate((gallery) => ({
+        top: gallery.getBoundingClientRect().top,
+        headerBottom: document.querySelector(".site-header").getBoundingClientRect().bottom
+      }));
+      expect(geometry.top, route).toBeGreaterThanOrEqual(geometry.headerBottom);
+      expect(geometry.top, route).toBeLessThanOrEqual(geometry.headerBottom + 32);
+    }).toPass({ timeout: 5_000 });
   }
 });
 
