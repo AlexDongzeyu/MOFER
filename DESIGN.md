@@ -1,16 +1,16 @@
 ---
 name: MOFER
-description: A porcelain-blue moving archive with serif reading, printed-album mounts and fade-led transitions.
+description: A dark archival-blue moving gallery with serif reading, object-led discovery and fade-only transitions.
 colors:
-  paper: "#152436"
-  white: "#f0eee8"
-  ink: "#e8edf1"
-  muted: "#b6c5d4"
-  cobalt: "#30496a"
-  mineral: "#21374e"
-  accent: "#bdd4e7"
-  wine: "#3d2d34"
-  deep: "#0f1b2a"
+  paper: "#101a24"
+  white: "#eee9df"
+  ink: "#e4e9ed"
+  muted: "#b6bec9"
+  cobalt: "#2d4052"
+  mineral: "#1b2b39"
+  accent: "#c6d5df"
+  wine: "#282329"
+  deep: "#0b1118"
 typography:
   identity:
     fontFamily: '"Bodoni Moda Variable", serif'
@@ -183,11 +183,11 @@ Locale-specific serif headings and editorial prose give eight languages a shared
 **Key Characteristics:**
 - Unchanged porcelain-blue fields, pale-blue actions and muted purple exhibitions.
 - Original paper grain and flat printed mounts around contained, untextured artifacts.
-- Fade-led transitions with a softly feathered border only at exhibition entries.
+- Fade-only transitions without exhibition ornaments or double image borders.
 - Script-specific serif headings and prose, distinct from sans-serif interface text.
 - Equal columns, row-centered images and captions aligned to mount bounds.
-- Six dedicated pages with English fallback and eight persistent language choices.
-- Original quarter-speed film; reduced motion removes decorative UI movement.
+- Five dedicated pages with English fallback and five persistent language choices.
+- Four-clip historical montage at 85% speed; reduced motion removes decorative UI movement.
 
 This refresh records the September 21 implementation, not a new identity. The original seed (`f90512f9`) remains in [index.html](index.html); no new seed or approved visual comp is claimed. The fade-led refinement replaces the page-specific accent requirement; typography, media mounts and alignment remain. Commit `c204e1c` is the preceding editorial version. Publication of the reviewed refinement and venue maps was authorized separately after the local design handoff.
 
@@ -197,14 +197,14 @@ The frontmatter records reusable desktop/default-language tokens from [styles.cs
 
 ## Colors
 
-Cool, readable lettering and pale-blue actions sit against muted porcelain blue, with warm-white identity lettering and a distinct purple exhibition field.
+Cool, readable lettering and pale-blue actions sit against deep archival blue and charcoal. Warm paper-colored identity lettering and a dark plum exhibition field connect the interface to the original documents without recoloring them.
 
 ### Primary
-- **Pale Porcelain Blue** (`accent`): primary actions, selected titles, navigation feedback, factual labels, text selection, keyboard focus and low-opacity printed edges and exhibition border.
+- **Pale Porcelain Blue** (`accent`): primary actions, selected titles, navigation feedback, factual labels, text selection, keyboard focus and quiet mount edges.
 - **Muted Cobalt** (`cobalt`): icon-button and retained filled-secondary-action hover backing, not image mats.
 
 ### Secondary
-- **Muted Exhibition Purple** (`wine`): the retained full-width exhibition field. Its existing token name and value are unchanged.
+- **Archival Plum** (`wine`): the darker full-width exhibition field, retaining its established token name.
 
 ### Neutral
 - **Porcelain-Blue Canvas** (`paper`): page background and viewer toolbar fields. The legacy name does not imply a light surface.
@@ -216,7 +216,7 @@ Cool, readable lettering and pale-blue actions sit against muted porcelain blue,
 
 **The Quiet Accent Rule.** Pale blue marks actions, selection, keyboard focus and restrained printed edges against dark surfaces; it does not recolor the historical media.
 
-All nine palette primitives are unchanged. Mount rules mix the existing accent with transparency, not a new gold or frame color. Exhibition captions and media overlays retain component-specific colors. Hero gradients support text legibility and transitions over contextual media, not object inspection.
+The October 9 refinement darkens the nine established palette roles rather than introducing a replacement brand. Mount rules mix the accent with transparency. Hero gradients support text legibility and transitions over contextual media, not object inspection. The October 10 correction restores the original grain at full soft-light strength: the opaque blue overlay that obscured it is removed. Header, exhibition field and footer also retain the grain, with their existing fade transitions.
 
 ## Typography
 
@@ -227,7 +227,7 @@ All nine palette primitives are unchanged. Mount rules mix the existing accent w
 
 | Document Language | Editorial Headings and Prose | Interface and Caption Family |
 | --- | --- | --- |
-| `en`, `fr`, `de`, `es`, `ru` | Source Serif 4 Variable | Source Sans 3 Variable |
+| `en`, `fr` | Source Serif 4 Variable | Source Sans 3 Variable |
 | `zh-Hans` | Noto Serif SC Variable | Noto Sans SC Variable |
 | `zh-Hant` | Noto Serif TC Variable | Noto Sans TC Variable |
 | `ja` | Noto Serif JP Variable | Noto Sans JP Variable |
@@ -291,7 +291,7 @@ These are shared defaults, not universal element dimensions. Compact introductio
 - Exhibition photographs use two columns with (36px) gaps, then (40px / 28px) at (960px), then one column with (36px) gaps on phones. Contextual exhibition photography retains its (4 / 3) cover treatment; original artifact scans remain contained.
 - About and Exhibitions retain photographic openings. Research and Contact use compact introductions; Research keeps a descriptive heading, all four existing activities in a two-column grid, and its collaboration photograph. Activity entries stack on phones.
 - Contact places email, telephone and press links first, in the left desktop column. Collaboration copy and the original photograph follow on the right. At (640px), the single-column order keeps contact methods first; its photograph retains its original proportions.
-- About's three contextual notes use a three-column record row and stack on phones. Labels sit above complete facts, not beside giant numerals. The homepage's research/contact routes use two open columns, then one on phones.
+- About's three contextual notes use a three-column record row and stack on phones. Labels sit above complete facts, not beside giant numerals. The homepage's gallery/contact routes use two open columns, then one on phones.
 
 The spacing entries represent recurring values, not a strict mathematical grid. Shrinkable grid tracks and children prevent intrinsic widths from forcing long translations off-screen; metadata and contact links wrap. Preserve these constraints when enlarging text. The navigation breakpoint (1024px) is separate from content-grid changes (960px).
 
@@ -307,9 +307,9 @@ The sticky masthead's anchor offset uses the header token plus (24px). Short-pho
 
 There are no box shadows. Dark tonal fields, fine raster grain, flat printed edges and gradient joins provide depth. The viewer uses a deep-blue stage, porcelain-blue toolbar fields and a dark modal backdrop (`rgb(9 17 29 / 90%)`).
 
-[assets/textures/archive-paper.png](assets/textures/archive-paper.png) comes from a blank margin of [assets/collections/pearl-buck-letter.jpg](assets/collections/pearl-buck-letter.jpg). [scripts/prepare-texture.mjs](scripts/prepare-texture.mjs) removes uneven local illumination, limits contrast and mirrors the crop into a repeating raster tile. CSS blends it with `soft-light` on the body, masthead, exhibition field and footer. It is derived paper grain, not an AI-generated historical artifact; the original letter image is unchanged.
+[assets/textures/archive-paper.png](assets/textures/archive-paper.png) comes from a blank margin of [assets/collections/pearl-buck-letter.jpg](assets/collections/pearl-buck-letter.jpg). [scripts/prepare-texture.mjs](scripts/prepare-texture.mjs) removes uneven local illumination, limits contrast and mirrors the crop into a repeating raster tile. It repeats at 768px by 288px with soft-light blending on page backgrounds and the non-photographic header, exhibition field and footer. No opaque masking layer covers the page grain. It is derived paper grain, not an AI-generated historical artifact; the original letter image is unchanged.
 
-The paper-grain asset and its preparation are unchanged. A separate, feathered raster border appears only at the exhibition entry on Home and Exhibitions; its provenance is recorded below. It does not replace the background texture.
+The paper-grain asset and its preparation are unchanged. The user explicitly approved this blue background pattern on October 10: retain its recognizable texture in future refinements rather than flattening it away or substituting another pattern. This preference does not restore the removed exhibition border.
 
 **The Flat Gallery Rule.** Use tonal fields, subtle paper grain and printed edges for depth; keep texture off original object photographs and avoid wood, bevels or gilding.
 
@@ -331,7 +331,7 @@ Button minimum height is (50px); phones use (46px) and (11px 16px) padding, reta
 
 ### Navigation And Language
 
-The masthead is dark and textured, ending in a quiet (1px) edge at (22%) accent. Route hover, focus and `aria-current="page"` use pale-blue text on mineral-blue backing; the current route also uses bold text. There are no underline or dot indicators. The MOFER wordmark leads Home; the five navigation links lead directly to [about.html](about.html), [collections.html](collections.html), [exhibitions.html](exhibitions.html), [research.html](research.html) and [contact.html](contact.html). Legacy homepage anchors remain available, but are not substitutes for these page destinations.
+The masthead is dark and textured, ending in a quiet (1px) edge at (22%) accent. Route hover, focus and `aria-current="page"` use pale-blue text on mineral-blue backing; the current route also uses bold text. There are no underline or dot indicators. The MOFER wordmark leads Home; four navigation links lead to [about.html](about.html), [collections.html](collections.html), [exhibitions.html](exhibitions.html) and [contact.html](contact.html). Gallery access sits prominently within Collections rather than adding another navigation destination. Research has been removed; its old URLs redirect to About.
 
 Desktop route links can wrap as text enlarges; the header grows beyond its minimum instead of clipping them. At widths up to (1024px), a labelled toggle opens a full-width dark menu. Content-grid changes remain at (960px). Link activation, an outside click, Escape or returning to desktop closes it; Escape returns focus to the toggle. Without JavaScript, route links remain visible. The small brand descriptor is hidden at every width, not the MOFER wordmark or readable page title.
 
@@ -349,21 +349,19 @@ Museum notes remain on About as a semantic definition list. Labels are restraine
 
 Each native thumbnail button contains a noninteractive printed-mount span around the image, followed by its title and type metadata. Hover changes image opacity to (.85); selection uses a pale-blue title, checkmark and `aria-pressed`, not a colored mat or extra divider. Image heights are natural, capped at (210px) by default, (180px) up to (1200px), and (150px) up to (360px). The phone title uses the smaller collection-title role without shrinking its metadata below (1rem).
 
-Selection updates the live detail region and scrolls it into view, instantly under reduced motion. Language switching preserves the selected record and focused thumbnail. The unframed reading column presents the title, type, full summary, date and place; summaries are not repeated visibly in thumbnails. Preserve the selected title as an `h2`, its `data-detail-title` hook and its section-label association. Full descriptions and locale JSON are not shortened to create whitespace.
+Selection updates the detail region; thumbnail selection brings the original back into view. The reading desk adds three historical themes, previous/next controls and keyboard navigation, preserving the selection and theme during language changes. The unframed reading column presents the unchanged title, type, full summary, date and place, followed by historical context and a native "Look closely" disclosure. The image and its controls form one spatial group, before the narrative on mobile. Native fallback links and a complete initial record are generated at build time.
 
 ### Fade-Led Transitions
 
-Soft fades carry the page transitions. Pattern appears only once at the purple exhibition entry on Home and once on Exhibitions. About, Collections, Research, Contact and 404 have no decorative accent; neither do footers, the film edge or other sections. No page requires an isolated symbol.
-
-The exhibition border is an empty, absolutely positioned pseudo-element (8px) below the section top. It aligns left with the shared content gutter through `max(var(--gutter), calc((100% - var(--max)) / 2))`, with width `min(320px, calc(100% - var(--gutter) * 2))` and height (24px). The existing pale-blue accent tints the raster mask at (.34) opacity; `center / contain no-repeat` preserves its proportions. It takes no pointer events, carries no assistive-technology text and changes no padding or layout space.
+Soft fades carry the transitions. The exhibition ornament and double image rules have been removed. The hero entrance changes opacity only; object changes use a brief opacity fade. Reduced motion removes these interface effects. No page requires an isolated symbol.
 
 The film ends in a (64px) paper-color fade. Photographic openings combine their legibility overlay with a (64px) fade, reduced to (56px) on phones. The textured purple exhibition band blends to the paper field over (48px) at each edge; the textured footer joins from paper over (32px). The masthead retains its quiet straight edge.
 
-[assets/textures/exhibition-border.png](assets/textures/exhibition-border.png) is prepared by [scripts/prepare-exhibition-border.mjs](scripts/prepare-exhibition-border.mjs) from the text-free printed bottom edge of the unchanged [booklet scan](assets/collections/extended/madame-chiang-letter-children.jpg). The crop starts at (6%) from the left and (96.7%) from the top, spanning (88%) of the width and (2.7%) of the height. The (1024 x 44px) white-alpha raster fades to transparency at all four edges, using squared horizontal (220px) and vertical (12px) feathering in the source raster. CSS supplies a flat tint, not embossed material. This is modern source-derived decoration, not an authenticated historic website border, and no new historical date is assigned to it.
+The former source-derived border asset and its preparation script are retained as development history, but are not referenced by the current stylesheet. Original historical images remain unchanged.
 
 The two Boynton House venue separators use commas; original titles, captions and punctuation inside artifacts are not decorative material to erase. The localized border does not change the established mounts, typography or image alignment.
 
-**The Fade First Rule.** Let smooth fades carry transitions; reserve a softly feathered border for the exhibition entry on Home and Exhibitions, with no isolated symbols or repeated page-wide pattern.
+**The Fade First Rule.** Let smooth fades carry transitions, with no isolated ornaments or repeated decorative borders.
 
 ### Venue Map
 
@@ -375,11 +373,11 @@ The iframe is full-width with a stable (240px) height, reducing to (220px) on ph
 
 An opaque expansion control opens a native modal dialog. Trigger-image hover reduces opacity to (.92) over (220ms ease). The viewer contains the full image, locks background scrolling, closes with Escape and returns focus to the opening control.
 
-Previous/next controls and arrow keys cycle within the image group; single-image groups disable those buttons. The featured group contains the eight collection records; pathway and exhibition grids have their own groups. Zoom uses (200%) image dimensions in a scrollable stage and resets when the image changes. Captions and a tabular counter remain visible. If a pending language change completes while the viewer is open, its caption and image description update without changing the selected item, zoom or scroll position.
+Previous/next controls and arrow keys cycle within the image group; single-image groups disable those buttons. The reading-desk viewer follows the currently selected historical theme; pathway and gallery groups remain separate. Zoom uses (200%) image dimensions in a scrollable stage and resets when the image changes. Captions and a tabular counter remain visible. If a pending language change completes while the viewer is open, its caption and image description update without changing the selected item, zoom or scroll position.
 
 ### Film And Motion
 
-The original film is muted, inline and looping, with `defaultPlaybackRate` and `playbackRate` set to (0.25). There is no on-page play/pause button or native control bar. It requests continuous playback regardless of motion preference, as explicitly required for this film; browser autoplay policy may leave a still image. When playback is unavailable, hero text settles at full opacity instead of freezing its entrance animation.
+The four supplied clips form a single muted, inline, looping montage, with `defaultPlaybackRate` and `playbackRate` set to (0.85). Aircraft, a convoy, animal transport and a community scene form an 18-second sequence (about 21 seconds at playback speed), with half-second crossfades between all clips and back to the first clip. Every scene fills the frame: portrait footage is cropped with a slightly elevated focal point, never padded or stretched. There is no on-page play/pause button or native control bar. It requests continuous playback regardless of motion preference, as previously required for this film; browser autoplay policy may leave a still image. When playback is unavailable, hero text settles at full opacity instead of freezing its entrance animation.
 
 Reduced-motion CSS removes decorative animation and transitions and makes scrolling immediate, but does not hide or pause the film. The homepage content has one entrance (850ms, `cubic-bezier(.16, 1, .3, 1)`), only from (961px) with no reduced-motion preference.
 
@@ -387,7 +385,17 @@ Reduced-motion CSS removes decorative animation and transitions and makes scroll
 
 The native language select is the implemented input control; there are no text-entry forms, search fields, filter chips or ticketing controls. The sidecar contains ten self-contained previews using original imagery, scoped CSS and inline Lucide paths, with one subtle raster-border preview on the current porcelain-blue canvas. They record appearance and CSS states, not runtime language, menu, measured row alignment, collection-selection or dialog logic. Font delivery, source provenance and responsive metadata extend the frontmatter without adding new palette primitives.
 
-Upcoming-exhibition and poster presentation remains brainstorming only in the [earlier revision plan](docs/superpowers/plans/2026-09-19-porcelain-blue-multilingual.md). No proposed poster layout, promotion, event, placeholder or generated imagery is part of this recorded system.
+The October 6 refinement gives the supplied 2026 Tokyo Trial and 2025 Forgotten Ally posters about 45% of the exhibition row, with a 36px column gap, uncropped artwork and aligned bottom edges. Adjacent copy, photographs and the map occupy the full remaining column. Below 961px, the layout stacks and posters fill the content width. Simplified and Traditional Chinese select the Chinese-led Tokyo Trial poster; all other locales use the English-led poster. The 2025 poster is bilingual. New interface separators use commas, not dots.
+
+The gallery is a native expandable section within Collections, accessible from its top button and the exhibition links. Direct anchors expand it automatically; native disclosure works without JavaScript. The existing map, past exhibition history and press links remain available. The gallery uses lazy thumbnails, full-size originals and the existing accessible viewer. All imagery comes from the supplied media; none is generated.
+
+### Curatorial Discovery, October 9
+
+The reading desk puts the original image before its theme and stepping controls, with historical context and observation prompts beside it on desktop and below on phones. Themes are war/relief/justice, political change, and culture/identity. Previous/next and keyboard arrows stay within the selected group; Home/End selects its bounds. Filtering never discards the underlying eight records, and changing language preserves the active theme and object.
+
+The photo gallery keeps all 39 originals but displays one thematic group at a time. Consistent 300px desktop and 210px phone stages, full-width captions and specific image descriptions replace variable stacks of repeated captions. Historical documents and posters remain contained; visitor previews can fill their frame. Native disclosure and ordinary original-image links remain functional without JavaScript.
+
+Contact uses top-aligned columns rather than vertically centering unequal content. Two illustrated previews of the existing press reports fill the left column below direct contact methods. Their source, descriptive title, original summary and publication date use consistent roles. Desktop prose is 19px; press summaries, context and observation text use 16px; source/date utility text is 15px.
 
 ## Do's and Don'ts
 

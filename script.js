@@ -1,8 +1,9 @@
-const supportedLanguages = ["en", "zh-Hans", "fr", "zh-Hant", "ja", "ru", "de", "es"];
+const supportedLanguages = ["en", "zh-Hans", "fr", "zh-Hant", "ja"];
 const languageCache = new Map();
 let currentLanguage = "en";
 let currentContent;
 let selectedCollectionIndex = 0;
+let collectionTheme = "all";
 let languageRequest = 0;
 
 document.documentElement.classList.add("js");
@@ -19,7 +20,9 @@ const detail = {
   title: document.querySelector("[data-detail-title]"),
   description: document.querySelector("[data-detail-description]"),
   date: document.querySelector("[data-detail-date]"),
-  place: document.querySelector("[data-detail-place]")
+  place: document.querySelector("[data-detail-place]"),
+  context: document.querySelector("[data-detail-context]"),
+  look: document.querySelector("[data-detail-look]")
 };
 
 function text(key) {
@@ -31,6 +34,9 @@ function translateStaticText() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = text(element.dataset.i18n);
   });
+  document.querySelectorAll("[data-collection-filter]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.collectionFilter === collectionTheme));
+  });
   for (const [dataAttribute, attribute] of [["data-i18n-alt", "alt"], ["data-i18n-aria", "aria-label"], ["data-i18n-title", "title"]]) {
     document.querySelectorAll(`[${dataAttribute}]`).forEach((element) => {
       element.setAttribute(attribute, text(element.getAttribute(dataAttribute)));
@@ -38,6 +44,9 @@ function translateStaticText() {
   }
   document.querySelectorAll("[data-collection-image]").forEach((image) => {
     image.alt = currentContent.collections[Number(image.dataset.collectionImage)].title;
+  });
+  document.querySelectorAll("[data-poster-en]").forEach((image) => {
+    image.src = currentLanguage.startsWith("zh-") ? image.dataset.posterZh : image.dataset.posterEn;
   });
   const mapLanguage = { "zh-Hans": "zh-CN", "zh-Hant": "zh-TW" }[currentLanguage] || currentLanguage;
   document.querySelectorAll("[data-venue-map]").forEach((frame) => {
@@ -49,7 +58,7 @@ function translateStaticText() {
   const page = document.body.dataset.page || "home";
   document.title = page === "home" ? `MOFER | ${text("museum.name")}`
     : `${text(page === "not-found" ? "error.title" : `page.${page}.title`)} | MOFER`;
-  const descriptions = { home: "hero.lede", about: "about.bodyOne", collections: "page.collections.lede", exhibitions: "page.exhibitions.lede", research: "research.title", contact: "contact.body", "not-found": "error.body" };
+  const descriptions = { home: "hero.lede", about: "about.bodyOne", collections: "page.collections.lede", exhibitions: "page.exhibitions.lede", contact: "contact.body", "not-found": "error.body" };
   document.querySelector('meta[name="description"]')?.setAttribute("content", text(descriptions[page] || "hero.lede"));
   languageSelect?.setAttribute("aria-label", text("language.label"));
   updateMenuLabel();
@@ -66,10 +75,11 @@ function validateLanguagePack(pack, language) {
     if (typeof pack.strings[key] !== "string" || !pack.strings[key].trim()) throw new Error(`Missing translation: ${key}`);
   }
   for (const [index, item] of pack.collections.entries()) {
-    for (const key of ["id", "image", "type", "title", "date", "place", "summary"]) {
+    for (const key of ["id", "image", "type", "title", "date", "place", "summary", "theme", "context", "look"]) {
       if (typeof item[key] !== "string" || !item[key].trim()) throw new Error(`Incomplete collection: ${index}`);
     }
-    if (english && (item.id !== english.collections[index].id || item.image !== english.collections[index].image || item.fit !== english.collections[index].fit)) {
+    if (!["war", "change", "culture"].includes(item.theme)) throw new Error(`Invalid collection theme: ${index}`);
+    if (english && (item.id !== english.collections[index].id || item.image !== english.collections[index].image || item.fit !== english.collections[index].fit || item.theme !== english.collections[index].theme)) {
       throw new Error("Collection identity mismatch");
     }
   }
@@ -100,14 +110,16 @@ async function setLanguage(language, remember = false) {
     document.querySelectorAll("[data-collection-preview]").forEach((element) => {
       const item = pack.collections[Number(element.dataset.collectionPreview)];
       element.querySelector("h3").textContent = item.title;
-      element.querySelector("p").textContent = item.type;
+      element.querySelector("p").textContent = `${item.date}, ${item.place}`;
       element.querySelector("img").alt = item.title;
     });
     renderCollections();
     updateCollectionDetail();
+    updateGalleryFilter();
     scheduleArtifactLayout();
     if (imageViewer.open) {
       refreshViewerItems();
+      imageViewer.querySelector("[data-viewer-image]").src = viewerItems[viewerIndex].source;
       updateViewerCaption();
     }
     if (languageSelect) languageSelect.value = currentLanguage;
@@ -139,6 +151,7 @@ function renderCollections() {
   const focusedIndex = document.activeElement?.dataset.collectionIndex;
   collectionList.replaceChildren();
   currentContent.collections.forEach((item, index) => {
+    if (collectionTheme !== "all" && item.theme !== collectionTheme) return;
     const card = document.createElement("button");
     card.className = `collection-card${index === selectedCollectionIndex ? " is-active" : ""}`;
     card.type = "button";
@@ -166,12 +179,7 @@ function renderCollections() {
     copy.append(title, type);
     card.append(mount, copy);
     card.addEventListener("click", () => {
-      selectedCollectionIndex = index;
-      updateCollectionDetail();
-      collectionList.querySelectorAll(".collection-card").forEach((element, position) => {
-        element.classList.toggle("is-active", position === index);
-        element.setAttribute("aria-pressed", String(position === index));
-      });
+      selectCollection(index);
       document.querySelector("[data-collection-detail]").scrollIntoView({
         behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
         block: "start"
@@ -181,6 +189,49 @@ function renderCollections() {
   });
   if (focusedIndex !== undefined) collectionList.querySelector(`[data-collection-index="${focusedIndex}"]`)?.focus({ preventScroll: true });
 }
+
+function collectionIndices() {
+  return currentContent.collections.flatMap((item, index) => collectionTheme === "all" || item.theme === collectionTheme ? [index] : []);
+}
+
+function selectCollection(index) {
+  selectedCollectionIndex = index;
+  updateCollectionDetail();
+  collectionList.querySelectorAll(".collection-card").forEach((card) => {
+    const selected = Number(card.dataset.collectionIndex) === index;
+    card.classList.toggle("is-active", selected);
+    card.setAttribute("aria-pressed", String(selected));
+  });
+  const url = new URL(location.href);
+  url.searchParams.set("item", currentContent.collections[index].id);
+  history.replaceState(null, "", url);
+}
+
+function stepCollection(offset) {
+  const indices = collectionIndices();
+  const position = indices.indexOf(selectedCollectionIndex);
+  selectCollection(indices[(position + offset + indices.length) % indices.length]);
+}
+
+document.querySelectorAll("[data-collection-filter]").forEach((button) => {
+  button.addEventListener("click", () => {
+    collectionTheme = button.dataset.collectionFilter;
+    const indices = collectionIndices();
+    if (!indices.includes(selectedCollectionIndex)) selectCollection(indices[0]);
+    renderCollections();
+    updateCollectionDetail();
+  });
+});
+document.querySelector("[data-collection-previous]")?.addEventListener("click", () => stepCollection(-1));
+document.querySelector("[data-collection-next]")?.addEventListener("click", () => stepCollection(1));
+collectionList?.addEventListener("keydown", (event) => {
+  if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key) || !currentContent) return;
+  event.preventDefault();
+  const indices = collectionIndices();
+  if (event.key === "Home" || event.key === "End") selectCollection(indices[event.key === "Home" ? 0 : indices.length - 1]);
+  else stepCollection(event.key === "ArrowLeft" ? -1 : 1);
+  collectionList.querySelector(`[data-collection-index="${selectedCollectionIndex}"]`).focus({ preventScroll: true });
+});
 
 function updateCollectionDetail() {
   if (!currentContent || !detail.image) return;
@@ -193,8 +244,17 @@ function updateCollectionDetail() {
   detail.description.textContent = item.summary;
   detail.date.textContent = item.date;
   detail.place.textContent = item.place;
+  detail.context.textContent = item.context;
+  detail.look.textContent = item.look;
+  const indices = collectionIndices();
+  document.querySelector("[data-collection-position]").textContent = text("desk.position").replace("{current}", String(indices.indexOf(selectedCollectionIndex) + 1)).replace("{total}", String(indices.length));
+  document.querySelectorAll("[data-collection-previous], [data-collection-next]").forEach((button) => { button.disabled = indices.length < 2; });
+  document.querySelector("[data-collection-controls]").hidden = false;
   updateImageLabels();
 }
+detail.image?.addEventListener("load", () => {
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) detail.image.animate([{ opacity: .3 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
+});
 
 languageSelect?.addEventListener("change", () => setLanguage(languageSelect.value, true));
 
@@ -228,8 +288,8 @@ matchMedia("(min-width: 1025px)").addEventListener("change", (event) => {
 });
 
 if (heroVideo) {
-  heroVideo.defaultPlaybackRate = 0.25;
-  heroVideo.playbackRate = 0.25;
+  heroVideo.defaultPlaybackRate = 0.85;
+  heroVideo.playbackRate = 0.85;
   heroVideo.muted = true;
   heroVideo.autoplay = true;
   heroVideo.play().catch(() => document.body.classList.add("motion-paused"));
@@ -260,9 +320,9 @@ let viewerSource = [];
 
 function refreshViewerItems() {
   viewerItems = viewerSource === "collection"
-    ? currentContent.collections.map((item) => ({ source: item.image, title: item.title }))
+    ? collectionIndices().map((index) => ({ source: currentContent.collections[index].image, title: currentContent.collections[index].title }))
     : viewerSource.map((item) => ({
-      source: item.getAttribute("src"),
+      source: item.dataset.fullSrc || item.getAttribute("src"),
       title: item.closest("figure")?.querySelector("figcaption")?.textContent || item.closest(".pathway-card")?.querySelector("h3")?.textContent || item.alt
     }));
 }
@@ -329,12 +389,14 @@ imageViewer.addEventListener("close", () => {
   viewerTrigger?.focus({ preventScroll: true });
 });
 
-document.querySelectorAll("[data-detail-image], .gallery-grid img, .pathway-card > img, .exhibition__feature > img, .involvement__image img").forEach((image) => {
+document.querySelectorAll("[data-detail-image], .gallery-grid img, .pathway-card > img, .exhibition__feature > img, .involvement__image img, [data-poster], .exhibition-highlights img").forEach((image) => {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "image-open";
   button.dataset.imageOpen = "";
-  image.before(button);
+  const originalLink = image.closest(".gallery-original");
+  if (originalLink) originalLink.replaceWith(button);
+  else image.before(button);
   button.appendChild(image);
   const affordance = document.createElement("span");
   affordance.className = "image-open__symbol";
@@ -348,7 +410,7 @@ document.querySelectorAll("[data-detail-image], .gallery-grid img, .pathway-card
     if (image.hasAttribute("data-detail-image")) {
       if (!currentContent) return;
       viewerSource = "collection";
-      viewerIndex = selectedCollectionIndex;
+      viewerIndex = collectionIndices().indexOf(selectedCollectionIndex);
     } else {
       const group = image.closest(".gallery-grid, .pathway-grid");
       viewerSource = group ? Array.from(group.querySelectorAll("img")) : [image];
@@ -372,6 +434,7 @@ function scheduleArtifactLayout() {
     artifactLayoutFrame = 0;
     const updates = [];
     for (const grid of artifactGrids) {
+      if (grid.closest("[hidden]")) continue;
       const rows = new Map();
       for (const item of grid.children) {
         const image = item.querySelector("img");
@@ -410,6 +473,48 @@ document.fonts.ready.then(scheduleArtifactLayout);
 document.fonts.addEventListener("loadingdone", scheduleArtifactLayout);
 window.addEventListener("resize", scheduleArtifactLayout, { passive: true });
 scheduleArtifactLayout();
+
+const collectionGallery = document.querySelector(".collection-gallery");
+let activeGalleryCategory = "posters";
+function updateGalleryFilter() {
+  if (!collectionGallery || !currentContent) return;
+  document.querySelectorAll("[data-gallery-panel]").forEach((panel) => {
+    panel.hidden = panel.id !== activeGalleryCategory;
+  });
+  document.querySelectorAll("[data-gallery-filter]").forEach((link) => {
+    if (link.dataset.galleryFilter === activeGalleryCategory) link.setAttribute("aria-current", "true");
+    else link.removeAttribute("aria-current");
+  });
+  const count = document.getElementById(activeGalleryCategory).querySelectorAll(".photo-grid img").length;
+  document.querySelector("[data-gallery-count]").textContent = text("gallery.count").replace("{count}", String(count));
+  scheduleArtifactLayout();
+}
+function revealGalleryTarget() {
+  if (!collectionGallery || !location.hash) return;
+  const target = document.getElementById(location.hash.slice(1));
+  if (!target || (target !== collectionGallery && !collectionGallery.contains(target))) return;
+  if (target.hasAttribute("data-gallery-panel")) activeGalleryCategory = target.id;
+  updateGalleryFilter();
+  collectionGallery.open = true;
+  requestAnimationFrame(() => collectionGallery.scrollIntoView({ block: "start", behavior: "instant" }));
+}
+collectionGallery?.addEventListener("toggle", scheduleArtifactLayout);
+document.querySelectorAll('a[href="#gallery"]').forEach((link) => link.addEventListener("click", (event) => {
+  event.preventDefault();
+  collectionGallery.open = true;
+  if (location.hash !== "#gallery") history.pushState(null, "", "#gallery");
+  revealGalleryTarget();
+}));
+document.querySelectorAll("[data-gallery-filter]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    activeGalleryCategory = link.dataset.galleryFilter;
+    history.replaceState(null, "", link.getAttribute("href"));
+    updateGalleryFilter();
+  });
+});
+window.addEventListener("hashchange", revealGalleryTarget);
+revealGalleryTarget();
 
 async function initializeLanguage() {
   let preferred = "en";

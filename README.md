@@ -1,12 +1,36 @@
 # MOFER
 
-The Museum of Far East Remembrance website presents the museum's original collections and exhibition history in eight languages. Its porcelain-blue palette, archival paper texture, muted purple exhibition area and slow historical film are unchanged. A compact printed-album treatment combines script-specific serif reading, thin image mounts and aligned captions. Smooth fades lead the transitions; a softly feathered border marks only the exhibition entry on Home and Exhibitions.
+Production website: [mofer.org](https://mofer.org).
 
-Home, About, Collections, Exhibitions, Research & Education, and Contact remain separate pages. The built site serves text, records, original photography, fonts, icons, texture and video locally. Fonts are generated from installed packages during the build, not from the legacy committed font directory. The only intentional third-party embed is Google Maps for Boynton House on Home and Exhibitions; the museum still needs no backend, database, translation service or runtime font CDN.
+The Museum of Far East Remembrance website presents original collections and exhibition history in five languages. A darker archival-blue palette, quiet paper grain and muted plum exhibition field retain the museum's identity while letting the original objects lead. A four-scene historical film plays at 85% speed. Script-specific serif reading, single image mounts and aligned captions support an object-led gallery. Transitions use fades, without ornamental borders.
+
+Home, About, Collections, Exhibitions and Contact are the site pages. The photo gallery is an expandable section within Collections, with a prominent access button at the top of that page. Research & Education has been removed. Old research URLs redirect to About; old gallery URLs redirect to Collections. The built site serves text, records, original photography, fonts, icons, texture and video locally. Fonts are generated from installed packages during the build, not from the legacy committed font directory. The only intentional third-party embed is Google Maps for Boynton House on Home and Exhibitions; the museum still needs no backend, database, translation service or runtime font CDN.
 
 [PRODUCT.md](PRODUCT.md) records the content and product constraints. [DESIGN.md](DESIGN.md) documents the implemented museum visual system, with machine-readable component metadata in [.impeccable/design.json](.impeccable/design.json).
 
 ## Revision Status
+
+The October 10 texture correction removes the opaque layer that washed out the approved paper pattern. The original grain is again rendered at full soft-light strength on page backgrounds, the header, exhibition field and footer, while preserving the darker palette and fade transitions. Twelve focused checks passed across four screen sizes, including rendered-pixel comparisons showing more than three times the grain variation of the masked version and readable text contrast.
+
+This correction is live as Cloudflare version `a69a00b3-86f6-440d-bf10-a54c13540b6d`. Live verification confirmed the unmasked background treatment and exact stylesheet/texture matches with the built local assets.
+
+The October 9 curatorial refresh names the collection's historical scope: late Qing and Republican China, the Second World War in Asia, postwar justice, and Chinese lives overseas. Collection titles, dates, places and full historical summaries remain unchanged. The five supported languages are English, Simplified Chinese, French, Traditional Chinese and Japanese; removed Russian, Spanish and Deutsch preferences safely fall back to English.
+
+Collections now provides an interactive reading desk: browse three historical themes, move between objects, use keyboard arrows or Home/End, enlarge originals and open observation prompts. Selection and theme persist through language changes, and the full-image viewer follows the filtered group. The photograph gallery shows one coherent group at a time, with consistent frames and specific captions. All 39 originals remain available. Contact pairs direct methods and two real press previews with the collaboration narrative, aligning both columns at the top.
+
+The build supplies a complete first collection record and eight original-image links without JavaScript. Native disclosures retain gallery and observation access. Static images, interface assets and all five language packs remain local; the Google Maps embed is still the only runtime third-party service.
+
+Published to [Cloudflare](https://mofer.alexdong0414.workers.dev) as version `e42a4d1b-2df7-41d4-9213-87fec2e1c132`. Seventy-six targeted browser checks passed across desktop, wide, tablet and mobile projects, covering all five languages, historical facts, discovery controls, gallery groups, text enlargement, contrast, native fallbacks, poster alignment and maps. Live checks verified every page and language, the new interactions, removed-language 404 responses, and exact SHA-256 matches for the deployed controller, stylesheet and language packs.
+
+The October 6 media update adds the 2026 Tokyo Trial poster, dates and opening hours alongside the 2025 Forgotten Ally poster and history. Both exhibitions share the existing Boynton House map. Large, uncropped posters align with the bottom of the adjacent content, using a shared two-column grid. Simplified and Traditional Chinese select the Chinese-led Tokyo Trial poster; all other languages use the English-led version. The supplied 2025 poster is bilingual. Interface separators use commas, not middle dots; original artwork is preserved.
+
+Home and Exhibitions link directly to the [gallery within Collections](collections.html#gallery), containing all 39 supplied images, grouped by posters, the Tokyo Trial, collection material and community visits. Full photographs retain their supplied watermarks. Lazy-loaded WebP thumbnails open the original JPEGs in the existing keyboard-accessible zoom viewer, with a native expandable section and plain image links when JavaScript is unavailable. Direct gallery anchors automatically expand the section when JavaScript is enabled.
+
+The initial media release was published to [Cloudflare](https://mofer.alexdong0414.workers.dev) on October 6, 2026 (version `b492ca37-a372-4bbf-8aa0-41e7dec1e992`). Its test results describe that earlier release, not subsequent layout refinements.
+
+The refined layout was published the same day as version `38cc3766-8b5f-4000-9f67-39b4904f4979`. Responsive and multilingual checks passed, including exact poster bottom alignment and locale switching. Pixel comparisons verified all four encoded crossfades, including the loop boundary, and confirmed image content rather than sidebars at both edges of the portrait scene. Live checks confirmed redirects, the Collections gallery, poster variants and playback of the matching 18-second film.
+
+To regenerate media after editing the supplied `img/` files, run `node scripts/prepare-media.mjs` with FFmpeg installed. This produces the committed assets and source-to-output manifest in `assets/gallery/`, plus `assets/video/remembrance-montage.mp4` and its poster. The film joins all four supplied clips in the order aircraft, convoy, transport, community, without audio. Each clip fills a 16:9 frame without bars or stretching; half-second crossfades include the final transition back to the first clip. The 18-second file plays in about 21 seconds at 0.85 speed. Normal builds need no FFmpeg: `npm run build` inserts gallery HTML into Collections from the committed manifest and English language pack. New interface strings are provided in all eight language packs.
 
 The September 21 printed-album refinement, fade-led borders and Boynton House maps were approved for publication after local review. Pushing the release to the connected repository's `main` branch triggers Cloudflare's production build and deployment.
 
@@ -33,6 +57,7 @@ The existing Worker is connected to [AlexDongzeyu/MOFER](https://github.com/Alex
 
 | Setting | Value |
 | --- | --- |
+| Production domain | [mofer.org](https://mofer.org) |
 | Worker name | `mofer` (must match `name` in [wrangler.jsonc](wrangler.jsonc)) |
 | Production branch | `main` |
 | Root directory | Leave blank (repository root) |
@@ -58,29 +83,30 @@ npm run check:deploy
 npm run preview:cloudflare
 ```
 
-Open <http://127.0.0.1:4174>. To use a different free port, run `npx wrangler dev --local --ip 127.0.0.1 --port 4181` directly. Connecting a custom domain and changing DNS are separate owner-managed steps after checking the deployment.
+Open <http://127.0.0.1:4174>. To use a different free port, run `npx wrangler dev --local --ip 127.0.0.1 --port 4181` directly. After pushing a release to `main`, verify the updated site at <https://mofer.org>. Custom-domain bindings and DNS remain managed in the Cloudflare dashboard; routine website updates do not require DNS changes.
 
 ## Editing the Website
 
 | File | Responsibility |
 | --- | --- |
-| [index.html](index.html) | Wordmark and film, split museum introduction, three mounted object links, exhibition introduction, and research/contact routes |
+| [index.html](index.html) | Wordmark and film, split museum introduction, three mounted object links, exhibition introduction, and gallery/contact routes |
 | [about.html](about.html) | Photographic opening, museum purpose, background, collection context, and the retained contextual facts |
-| [collections.html](collections.html) | Compact introduction, count lede, large selected object and reading column, contact sheet, and six collection themes |
-| [exhibitions.html](exhibitions.html) | Exhibition history, gallery, press coverage, and contact |
-| [research.html](research.html) | Compact introduction, descriptive heading, four existing activities, and collaboration photograph |
-| [contact.html](contact.html) | Email, telephone and press links first; collaboration copy and original photograph second |
+| [collections.html](collections.html) | Interactive reading desk, historical themes, top gallery access, grouped photo gallery and six wider collection themes |
+| [exhibitions.html](exhibitions.html) | 2026 and 2025 posters, representative photographs, venue map, press coverage, and gallery access |
+| [scripts/prepare-media.mjs](scripts/prepare-media.mjs) | Prepare the supplied images, thumbnails, provenance manifest and four-clip hero film |
+| [contact.html](contact.html) | Email, telephone and two press previews; aligned collaboration copy and original photograph |
 | [styles.css](styles.css) | Unchanged palette and grain, serif reading roles, printed mounts, fade-led joins and a restrained exhibition border, compact responsive spacing, and viewer presentation |
 | [script.js](script.js) | Validated language loading, saved preferences, navigation, collection selection, measured row/caption alignment, image viewer, and ambient video |
 | [scripts/prepare-fonts.mjs](scripts/prepare-fonts.mjs) | Generate the nine local normal-variable font families and licenses from installed packages |
-| [assets/textures/exhibition-border.png](assets/textures/exhibition-border.png) | Feathered raster mask from a text-free printed edge, used only at the exhibition entry on Home and Exhibitions |
-| [scripts/prepare-exhibition-border.mjs](scripts/prepare-exhibition-border.mjs) | Reproduce the exhibition border from the unchanged booklet scan with transparency feathered at all four edges |
+| [assets/textures/exhibition-border.png](assets/textures/exhibition-border.png) | Retained development asset; no longer used in the interface |
+| [scripts/prepare-exhibition-border.mjs](scripts/prepare-exhibition-border.mjs) | Legacy border preparation, not part of the normal build |
 | [scripts/build.mjs](scripts/build.mjs) | Copy public assets, exclude legacy fonts, generate current fonts, and check per-file size |
 | [assets/i18n/en.json](assets/i18n/en.json) | Canonical English text and eight collection records |
 | [404.html](404.html) | Localized not-found page, including missing nested routes |
 | [_headers](_headers) | Cloudflare response headers |
+| [_redirects](_redirects) | Redirect retired gallery and research URLs without breaking existing links |
 
-Images and video retain their original relative paths in `assets/`. Copy lives in `assets/i18n/<locale>.json`, with `strings` for the interface and pages, and `collections` for the eight objects. Keep the same keys and record order in every language. Object IDs, image paths, and optional `fit` values must match English; translate the title, type, date, place, and summary. Verify historical details before changing them.
+Images and video retain their relative paths in `assets/`. Copy lives in `assets/i18n/<locale>.json`, with `strings` for the interface, pages and photograph captions, and `collections` for the eight objects. Keep the same keys and record order in every language. Object IDs, image paths, optional `fit` values and `theme` values must match English. Translate title, type, date, place, summary, context and observation prompt (`look`). Themes are `war`, `change` and `culture`; all controls and validation use these same identities. Verify historical details before changing them.
 
 After editing English copy, run `node scripts/sync-copy.mjs` to synchronize the default HTML text without reformatting the markup. Add `data-i18n`, `data-i18n-alt`, `data-i18n-aria`, or `data-i18n-title` to localized elements. The controller also updates document titles and descriptions. Adding fields or objects requires updating all packs and the corresponding validation/tests.
 
@@ -93,17 +119,14 @@ After editing English copy, run `node scripts/sync-copy.mjs` to synchronize the 
 | Français | [assets/i18n/fr.json](assets/i18n/fr.json) |
 | 繁體中文 | [assets/i18n/zh-Hant.json](assets/i18n/zh-Hant.json) |
 | 日本語 | [assets/i18n/ja.json](assets/i18n/ja.json) |
-| Русский | [assets/i18n/ru.json](assets/i18n/ru.json) |
-| Deutsch | [assets/i18n/de.json](assets/i18n/de.json) |
-| Español | [assets/i18n/es.json](assets/i18n/es.json) |
 
 English is the default on a fresh visit. A visitor's explicit selection is saved locally as `mofer-language` and retained across navigation and reloads. Invalid preferences fall back to English. If a selected translation fails to load or validate, the previous language stays readable and a localized retry action is available, including after an initial English load failure. An open image viewer updates its captions when a pending translation completes.
 
-The six additional translations received the previously documented independent editorial review. [docs/translation-review.md](docs/translation-review.md) retains its scope and the historical university-name ambiguity that needs curatorial confirmation. The map addition introduces three interface strings per language without changing historical photo/title copy. The two repeated Boynton House venue separators on Home and Exhibitions use commas. Native-language museum approval is still recommended for official terminology.
+[docs/translation-review.md](docs/translation-review.md) records the historical review's scope and a university-name ambiguity needing curatorial confirmation. Its earlier review does not certify the October 9 copy or new observation prompts. Native-language museum approval is recommended for official terminology. Interface separators use commas, not ornamental dots.
 
 ### Boynton House Map
 
-Home and Exhibitions include a compact map below their exhibition and press links. The iframe uses Google place identifier `522738823898078509`, verified against Boynton House at 1300 Elgin Mills Road East, Richmond Hill. The [City of Richmond Hill venue page](https://www.richmondhill.ca/en/things-to-do/Boynton-House-Art-Exhibition-Space.aspx) confirms the address. The caption identifies the venue of the 2025 exhibition, not a permanent MOFER location or a current event.
+Home and Exhibitions include a map below their exhibition and press links, filling the available column height alongside the poster. The iframe uses Google place identifier `522738823898078509`, verified against Boynton House at 1300 Elgin Mills Road East, Richmond Hill. The [City of Richmond Hill venue page](https://www.richmondhill.ca/en/things-to-do/Boynton-House-Art-Exhibition-Space.aspx) confirms the address. The caption identifies the shared 2025 and 2026 exhibition venue, not a permanent MOFER location.
 
 The iframe lazy-loads from Google, uses the selected language, and requires no application API key. Loading it contacts Google and is subject to Google's availability and privacy practices. The address and an external Google Maps link stay visible outside the iframe when the provider is blocked or unavailable. Geolocation, camera and microphone permissions remain disabled by the existing site headers.
 
@@ -142,38 +165,37 @@ These are page priorities, not a requirement to squeeze every section into one v
 
 | Page | Intended First-View Task | Content Flow |
 | --- | --- | --- |
-| Home | Recognize MOFER over its original film and choose Collections or Past exhibitions | One primary button and one text link; split introduction, three equally spaced mounted highlights, exhibition feature, research/contact routes |
+| Home | Recognize MOFER over its historical film and choose Collections or Exhibitions | One primary button and one text link; split introduction, three mounted highlights, large exhibition posters, gallery/contact routes |
 | About | Understand the museum's purpose through its photographic opening | Full museum context and three contextual facts remain here |
-| Collections | Read the count lede and begin inspecting the selected object | Compact introduction, object plus unframed reading column, thumbnails, then six themes; no redundant image banner |
+| Collections | Begin inspecting an original object | Compact heading and gallery access, image with adjacent discovery controls, historical context and observation prompt, then contact sheet and six themes |
 | Exhibitions | Recognize the documented past exhibition | Photographic opening, dated historical context, gallery and press links; no future-event placeholders |
-| Research | Understand the museum's existing research and education work | Compact introduction and descriptive heading, four activities, then collaboration copy and photograph |
-| Contact | Reach email, telephone and press links before the invitation | Direct contacts on the left and collaboration/photo on the right; contact methods come first on phones |
+| Contact | Reach email, telephone and relevant reporting | Top-aligned direct contacts and illustrated press previews on the left; collaboration/photo on the right; contact methods come first on phones |
 
-Sections and reading columns remain open. Images use transparent, square printed mounts with (8px) padding, a (1px) outer rule at (38%) accent and an inset (1px) rule at (20%) accent. These are flat printed edges, not wood, bevels or gilded frames. Historical objects remain contained and uncropped, with any original scanned mount preserved as part of the image. Full-bleed film and photographic openings stay unframed; the native image-inspection dialog remains a separate framed tool with full-image containment.
+Sections and reading columns remain open. Images use transparent, square mounts with (8px) padding and a single (1px) outer rule at (38%) accent. Historical objects remain contained and uncropped, with any original scanned mount preserved as part of the image. Visitor photographs have consistent cropped previews with the complete original in the viewer. Full-bleed film and photographic openings stay unframed.
 
-Home's three highlights use equal columns with (36px) desktop gaps, then one column on phones. Collection themes and exhibition photographs use two columns and one on phones; thumbnails use four and two. Shared section padding is (56 / 48 / 40px) for desktop/tablet/phone. Smaller paired-grid gaps, complete titles and bounded reading measures provide denser editorial organization without a literal newspaper layout. Exact responsive gaps and natural-image height caps are recorded in [DESIGN.md](DESIGN.md).
+Home's three highlights use equal image stages and caption baselines, with (36px) desktop gaps, then one column on phones. Collection themes and exhibition photographs use two columns and one on phones; thumbnails use four and two. The gallery uses three columns on desktop and two on smaller screens. Shared section padding is (48 / 48 / 40px). Exact responsive exceptions are recorded in [DESIGN.md](DESIGN.md).
 
-`scheduleArtifactLayout` groups items by rounded row top, measures their mount bounds, then writes `--caption-width` and `--media-offset` in one animation-frame batch. Captions match the mount's width; shorter images move down by half the row's height difference, aligning image centers without fixed-height empty stages. The helper responds to image loads, font readiness/loading completion, successful locale updates and resize. Its width-cached `ResizeObserver` avoids height-only feedback, and it does not reset focus, selection or viewer state.
+`scheduleArtifactLayout` measures mount bounds and row offsets in one animation-frame batch, skipping hidden gallery groups. Native-sized collection and pathway mounts retain centered rows. Home highlights and gallery groups use consistent stage sizes and full-column captions. The helper responds to image loads, font readiness, locale updates and resize without resetting focus, selection or viewer state.
 
 The four small Home hero topic labels and duplicated three-fact block are no longer displayed there. Their removal does not discard substantive content or locale JSON: contextual facts remain on About, and full object summaries stay in the selected detail. Preserve the selected title's `h2`, `data-detail-title` hook and section association.
 
 The unchanged [paper texture](assets/textures/archive-paper.png) comes from a blank margin of the original Pearl S. Buck letter, not a generated historical artifact. [scripts/prepare-texture.mjs](scripts/prepare-texture.mjs) reproduces it; no paper-grain regeneration is part of this revision. Texture stays off original photographs and documents. Flat image mounts remain part of the printed-album treatment; the fade-led border refinement does not change mounts, spacing or image alignment.
 
-### Fade First and Border Origin
+### Fade-Only Transitions
 
-Smooth fades carry the transitions; pattern is a restrained exception at the purple exhibition entry on Home and Exhibitions. The border starts (8px) below the section top, aligns with the shared content gutter and occupies a (24px)-high box capped at (320px) wide, shrinking within the gutters on narrow screens. CSS tints its contained raster mask with the existing pale-blue accent at (.34) opacity. It is decorative, takes no pointer events and adds no padding or layout space.
+Smooth fades carry the transitions. The exhibition ornament and double image borders have been removed. The hero entrance and selected-object image changes use opacity only; reduced-motion settings remove interface animation.
 
-About, Collections, Research, Contact and 404 have no decorative accent. Neither do footers, the film edge or other sections. There is no per-page symbol requirement, and no isolated curls, corner rules or short line accents. Flat image mounts and the quiet masthead edge remain separate structural treatments.
+No page uses isolated curls, ornamental symbols or decorative section borders. Single image mounts and the quiet masthead edge remain structural treatments.
 
-The film meets the page through a (64px) fade. Photographic openings retain their legibility overlay plus a (64px) bottom fade, or (56px) on phones. The purple exhibition band and footer keep the paper grain and use gradient joins of (48px) at the band's edges and (32px) at the footer entrance.
+The film meets the page through a (64px) fade. Photographic openings retain their legibility overlay and bottom fade. The darker exhibition field and footer use gradient joins of (48px) and (32px), without repeating texture at these transitions.
 
-[assets/textures/exhibition-border.png](assets/textures/exhibition-border.png) is a modern derivative of the text-free printed bottom edge of the museum's unchanged [booklet scan](assets/collections/extended/madame-chiang-letter-children.jpg). [scripts/prepare-exhibition-border.mjs](scripts/prepare-exhibition-border.mjs) extracts a crop starting at (6%) from the left and (96.7%) from the top, spanning (88%) of the width and (2.7%) of the height. The resulting (1024 x 44px) white-alpha raster uses squared feathering at all four edges: (220px) horizontally and (12px) vertically in the source raster. This is source-derived contemporary decoration, not an authenticated historic website border; no new historical date is assigned to it.
-
-The PNG supplies a flat mask tinted by CSS, not embossed material or a repeating page-wide border. Normal builds copy the prepared asset. The header retains its quiet (1px) edge, and the remaining section joins stay understated.
+The former [border asset](assets/textures/exhibition-border.png) and [preparation script](scripts/prepare-exhibition-border.mjs) remain development history, not part of the current presentation or historical evidence.
 
 ### Museum Reference Evidence
 
 References inform hierarchy and readable context, not branding, font licensing, copied assets or invented visitor services. This was not an unqualified full visual review of all four sites.
+
+The October 9 discovery interaction draws on [IWM's official collection-search guidance](https://www.iwm.org.uk/collections/how-to): meaningful historical grouping, clear dates and object categories, and an image-led route into individual records. The small MOFER selection uses a reading desk rather than pretending to be a searchable institutional database. Both contact previews link to the existing verified September 9, 2025 reports; their summaries are original, not copied article text.
 
 | Reference | Usable Observation | Capture Limitation |
 | --- | --- | --- |

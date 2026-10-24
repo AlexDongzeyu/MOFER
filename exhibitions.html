@@ -22,7 +22,6 @@
         <a href="about.html" data-i18n="nav.about">About</a>
         <a href="collections.html" data-i18n="nav.collections">Collections</a>
         <a href="exhibitions.html" aria-current="page" data-i18n="nav.exhibitions">Exhibitions</a>
-        <a href="research.html" data-i18n="nav.research">Research</a>
         <a href="contact.html" data-i18n="nav.contact">Contact</a>
       </nav>
 
@@ -35,9 +34,9 @@
             <option value="fr">Français</option>
             <option value="zh-Hant">繁體中文</option>
             <option value="ja">日本語</option>
-            <option value="ru">Русский</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
+
+
+
           </select>
         </label>
         <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu">
@@ -51,13 +50,36 @@
       <section class="page-hero" aria-labelledby="page-title">
         <div class="page-hero__copy">
           <h1 id="page-title" data-i18n="page.exhibitions.title">Exhibitions</h1>
-          <p class="section-label" data-i18n="exhibition.label">Past exhibition</p>
+          <p class="section-label">2026 / 2025</p>
           <p data-i18n="page.exhibitions.lede">
-            Our pop-up and partner exhibitions bring original objects into public spaces. We are also exploring the possibility of permanent exhibitions.
+            Two exhibitions at Boynton House connect China's wartime experience, international alliances and postwar justice through original documents, photographs and objects.
           </p>
         </div>
         <div class="page-hero__media">
-          <img src="assets/exhibitions/boynton-visitors-window.jpeg" alt="Visitors viewing MOFER exhibition materials at Boynton House." data-i18n-alt="alt.exhibitionWindow">
+          <img src="assets/gallery/boynton-visitors-10.jpg" alt="A guided group viewing a wartime poster and exhibition text." data-i18n-alt="alt.exhibitionTour">
+        </div>
+      </section>
+
+      <section class="section exhibition-current" id="tokyo-trial" aria-labelledby="tokyo-title">
+        <div class="poster-layout">
+          <img data-poster data-poster-en="assets/gallery/tokyo-poster-01.jpg" data-poster-zh="assets/gallery/boynton-visitors-01.jpg" src="assets/gallery/tokyo-poster-01.jpg" alt="The Tokyo Trial exhibition poster, October 6–11, 2026." data-i18n-alt="media.tokyoPoster" loading="lazy">
+          <div class="exhibition-copy">
+            <p class="section-label" data-i18n="media.tokyoGroup">The Tokyo Trial, 2026</p>
+            <h2 id="tokyo-title" data-i18n="media.tokyoTitle">The Tokyo Trial</h2>
+            <p class="exhibition-subtitle" data-i18n="media.tokyoSubtitle">Atrocities, Evidence, Justice</p>
+            <p data-i18n="media.summary">Original documents and objects place the Tokyo Trial in the aftermath of the Second World War in Asia, marking 80 years since the tribunal opened in 1946.</p>
+            <div class="exhibition-dates">
+              <strong data-i18n="media.dates">October 6–11, 2026</strong>
+              <span>Boynton House, Richmond Hill</span>
+              <span data-i18n="media.hoursEarly">October 6–8, 10:30 am–6:00 pm</span>
+              <span data-i18n="media.hoursLate">October 9–11, 10:30 am–7:30 pm</span>
+            </div>
+            <div class="exhibition-actions"><a class="button button--primary" href="collections.html#tokyo" data-i18n="media.viewGallery">View gallery</a><a class="text-link" href="#venue" data-i18n="media.visit">Venue &amp; directions</a></div>
+            <div class="exhibition-highlights">
+              <img src="assets/gallery/tokyo-exhibition-11.jpg" data-full-src="assets/gallery/tokyo-exhibition-11.jpg" alt="Documents displayed at the Tokyo Trial exhibition." data-i18n-alt="media.tokyoPhoto" loading="lazy">
+              <img src="assets/gallery/archive-03.jpg" data-full-src="assets/gallery/archive-03.jpg" alt="Original documents and photographs from the museum collection." data-i18n-alt="media.archivePhoto" loading="lazy">
+            </div>
+          </div>
         </div>
       </section>
 
@@ -72,8 +94,8 @@
           </p>
         </div>
 
-        <div class="exhibition__feature">
-          <img src="assets/exhibitions/boynton-youth-gallery.jpeg" alt="Young visitors viewing MOFER exhibition materials at Boynton House." data-i18n-alt="alt.exhibitionYouth">
+        <div class="exhibition__feature poster-layout">
+          <img data-poster src="assets/gallery/boynton-2025-04.jpg" alt="Forgotten Ally from the Far East exhibition poster, September 9–14, 2025." data-i18n-alt="media.pastPoster" loading="lazy">
           <div>
             <h3 data-i18n="exhibition.featureTitle">The Far East's place in Allied victory.</h3>
             <p class="section-label">Boynton House, Richmond Hill</p>
@@ -84,30 +106,23 @@
               <a href="https://www.worldchinesemedia.com/2025/09/09/13163/" target="_blank" rel="noreferrer" data-i18n="press.world">World Chinese Media report</a>
               <a href="https://www.canadanewsreport.com/2025/09/09/16923/" target="_blank" rel="noreferrer" data-i18n="press.canada">Canada News Report</a>
             </div>
-            <figure class="venue-map">
-              <figcaption><span data-i18n="venue.caption">2025 exhibition venue</span><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=Boynton+House%2C+1300+Elgin+Mills+Road+East%2C+Richmond+Hill%2C+Ontario%2C+Canada" target="_blank" rel="noopener noreferrer" data-i18n="venue.openMap">Open in Google Maps</a></figcaption>
+            <a class="text-link gallery-link" href="collections.html#community" data-i18n="media.viewGallery">View gallery</a>
+            <figure class="venue-map" id="venue">
+              <figcaption><span data-i18n="venue.caption">2025 &amp; 2026 exhibition venue</span><a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=Boynton+House%2C+1300+Elgin+Mills+Road+East%2C+Richmond+Hill%2C+Ontario%2C+Canada" target="_blank" rel="noopener noreferrer" data-i18n="venue.openMap">Open in Google Maps</a></figcaption>
               <iframe data-venue-map data-i18n-title="venue.mapTitle" title="Boynton House map, Richmond Hill" src="https://www.google.com/maps?cid=522738823898078509&amp;output=embed&amp;hl=en" width="600" height="240" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
               <p class="venue-map__address">1300 Elgin Mills Road East, Richmond Hill</p>
             </figure>
           </div>
         </div>
 
-        <div class="gallery-grid" aria-label="Boynton House exhibition photographs" data-i18n-aria="aria.gallery">
+        <div class="gallery-grid exhibition-preview" aria-label="Boynton House exhibition photographs" data-i18n-aria="aria.gallery">
           <figure>
-            <img src="assets/exhibitions/boynton-uniform-room.jpeg" alt="Visitors standing near a Chinese wartime uniform and Allied poster display." data-i18n-alt="alt.exhibitionUniform">
+            <img src="assets/gallery/boynton-2025-01.jpg" alt="Visitors standing near a Chinese wartime uniform and Allied poster display." data-i18n-alt="alt.exhibitionUniform" loading="lazy">
             <figcaption data-i18n="gallery.uniform">Uniforms, posters, and historical photographs on display.</figcaption>
           </figure>
           <figure>
-            <img src="assets/exhibitions/boynton-archive-wall.jpeg" alt="Visitor viewing framed archival documents and wartime photographs." data-i18n-alt="alt.exhibitionArchive">
-            <figcaption data-i18n="gallery.archive">Original documents and photographs, on public view.</figcaption>
-          </figure>
-          <figure>
-            <img src="assets/exhibitions/boynton-guided-tour.jpeg" alt="A guided group viewing a wartime poster and exhibition text." data-i18n-alt="alt.exhibitionTour">
+            <img src="assets/gallery/boynton-visitors-10.jpg" alt="A guided group viewing a wartime poster and exhibition text." data-i18n-alt="alt.exhibitionTour" loading="lazy">
             <figcaption data-i18n="gallery.guided">Guided tours and public education for visitors of different ages and backgrounds.</figcaption>
-          </figure>
-          <figure>
-            <img src="assets/exhibitions/boynton-poster-wall.jpeg" alt="Visitors reading exhibition materials in front of an Allied wartime poster." data-i18n-alt="alt.exhibitionPoster">
-            <figcaption data-i18n="gallery.poster">Wartime posters help tell the story of a forgotten ally.</figcaption>
           </figure>
         </div>
       </section>
@@ -117,10 +132,10 @@
           <img src="assets/exhibitions/boynton-family-viewing.jpeg" alt="Visitors viewing MOFER exhibition materials together." data-i18n-alt="alt.exhibitionFamily">
         </div>
         <div class="involvement__copy">
-          <h2 id="contact-title" data-i18n="contact.label">Work with us</h2>
-          <p class="section__statement" data-i18n="contact.title">Help preserve, study, and share the history of the Far East.</p>
+          <h2 id="contact-title" data-i18n="contact.label">Collaborate with MOFER</h2>
+          <p class="section__statement" data-i18n="contact.title">For exhibition proposals, collection questions and collaboration.</p>
           <p data-i18n="contact.body">
-            Museums, archives, universities, researchers, educators, community groups, and volunteers are welcome. Contact us about exhibitions, research, translation, public programs, or archival preservation.
+            Museums, archives, universities, researchers, educators, community groups, and volunteers are welcome. Write to us about exhibitions, research, translation, public programs, or archival preservation.
           </p>
           <div class="contact-panel">
             <a href="mailto:communications@mofer.org">communications@mofer.org</a>
@@ -135,7 +150,7 @@
         <a class="footer-wordmark" href="index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">MOFER</a>
         <p data-i18n="museum.name">Museum of Far East Remembrance</p>
       </div>
-      <p data-i18n="footer.note">Preserving, studying, and sharing the history of the Far East.</p>
+      <p data-i18n="footer.note">Original objects, shared histories of China and the Far East.</p>
       <a class="back-to-top" href="#top" data-i18n="nav.top">Back to top</a>
     </footer>
 

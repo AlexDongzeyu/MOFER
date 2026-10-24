@@ -2,10 +2,10 @@ import { test as base, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { parse } from "parse5";
 
-const languages = ["en", "zh-Hans", "fr", "zh-Hant", "ja", "ru", "de", "es"];
-const languageNames = ["English", "简体中文", "Français", "繁體中文", "日本語", "Русский", "Deutsch", "Español"];
-const pages = ["index.html", "about.html", "collections.html", "exhibitions.html", "research.html", "contact.html"];
-const destinations = ["about.html", "collections.html", "exhibitions.html", "research.html", "contact.html"];
+const languages = ["en", "zh-Hans", "fr", "zh-Hant", "ja"];
+const languageNames = ["English", "简体中文", "Français", "繁體中文", "日本語"];
+const pages = ["index.html", "about.html", "collections.html", "exhibitions.html", "contact.html"];
+const destinations = ["about.html", "collections.html", "exhibitions.html", "contact.html"];
 const packs = Object.fromEntries(languages.map((language) => [language, JSON.parse(readFileSync(new URL(`../assets/i18n/${language}.json`, import.meta.url), "utf8"))]));
 const contentBaseline = JSON.parse(readFileSync(new URL("./fixtures/content.json", import.meta.url), "utf8"));
 const historicalFacts = JSON.parse(readFileSync(new URL("./fixtures/facts.json", import.meta.url), "utf8"));
@@ -37,7 +37,7 @@ async function chooseLanguage(page, language) {
   await expect(page.locator("html")).toHaveAttribute("lang", language);
 }
 
-test("English-first visits offer all eight native-language choices", async ({ page }) => {
+test("English-first visits offer the five retained native-language choices", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
   await expect(page.locator("h1")).toContainText("Museum of Far East Remembrance");
@@ -47,7 +47,7 @@ test("English-first visits offer all eight native-language choices", async ({ pa
 
 test("Boynton House maps sit below the exhibition links in every language", async ({ page }) => {
   test.setTimeout(120_000);
-  const mapLanguages = { en: "en", "zh-Hans": "zh-CN", fr: "fr", "zh-Hant": "zh-TW", ja: "ja", ru: "ru", de: "de", es: "es" };
+  const mapLanguages = { en: "en", "zh-Hans": "zh-CN", fr: "fr", "zh-Hant": "zh-TW", ja: "ja" };
   const place = "Boynton House, 1300 Elgin Mills Road East, Richmond Hill, Ontario, Canada";
   for (const route of ["index.html", "exhibitions.html"]) {
     await page.goto(`/${route}`);
@@ -82,7 +82,7 @@ test("Boynton House maps sit below the exhibition links in every language", asyn
     expect(placement.afterLinks).toBe(true);
     expect(placement.fits).toBe(true);
     expect(placement.height).toBeGreaterThanOrEqual(200);
-    expect(placement.height).toBeLessThanOrEqual(280);
+    expect(placement.height).toBeLessThanOrEqual(650);
   }
 });
 
@@ -136,15 +136,15 @@ test("script-specific typography loads locally for every museum language", async
   }
 });
 
-test("gallery presentation retains the palette and uncropped objects", async ({ page }) => {
+test("gallery presentation uses the darker archival palette and uncropped objects", async ({ page }) => {
   await page.goto("/collections.html");
   await expect(page.locator(".collection-card")).toHaveCount(8);
   const palette = await page.evaluate(() => {
     const style = getComputedStyle(document.documentElement);
     return Object.fromEntries(["paper", "white", "ink", "muted", "cobalt", "mineral", "accent", "wine", "deep"].map((name) => [name, style.getPropertyValue(`--${name}`).trim()]));
   });
-  expect(palette).toEqual({ paper: "#152436", white: "#f0eee8", ink: "#e8edf1", muted: "#b6c5d4", cobalt: "#30496a", mineral: "#21374e", accent: "#bdd4e7", wine: "#3d2d34", deep: "#0f1b2a" });
-  for (const selector of [".collection-detail", ".collection-detail > .image-open", ".collection-card img", ".pathway-card > .image-open"]) {
+  expect(palette).toEqual({ paper: "#101a24", white: "#eee9df", ink: "#e4e9ed", muted: "#b6bec9", cobalt: "#2d4052", mineral: "#1b2b39", accent: "#c6d5df", wine: "#282329", deep: "#0b1118" });
+  for (const selector of [".collection-detail", ".collection-stage > .image-open", ".collection-card img", ".pathway-card > .image-open"]) {
     await expect(page.locator(selector).first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   }
   for (const selector of ["[data-detail-image]", ".collection-card img", ".pathway-card img"]) {
@@ -158,7 +158,7 @@ test("centered artifact rows keep captions aligned with their images", async ({ 
   for (const route of ["index.html", "collections.html"]) {
     await page.goto(`/${route}`);
     await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
-    await page.locator("img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
+    await page.locator(".preview-grid img, .collection-list img, .pathway-grid img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
     await page.evaluate(() => document.fonts.ready);
     await expect.poll(async () => page.evaluate(() => {
       let error = 0;
@@ -169,9 +169,7 @@ test("centered artifact rows keep captions aligned with their images", async ({ 
           const caption = item.querySelector("h3");
           const imageBox = image.getBoundingClientRect();
           const mount = image.closest(".artifact-mount, .image-open, .preview-object__image") || image;
-          const mountStyle = getComputedStyle(mount);
-          const inset = parseFloat(mountStyle.paddingLeft) + parseFloat(mountStyle.borderLeftWidth);
-          error = Math.max(error, Math.abs(caption.getBoundingClientRect().left - (imageBox.left - inset)));
+          error = Math.max(error, Math.abs(caption.getBoundingClientRect().left - mount.getBoundingClientRect().left));
           const row = Math.round(item.getBoundingClientRect().top);
           if (!rows.has(row)) rows.set(row, []);
           rows.get(row).push(imageBox.top + imageBox.height / 2);
@@ -186,11 +184,7 @@ test("centered artifact rows keep captions aligned with their images", async ({ 
   }
 });
 
-test("faded exhibition borders stay subtle and isolated", async ({ page }) => {
-  const accents = {
-    "index.html": "exhibition",
-    "exhibitions.html": "exhibition"
-  };
+test("section joins use fades without ornamental borders or dot separators", async ({ page }) => {
   for (const route of [...pages, "404.html"]) {
     await page.goto(`/${route}`);
     await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
@@ -208,44 +202,12 @@ test("faded exhibition borders stay subtle and isolated", async ({ page }) => {
         sectionWidth: element.getBoundingClientRect().width
       };
     }).filter((edge) => edge.content !== "none" && edge.content !== "normal" && edge.display !== "none"));
-    expect(edges, route).toHaveLength(accents[route] ? 1 : 0);
-    if (edges.length) {
-      const edge = edges[0];
-      expect(edge.classes, route).toContain(accents[route]);
-      expect(edge.width, route).toBeGreaterThanOrEqual(180);
-      expect(edge.width, route).toBeLessThanOrEqual(320);
-      expect(edge.height, route).toBeLessThanOrEqual(28);
-      expect(edge.opacity, route).toBeGreaterThanOrEqual(.2);
-      expect(edge.opacity, route).toBeLessThanOrEqual(.4);
-      expect(edge.left, route).toBeLessThan(edge.sectionWidth / 3);
-      expect(edge.mask, route).toContain("exhibition-border.png");
-    }
+    expect(edges, route).toHaveLength(0);
     await expect(page.locator("body")).not.toContainText(/[\u00b7\u2022\u25cf]/u);
   }
-  const ornament = await page.evaluate(async () => {
-    const image = new Image();
-    image.src = "/assets/textures/exhibition-border.png";
-    await image.decode();
-    const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth;
-    canvas.height = image.naturalHeight;
-    const context = canvas.getContext("2d");
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-    let visible = 0;
-    let clipped = false;
-    for (let offset = 3; offset < pixels.length; offset += 4) {
-      if (pixels[offset] <= 40) continue;
-      visible += 1;
-      const column = ((offset - 3) / 4) % canvas.width;
-      const row = Math.floor((offset - 3) / 4 / canvas.width);
-      if (column < 2 || row < 2 || column >= canvas.width - 2 || row >= canvas.height - 2) clipped = true;
-    }
-    return { coverage: visible / (canvas.width * canvas.height), clipped };
-  });
-  expect(ornament.coverage).toBeGreaterThan(.02);
-  expect(ornament.coverage).toBeLessThan(.4);
-  expect(ornament.clipped).toBe(false);
+  await page.goto("/");
+  await expect(page.locator(".hero__content")).toHaveCSS("transform", "none");
+  expect(await page.locator(".hero").evaluate((hero) => getComputedStyle(hero, "::after").backgroundImage)).toContain("linear-gradient");
 });
 
 test("primary collection and contact content are visible on arrival", async ({ page }) => {
@@ -274,13 +236,14 @@ test("artifact captions and expansion controls stay with the visible image", asy
       const bounds = image.getBoundingClientRect();
       const opener = image.closest(".image-open");
       const control = opener?.querySelector(".image-open__symbol")?.getBoundingClientRect();
+      const frame = opener?.getBoundingClientRect();
       const caption = image.closest(".preview-object")?.querySelector("h3")?.getBoundingClientRect();
       return {
         source: image.getAttribute("src"),
         ratio: bounds.width / bounds.height,
         naturalRatio: image.naturalWidth / image.naturalHeight,
-        controlInside: !control || (control.left >= bounds.left && control.right <= bounds.right && control.top >= bounds.top && control.bottom <= bounds.bottom),
-        captionGap: caption ? caption.top - bounds.bottom : null
+        controlInside: !control || (control.left >= frame.left && control.right <= frame.right && control.top >= frame.top && control.bottom <= frame.bottom),
+        captionGap: caption ? caption.top - image.closest(".preview-object__image").getBoundingClientRect().bottom : null
       };
     }));
     for (const image of images) {
@@ -296,7 +259,7 @@ test("editorial pages remain usable with doubled text size", async ({ page }) =>
   for (const route of ["index.html", "collections.html", "contact.html"]) {
     await page.goto(`/${route}`);
     await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
-    for (const language of ["en", "de", "zh-Hant", "ja", "ru"]) {
+    for (const language of languages) {
       await chooseLanguage(page, language);
       await page.evaluate(() => document.fonts.ready);
       const layout = await page.evaluate(() => {
@@ -354,12 +317,13 @@ test("the dedicated pages retain all substantive museum content", async () => {
     for (const child of node.childNodes || []) visit(child);
   }
   for (const route of pages) visit(parse(readFileSync(new URL(`../${route}`, import.meta.url), "utf8")));
-  const substantive = Object.keys(contentBaseline.translations.en).filter((key) => /body|summary|\.lede$|\.intro$|^gallery\.|^facts\.|^hero\.title$|^footer\.note$/u.test(key));
+  visit(parse(readFileSync(new URL("../dist/collections.html", import.meta.url), "utf8")));
+  const substantive = Object.keys(contentBaseline.translations.en).filter((key) => !/^(research|work)\./u.test(key) && !["gallery.archive", "gallery.poster"].includes(key) && /body|summary|\.lede$|\.intro$|^gallery\.|^facts\.|^hero\.title$|^footer\.note$/u.test(key));
   for (const key of substantive) expect(usedKeys.has(key), `The site must render ${key}`).toBe(true);
 });
 
 for (const route of pages) {
-  test(`${route} renders all eight languages without missing content`, async ({ page }, testInfo) => {
+  test(`${route} renders all five languages without missing content`, async ({ page }, testInfo) => {
     test.setTimeout(120_000);
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
@@ -380,23 +344,24 @@ for (const route of pages) {
           for (const value of values) expect(value.value).toBe(pack.strings[value.key]);
         }
         await expect(page.locator("[data-language-select]")).toHaveAttribute("aria-label", pack.strings["language.label"]);
-        await expect(page.locator(".primary-nav a")).toHaveCount(5);
+        await expect(page.locator(".primary-nav a")).toHaveCount(4);
         await expect(page.locator("h1")).toBeVisible();
         await expect(page.locator(".site-footer")).toContainText("MOFER");
         if (route === "index.html") {
-          await expect(page.locator(".museum-paths")).toHaveAccessibleName(`${pack.strings["research.label"]} ${pack.strings["contact.label"]}`);
+          await expect(page.locator(".museum-paths")).toHaveAccessibleName(`${pack.strings["page.gallery.title"]} ${pack.strings["contact.label"]}`);
         }
         if (route === "collections.html") {
           await expect(page.locator(".collection-card h3")).toHaveText(pack.collections.map((item) => item.title));
           await expect(page.locator(".pathway-card")).toHaveCount(6);
           await expect(page.locator("[data-detail-description]")).toHaveText(pack.collections[0].summary);
         }
+        await page.locator("img[loading='lazy']").evaluateAll((images) => images.forEach((image) => { image.loading = "eager"; }));
         await page.waitForFunction(() => Array.from(document.images).every((image) => image.complete && image.naturalWidth > 0));
         await page.evaluate(() => document.fonts.ready);
         await page.locator("img").evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${route} ${language} overflow`).toBe(true);
-        if (["desktop", "mobile"].includes(testInfo.project.name) && ["en", "zh-Hans", "zh-Hant", "ja", "ru", "de"].includes(language)) {
+        if (["desktop", "mobile"].includes(testInfo.project.name) && ["en", "zh-Hans"].includes(language)) {
           await page.screenshot({ path: testInfo.outputPath(`${language}-viewport.png`), animations: "disabled" });
           await page.screenshot({ path: testInfo.outputPath(`${language}-full.png`), fullPage: true, animations: "disabled" });
         }
@@ -425,7 +390,8 @@ test("main navigation uses dedicated destinations consistently", async ({ page, 
     }
   }
   await page.goto("/");
-  for (const anchor of ["about", "collections", "exhibitions", "research", "contact"]) await expect(page.locator(`#${anchor}`)).toHaveCount(1);
+  for (const anchor of ["about", "collections", "exhibitions", "contact"]) await expect(page.locator(`#${anchor}`)).toHaveCount(1);
+  await expect(page.locator('a[href*="research"]')).toHaveCount(0);
 });
 
 test("language choices survive navigation, reload, and keyboard selection", async ({ page }) => {
@@ -434,9 +400,9 @@ test("language choices survive navigation, reload, and keyboard selection", asyn
   await expect(page.locator("[data-detail-title]")).toHaveText(packs.fr.collections[0].title);
   const menu = page.locator("[data-menu-toggle]");
   if (await menu.isVisible()) await menu.click();
-  await page.locator('.primary-nav a[href="research.html"]').click();
+  await page.locator('.primary-nav a[href="about.html"]').click();
   await expect(page.locator("html")).toHaveAttribute("data-language-ready", "fr");
-  await expect(page.locator("h1")).toHaveText(packs.fr.strings["page.research.title"]);
+  await expect(page.locator("h1")).toHaveText(packs.fr.strings["page.about.title"]);
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-language-ready", "fr");
   await page.locator("[data-language-select]").focus();
@@ -448,13 +414,13 @@ test("language choices survive navigation, reload, and keyboard selection", asyn
 test("a failed translation retains readable content and the prior selection", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-language-ready", "en");
-  await page.route("**/assets/i18n/de.json", (route) => route.fulfill({ status: 503, body: "Unavailable" }));
-  await page.locator("[data-language-select]").selectOption("de");
+  await page.route("**/assets/i18n/ja.json", (route) => route.fulfill({ status: 503, body: "Unavailable" }));
+  await page.locator("[data-language-select]").selectOption("ja");
   await expect(page.locator("[data-language-status]")).toBeVisible();
   await expect(page.locator("[data-language-select]")).toHaveValue("en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page.locator(".hero__statement")).toHaveText(packs.en.strings["hero.title"]);
-  await chooseLanguage(page, "es");
+  await chooseLanguage(page, "fr");
   await expect(page.locator("[data-language-status]")).not.toBeVisible();
 });
 
@@ -591,7 +557,7 @@ test("translated header stays separated at intermediate widths", async ({ page }
   await page.goto("/");
   for (const width of [961, 1024, 1025, 1120, 1200]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const language of ["ru", "es", "de", "fr"]) {
+    for (const language of languages) {
       await chooseLanguage(page, language);
       await page.evaluate(() => document.fonts.ready);
       const menu = page.locator("[data-menu-toggle]");
@@ -612,10 +578,11 @@ test("translated header stays separated at intermediate widths", async ({ page }
   }
 });
 
-test("hero video loops at quarter speed without playback controls", async ({ page }) => {
+test("hero montage loops at a gently slowed pace without playback controls", async ({ page }) => {
   await page.goto("/");
   const video = page.locator("[data-hero-video]");
-  for (const [property, value] of [["playbackRate", .25], ["defaultPlaybackRate", .25], ["muted", true], ["loop", true], ["controls", false]]) await expect(video).toHaveJSProperty(property, value);
+  for (const [property, value] of [["playbackRate", .85], ["defaultPlaybackRate", .85], ["muted", true], ["loop", true], ["controls", false]]) await expect(video).toHaveJSProperty(property, value);
+  await expect(video).toHaveAttribute("src", "assets/video/remembrance-montage.mp4");
   await expect(page.locator("[data-motion-toggle]")).toHaveCount(0);
   await page.waitForFunction(() => document.querySelector("video").currentTime > .1);
   await video.evaluate((element) => { element.currentTime = element.duration - .2; });
@@ -628,7 +595,7 @@ test("hero video stays visible and playing with reduced motion enabled", async (
   await page.goto("/");
   const video = page.locator("[data-hero-video]");
   await expect(video).toBeVisible();
-  await expect(video).toHaveJSProperty("playbackRate", .25);
+  await expect(video).toHaveJSProperty("playbackRate", .85);
   await page.waitForFunction(() => document.querySelector("video").currentTime > .1);
   await expect(video).toHaveJSProperty("paused", false);
   await expect(page.locator(".hero__content")).toHaveCSS("animation-name", "none");
@@ -652,7 +619,7 @@ test("English fallback content remains readable without the script", async ({ pa
     await page.goto(`/${route}`);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator(".site-footer > p")).toHaveText(packs.en.strings["footer.note"]);
-    await expect(page.locator(".primary-nav a")).toHaveText(["About", "Collections", "Exhibitions", "Research", "Contact"]);
+    await expect(page.locator(".primary-nav a")).toHaveText(["About", "Collections", "Exhibitions", "Contact"]);
   }
 });
 

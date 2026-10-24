@@ -22,7 +22,6 @@
         <a href="about.html" data-i18n="nav.about">About</a>
         <a href="collections.html" aria-current="page" data-i18n="nav.collections">Collections</a>
         <a href="exhibitions.html" data-i18n="nav.exhibitions">Exhibitions</a>
-        <a href="research.html" data-i18n="nav.research">Research</a>
         <a href="contact.html" data-i18n="nav.contact">Contact</a>
       </nav>
 
@@ -35,9 +34,9 @@
             <option value="fr">Français</option>
             <option value="zh-Hant">繁體中文</option>
             <option value="ja">日本語</option>
-            <option value="ru">Русский</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
+
+
+
           </select>
         </label>
         <button class="menu-toggle icon-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu">
@@ -49,44 +48,71 @@
 
     <main id="top" tabindex="-1">
       <section class="page-intro" aria-labelledby="page-title">
-        <h1 id="page-title" data-i18n="page.collections.title">Collections</h1>
-        <p data-i18n="page.collections.lede">Original photographs, documents, books, periodicals, posters, maps, unpublished manuscripts, and objects. We are cataloguing them for research, citation, and education.</p>
+        <div><h1 id="page-title" data-i18n="page.collections.title">Collections</h1><a class="button button--primary collection-gallery-link" href="#gallery" data-i18n="media.viewGallery">View gallery</a></div>
+        <p data-i18n="page.collections.lede">Original objects from late Qing China, wartime Asia and Chinese lives overseas.</p>
       </section>
 
       <section class="collections section" id="collections" aria-labelledby="collections-title">
-        <p class="collection-lede" data-i18n="collections.intro">Eight representative holdings, with records that could become a searchable digital catalogue.</p>
-
+        <p class="collection-lede" data-i18n="collections.intro">Eight objects. Choose a theme, or enlarge an original to look closely.</p>
         <div class="collection-layout">
           <aside class="collection-detail" id="collection-detail" data-collection-detail aria-live="polite">
-            <img data-detail-image src="assets/collections/tim-louie-victory-address.jpg" alt="">
+            <div class="collection-stage">
+              <img data-detail-image src="assets/collections/tim-louie-victory-address.jpg" alt="Tim Louie's Victory Address in Vancouver's Chinatown">
+              <p data-i18n="desk.zoomHint">Select the image to view it in full.</p>
+              <div class="collection-toolbar" data-collection-controls hidden>
+                <div class="collection-filters" role="group" aria-label="Browse by historical theme" data-i18n-aria="desk.themes">
+                  <button type="button" data-collection-filter="all" aria-pressed="true" data-i18n="desk.all">All objects</button>
+                  <button type="button" data-collection-filter="war" aria-pressed="false" data-i18n="desk.war">War, relief &amp; justice</button>
+                  <button type="button" data-collection-filter="change" aria-pressed="false" data-i18n="desk.change">Political change</button>
+                  <button type="button" data-collection-filter="culture" aria-pressed="false" data-i18n="desk.culture">Culture &amp; identity</button>
+                </div>
+                <div class="desk-navigation">
+                  <button class="icon-button" type="button" data-collection-previous aria-label="Previous object" data-i18n-aria="desk.previous"><span class="icon icon--left" aria-hidden="true"></span></button>
+                  <span data-collection-position role="status" aria-live="polite"></span>
+                  <button class="icon-button" type="button" data-collection-next aria-label="Next object" data-i18n-aria="desk.next"><span class="icon icon--right" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </div>
             <div class="collection-detail__body">
-              <p class="section-label" data-detail-type></p>
-              <h2 id="collections-title" data-detail-title></h2>
-              <p data-detail-description></p>
+              <p class="section-label" data-detail-type><!-- DETAIL_TYPE --></p>
+              <h2 id="collections-title" data-detail-title><!-- DETAIL_TITLE --></h2>
+              <p data-detail-description><!-- DETAIL_SUMMARY --></p>
               <dl>
                 <div>
                   <dt data-i18n="collections.date">Date</dt>
-                  <dd data-detail-date></dd>
+                  <dd data-detail-date><!-- DETAIL_DATE --></dd>
                 </div>
                 <div>
                   <dt data-i18n="collections.place">Place</dt>
-                  <dd data-detail-place></dd>
+                  <dd data-detail-place><!-- DETAIL_PLACE --></dd>
                 </div>
               </dl>
+              <div class="object-context"><h3 data-i18n="desk.context">Historical context</h3><p data-detail-context><!-- DETAIL_CONTEXT --></p></div>
+              <details class="object-prompt"><summary data-i18n="desk.look">Look closely</summary><p data-detail-look><!-- DETAIL_LOOK --></p></details>
             </div>
           </aside>
-          <div class="collection-list" data-collection-list></div>
+          <div class="collection-list" data-collection-list><!-- COLLECTION_FALLBACK --></div>
         </div>
       </section>
+
+      <details class="collection-gallery section" id="gallery">
+        <summary><span data-i18n="page.gallery.title">Photo gallery</span><span class="icon icon--plus" aria-hidden="true"></span></summary>
+        <p class="gallery-lede" data-i18n="page.gallery.lede">Browse exhibition posters, historical materials and visits to the museum. Choose a group, then select an image to view it in full.</p>
+        <nav class="gallery-jumps" aria-label="Gallery sections" data-i18n-aria="media.sections">
+          <a href="#posters" data-gallery-filter="posters" data-i18n="media.posters">Exhibition posters</a><a href="#tokyo" data-gallery-filter="tokyo" data-i18n="media.tokyoGroup">The Tokyo Trial, 2026</a><a href="#archive" data-gallery-filter="archive" data-i18n="media.archive">From the collection</a><a href="#community" data-gallery-filter="community" data-i18n="media.community">Visitors &amp; outreach</a>
+        </nav>
+        <p class="gallery-count" data-gallery-count role="status" aria-live="polite"></p>
+        <!-- GALLERY_CONTENT -->
+      </details>
 
       <section class="pathways section" aria-labelledby="pathways-title">
         <div class="section__heading section__heading--split">
           <div>
             <h2 id="pathways-title" data-i18n="pathways.label">More to explore</h2>
-            <p class="section__statement" data-i18n="pathways.title">More of the collection, still being catalogued.</p>
+            <p class="section__statement" data-i18n="pathways.title">Follow a thread through the archive.</p>
           </div>
           <p data-i18n="pathways.intro">
-            These materials may support future features, online displays, and education projects as cataloguing continues.
+            These six themes connect individual objects to histories of war, relief, political change and everyday life.
           </p>
         </div>
 
@@ -148,7 +174,7 @@
         <a class="footer-wordmark" href="index.html#top" aria-label="MOFER home" data-i18n-aria="nav.homeLabel">MOFER</a>
         <p data-i18n="museum.name">Museum of Far East Remembrance</p>
       </div>
-      <p data-i18n="footer.note">Preserving, studying, and sharing the history of the Far East.</p>
+      <p data-i18n="footer.note">Original objects, shared histories of China and the Far East.</p>
       <a class="back-to-top" href="#top" data-i18n="nav.top">Back to top</a>
     </footer>
 

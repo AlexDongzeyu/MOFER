@@ -6,7 +6,7 @@ import { parse } from "parse5";
 const root = path.resolve(import.meta.dirname, "..");
 const english = JSON.parse(await readFile(path.join(root, "assets/i18n/en.json"), "utf8")).strings;
 
-for (const route of ["index.html", "about.html", "collections.html", "exhibitions.html", "research.html", "contact.html", "404.html"]) {
+for (const route of ["index.html", "about.html", "collections.html", "exhibitions.html", "contact.html", "404.html"]) {
   const file = path.join(root, route);
   let source = await readFile(file, "utf8");
   const document = parse(source, { sourceCodeLocationInfo: true });
